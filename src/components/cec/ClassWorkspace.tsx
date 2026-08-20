@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
+import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
 import {
   IconBell,
   IconCalendarCheck,
@@ -392,18 +393,371 @@ function TabStudents({ stats }: { stats: Stats }) {
   );
 }
 
-/* ---------- tab chưa dựng ---------- */
+/* ---------- tab Lịch học ---------- */
 
-function TabSoon({ name, note }: { name: string; note: string }) {
+function Dot({ on }: { on: boolean | null }) {
+  if (on === null) return <span style={{ color: INK3 }}>—</span>;
   return (
-    <div
-      className="flex flex-col items-center gap-[8px] rounded-[8px] bg-white py-[54px] text-center"
-      style={{ border: `1px solid ${LINE}` }}
-    >
-      <span className="text-[14px] font-semibold">{name}</span>
-      <span className="max-w-[420px] text-[12.5px]" style={{ color: INK2 }}>
-        {note}
-      </span>
+    <span
+      className="inline-block h-[9px] w-[9px] rounded-full align-middle"
+      style={{ background: on ? "#0fa958" : "#c4c4c4" }}
+      title={on ? "Đã xong" : "Chưa làm"}
+    />
+  );
+}
+
+function TabSessions({ row }: { row: ClassRow }) {
+  const list = SESSIONS[row.id] ?? [];
+  if (list.length === 0)
+    return (
+      <p className="py-[40px] text-center text-[13px]" style={{ color: INK3 }}>
+        Lớp chưa xếp lịch học.
+      </p>
+    );
+
+  const done = list.filter((s) => s.past);
+  const missing = done.filter((s) => !s.homework).length;
+
+  return (
+    <div className="flex flex-col gap-[12px]">
+      <p className="text-[12.5px]" style={{ color: INK2 }}>
+        {done.length}/{list.length} buổi đã diễn ra
+        {missing > 0 && (
+          <span style={{ color: DANGER, fontWeight: 600 }}> · {missing} buổi chưa giao bài</span>
+        )}
+      </p>
+
+      <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+        <table className="w-full border-collapse text-[13px]">
+          <thead>
+            <tr style={{ background: NAVY, color: "#fff" }}>
+              {["Buổi", "Ngày", "Giờ", "Phòng", "Giáo viên", "Trợ giảng", "Báo cáo", "Điểm danh", "Giao bài", ""].map((h, i) => (
+                <th key={i} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((s, i) => (
+              <tr
+                key={s.no}
+                style={{
+                  background: i % 2 ? "#f5f8fc" : "#fff",
+                  borderLeft: `3px solid ${s.past && !s.homework ? DANGER : "transparent"}`,
+                  borderBottom: "1px solid #edeff4",
+                  opacity: s.past ? 1 : 0.62,
+                }}
+              >
+                <td className="px-[12px] py-[10px] font-medium tabular-nums">{s.no}</td>
+                <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>
+                  {s.day} · {s.date}
+                </td>
+                <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>
+                  {s.time}
+                </td>
+                <td className="px-[12px]" style={{ color: INK2 }}>{s.room}</td>
+                <td className="whitespace-nowrap px-[12px]">{s.teacher}</td>
+                <td className="whitespace-nowrap px-[12px]" style={{ color: s.ta ? INK : INK3 }}>
+                  {s.ta ?? "—"}
+                </td>
+                <td className="px-[12px]"><Dot on={s.report} /></td>
+                <td className="px-[12px]"><Dot on={s.attendance} /></td>
+                <td className="px-[12px]"><Dot on={s.homework} /></td>
+                <td className="whitespace-nowrap px-[12px] py-[8px]">
+                  {s.past && !s.homework && (
+                    <button
+                      type="button"
+                      className="rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      style={{ border: `1px solid ${LINE}`, color: NAVY }}
+                    >
+                      Giao bài
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- tab Bài tập ---------- */
+
+function TabAssignments({ row }: { row: ClassRow }) {
+  const list = ASSIGNMENTS[row.id] ?? [];
+  const students = STUDENTS[row.id] ?? [];
+
+  if (list.length === 0)
+    return (
+      <div
+        className="flex flex-col items-center gap-[10px] rounded-[8px] bg-white py-[50px]"
+        style={{ border: `1px solid ${LINE}` }}
+      >
+        <span className="text-[13px]" style={{ color: INK2 }}>Lớp chưa được giao bài nào.</span>
+        <button
+          type="button"
+          className="rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
+          style={{ background: NAVY }}
+        >
+          Giao bài cho lớp
+        </button>
+      </div>
+    );
+
+  return (
+    <div className="flex flex-col gap-[10px]">
+      {list.map((a) => {
+        const missing = a.total - a.submitted;
+        const ungraded = a.submitted - a.graded;
+        const late = students.slice(0, missing).map((s) => s.name);
+        return (
+          <div key={a.id} className="rounded-[8px] bg-white px-[16px] py-[13px]" style={{ border: `1px solid ${LINE}` }}>
+            <div className="flex flex-wrap items-center gap-[12px]">
+              <span className="text-[13.5px] font-semibold">{a.title}</span>
+              <span className="text-[12px]" style={{ color: INK3 }}>
+                Buổi {a.session} · giao {a.assigned} · hạn {a.due}
+              </span>
+              <span className="flex-1" />
+              <span className="text-[12.5px] tabular-nums">{a.submitted}/{a.total} nộp</span>
+              <Bar value={a.total ? a.submitted / a.total : 0} />
+              {a.avg !== null && (
+                <span className="text-[12.5px] font-semibold tabular-nums" style={{ color: a.avg >= 7 ? OK : WARN }}>
+                  TB {a.avg}
+                </span>
+              )}
+            </div>
+
+            {(missing > 0 || ungraded > 0) && (
+              <div className="mt-[10px] flex flex-wrap items-center gap-[10px] pt-[10px]" style={{ borderTop: "1px solid #f1f3f7" }}>
+                {missing > 0 && (
+                  <>
+                    <span className="shrink-0 text-[12.5px]" style={{ color: DANGER }}>{missing} em chưa nộp</span>
+                    <span className="min-w-0 flex-1 truncate text-[12px]" style={{ color: INK2 }}>{late.join(" · ")}</span>
+                    <button
+                      type="button"
+                      className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      style={{ border: `1px solid ${LINE}`, color: NAVY }}
+                    >
+                      Nhắc {missing} em
+                    </button>
+                  </>
+                )}
+                {ungraded > 0 && (
+                  <>
+                    {missing === 0 && <span className="flex-1" />}
+                    <span className="shrink-0 text-[12.5px]" style={{ color: WARN }}>{ungraded} bài chờ chấm</span>
+                    <button
+                      type="button"
+                      className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold text-white"
+                      style={{ background: NAVY }}
+                    >
+                      Chấm bài
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------- tab Kết quả ---------- */
+
+function TabResults({ row, stats }: { row: ClassRow; stats: Stats }) {
+  const list = ASSIGNMENTS[row.id] ?? [];
+  if (list.length === 0 || stats.students.length === 0)
+    return (
+      <p className="py-[40px] text-center text-[13px]" style={{ color: INK3 }}>
+        Chưa có bài nào được chấm.
+      </p>
+    );
+
+  const cell = (s: Student, i: number) => {
+    if (s.avg === null || i >= s.submitted) return null;
+    const base = list[i].avg ?? s.avg;
+    const v = Math.max(2, Math.min(10, (s.avg * 2 + base) / 3 + ((i % 3) - 1) * 0.4));
+    return Math.round(v * 10) / 10;
+  };
+
+  return (
+    <div className="flex flex-col gap-[10px]">
+      <div className="flex items-center gap-[16px] text-[12px]" style={{ color: INK2 }}>
+        <span className="flex items-center gap-[6px]">
+          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#e6f5ec" }} /> từ 7 trở lên
+        </span>
+        <span className="flex items-center gap-[6px]">
+          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdf3e7" }} /> từ 5 đến dưới 7
+        </span>
+        <span className="flex items-center gap-[6px]">
+          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdecea" }} /> dưới 5
+        </span>
+        <span className="flex items-center gap-[6px]">
+          <span style={{ color: INK3 }}>—</span> chưa nộp
+        </span>
+      </div>
+
+      <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+        <table className="border-collapse text-[13px]">
+          <thead>
+            <tr style={{ background: NAVY, color: "#fff" }}>
+              <th
+                className="sticky left-0 z-[2] whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold"
+                style={{ background: NAVY, minWidth: 190 }}
+              >
+                Học sinh
+              </th>
+              {list.map((a) => (
+                <th
+                  key={a.id}
+                  className="whitespace-nowrap px-[10px] py-[10px] text-center text-[12px] font-semibold"
+                  title={a.title + " · buổi " + a.session}
+                  style={{ minWidth: 74 }}
+                >
+                  B{a.session}
+                </th>
+              ))}
+              <th className="whitespace-nowrap px-[12px] text-center text-[12.5px] font-semibold">TB</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stats.students.map((s, ri) => {
+              const bg = ri % 2 ? "#f5f8fc" : "#fff";
+              const cells = list.map((_, i) => cell(s, i)).filter((v): v is number => v !== null);
+              const rowAvg = cells.length
+                ? Math.round((cells.reduce((a, v) => a + v, 0) / cells.length) * 10) / 10
+                : null;
+              return (
+                <tr key={s.id} style={{ background: bg, borderBottom: "1px solid #edeff4" }}>
+                  <td
+                    className="sticky left-0 z-[1] whitespace-nowrap px-[12px] py-[9px]"
+                    style={{ background: bg, boxShadow: "1px 0 0 #e6e8ee" }}
+                  >
+                    {s.name}
+                  </td>
+                  {list.map((a, i) => {
+                    const v = cell(s, i);
+                    const tone =
+                      v === null
+                        ? { bg: "transparent", fg: INK3 }
+                        : v >= 7
+                          ? { bg: "#e6f5ec", fg: OK }
+                          : v >= 5
+                            ? { bg: "#fdf3e7", fg: WARN }
+                            : { bg: "#fdecea", fg: DANGER };
+                    return (
+                      <td key={a.id} className="px-[6px] py-[6px] text-center">
+                        <span
+                          className="inline-block min-w-[38px] rounded-[4px] py-[4px] text-[12.5px] font-medium tabular-nums"
+                          style={{ background: tone.bg, color: tone.fg }}
+                        >
+                          {v ?? "—"}
+                        </span>
+                      </td>
+                    );
+                  })}
+                  <td
+                    className="px-[12px] text-center text-[12.5px] font-semibold tabular-nums"
+                    style={{ color: rowAvg === null ? INK3 : rowAvg >= 7 ? OK : rowAvg >= 5 ? WARN : DANGER }}
+                  >
+                    {rowAvg ?? "—"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- tab Lịch sử ---------- */
+
+function TabHistory({ row }: { row: ClassRow }) {
+  const sessions = SESSIONS[row.id] ?? [];
+  const students = STUDENTS[row.id] ?? [];
+
+  type Item = { date: string; kind: string; text: string; tone: "ink" | "warn" | "danger" | "ok" };
+  const items: Item[] = [];
+
+  sessions
+    .filter((s) => s.past && !s.homework)
+    .forEach((s) =>
+      items.push({
+        date: s.date,
+        kind: "Chưa giao bài",
+        text: `Buổi ${s.no} (${s.day} ${s.time}) đã dạy xong nhưng chưa giao bài.`,
+        tone: "danger",
+      }),
+    );
+
+  students
+    .filter((s) => s.absent > 0)
+    .slice(0, 6)
+    .forEach((s, i) =>
+      items.push({
+        date: sessions[Math.min(i * 2, Math.max(0, sessions.length - 1))]?.date ?? row.start,
+        kind: "Vắng học",
+        text: `${s.name} vắng ${s.absent} buổi` + (s.absent >= 2 ? " — cần xếp lớp bù." : "."),
+        tone: s.absent >= 2 ? "warn" : "ink",
+      }),
+    );
+
+  students
+    .filter((s) => s.parentFeedback)
+    .slice(0, 4)
+    .forEach((s, i) =>
+      items.push({
+        date: sessions[Math.min(i * 3, Math.max(0, sessions.length - 1))]?.date ?? row.start,
+        kind: "Trao đổi phụ huynh",
+        text: `${s.name}: ${s.parentFeedback}`,
+        tone: "ok",
+      }),
+    );
+
+  if (items.length === 0)
+    return (
+      <p className="py-[40px] text-center text-[13px]" style={{ color: INK3 }}>
+        Chưa có ghi nhận nào cho lớp này.
+      </p>
+    );
+
+  // sắp theo thời gian, mới nhất lên đầu
+  const key = (d: string) => {
+    const [dd, mm, yy] = d.split("/");
+    return Number(yy) * 10000 + Number(mm) * 100 + Number(dd);
+  };
+  items.sort((a, b) => key(b.date) - key(a.date));
+
+  const color = { ink: INK2, warn: WARN, danger: DANGER, ok: OK };
+
+  return (
+    <div className="rounded-[8px] bg-white px-[18px] py-[14px]" style={{ border: `1px solid ${LINE}` }}>
+      <ol className="flex flex-col">
+        {items.map((it, i) => (
+          <li key={i} className="flex gap-[14px] py-[9px]">
+            <span className="w-[74px] shrink-0 text-[12px] tabular-nums" style={{ color: INK3 }}>
+              {it.date}
+            </span>
+            <span className="relative flex shrink-0 flex-col items-center">
+              <span className="mt-[5px] h-[7px] w-[7px] rounded-full" style={{ background: color[it.tone] }} />
+              {i < items.length - 1 && <span className="mt-[2px] w-[1px] flex-1" style={{ background: LINE }} />}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="mr-[8px] text-[12px] font-semibold" style={{ color: color[it.tone] }}>
+                {it.kind}
+              </span>
+              <span className="text-[13px]">{it.text}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
@@ -467,7 +821,7 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
         </div>
       </div>
 
-      <nav className="flex gap-[2px]" style={{ borderBottom: `1px solid ${LINE}` }}>
+      <nav className="flex items-end gap-[3px]" style={{ borderBottom: `1px solid ${LINE}` }}>
         {TABS.map((t) => {
           const on = t === tab;
           return (
@@ -475,11 +829,13 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
               key={t}
               type="button"
               onClick={() => setTab(t)}
-              className="px-[14px] py-[9px] text-[13px]"
+              className="-mb-px rounded-t-[6px] px-[15px] py-[9px] text-[13px]"
               style={{
                 color: on ? NAVY : INK2,
                 fontWeight: on ? 700 : 400,
-                borderBottom: `2px solid ${on ? NAVY : "transparent"}`,
+                background: on ? "#fff" : "transparent",
+                border: `1px solid ${on ? LINE : "transparent"}`,
+                borderBottomColor: on ? "#fff" : "transparent",
               }}
             >
               {t}
@@ -490,30 +846,10 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
 
       {tab === "Tổng quan" && <TabOverview row={row} stats={stats} />}
       {tab === "Học sinh" && <TabStudents stats={stats} />}
-      {tab === "Lịch học" && (
-        <TabSoon
-          name="Lịch học của lớp"
-          note="Danh sách buổi học, giáo viên từng buổi, và trạng thái báo cáo · điểm danh · giao bài của mỗi buổi."
-        />
-      )}
-      {tab === "Bài tập" && (
-        <TabSoon
-          name="Bài tập của lớp"
-          note="Các bài đã giao, ai đã nộp ai chưa, và nút giao bài mới."
-        />
-      )}
-      {tab === "Kết quả" && (
-        <TabSoon
-          name="Kết quả học tập"
-          note="Ma trận điểm học sinh theo từng bài, so sánh với mức trung bình cùng cấp độ."
-        />
-      )}
-      {tab === "Lịch sử" && (
-        <TabSoon
-          name="Lịch sử lớp"
-          note="Vắng học và lịch học bù, thay đổi giáo viên, các lần QC can thiệp."
-        />
-      )}
+      {tab === "Lịch học" && <TabSessions row={row} />}
+      {tab === "Bài tập" && <TabAssignments row={row} />}
+      {tab === "Kết quả" && <TabResults row={row} stats={stats} />}
+      {tab === "Lịch sử" && <TabHistory row={row} />}
     </div>
   );
 }

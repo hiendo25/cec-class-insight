@@ -686,9 +686,10 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
       )}
 
       {/* status tabs */}
-      <div className="flex items-end gap-[18px]" style={{ borderBottom: `1px solid ${LINE}` }}>
+      <div className="flex items-end gap-[3px]" style={{ borderBottom: `1px solid ${LINE}` }}>
         {[...STATUS_ORDER, "Tất cả" as const].map((s) => {
           const on = tab === s;
+          const n = counts.get(s) ?? 0;
           return (
             <button
               key={s}
@@ -697,20 +698,25 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 setTab(s);
                 setPage(1);
               }}
-              className="relative pb-[9px] text-[13px]"
+              className="relative -mb-px flex items-center gap-[7px] rounded-t-[6px] px-[14px] py-[9px] text-[13px]"
               style={{
                 color: on ? NAVY : INK2,
                 fontWeight: on ? 700 : 400,
+                background: on ? "#fff" : "transparent",
+                border: `1px solid ${on ? LINE : "transparent"}`,
+                borderBottomColor: on ? "#fff" : "transparent",
               }}
             >
-              {s}{" "}
-              <span style={{ color: on ? NAVY : INK3 }}>{counts.get(s) ?? 0}</span>
-              {on && (
-                <span
-                  className="absolute inset-x-0 -bottom-px h-[2px]"
-                  style={{ background: NAVY }}
-                />
-              )}
+              {s}
+              <span
+                className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[9px] px-[5px] text-[11px] font-semibold tabular-nums"
+                style={{
+                  background: on ? NAVY : "#eef1f7",
+                  color: on ? "#fff" : INK2,
+                }}
+              >
+                {n}
+              </span>
             </button>
           );
         })}
