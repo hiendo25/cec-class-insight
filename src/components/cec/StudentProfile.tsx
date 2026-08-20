@@ -23,7 +23,7 @@ const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
 const INK = "#1f2430";
 const INK2 = "#6b7280";
-const INK3 = "#9aa1ae";
+const INK3 = "#6a7386";
 const DANGER = "#d4342c";
 const OK = "#1f6f4a";
 const WARN = "#b8791c";
@@ -589,7 +589,7 @@ export function StudentProfile({
         <Stat
           label="Điểm trung bình"
           value={student.avg === null ? "—" : String(student.avg)}
-          sub={student.avg === null ? "chưa có bài chấm" : "thang 10"}
+          sub={student.avg === null ? "chưa có bài chấm" : "thang điểm 10"}
           tone={student.avg === null ? INK3 : scoreTone(student.avg).fg}
         />
         <Stat
@@ -668,7 +668,7 @@ export function StudentProfile({
             Xu hướng điểm
           </h2>
           <p className="mb-3 text-[12px]" style={{ color: INK3 }}>
-            Theo thứ tự ngày giao, cũ nhất bên trái. Điểm quy về thang 10.
+            Theo thứ tự ngày giao, cũ nhất bên trái. Điểm quy về thang điểm 10.
           </p>
           <Trend items={history} />
         </section>

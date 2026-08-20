@@ -14,7 +14,7 @@ const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
 const INK = "#1f2430";
 const INK2 = "#6b7280";
-const INK3 = "#9aa1ae";
+const INK3 = "#6a7386";
 const DANGER = "#d4342c";
 const OK = "#1f6f4a";
 const WARN = "#b8791c";
@@ -110,7 +110,7 @@ function GenPanel({
         Tạo Monthly Report bằng AI
       </h2>
       <p className="mb-3 mt-1 text-[12.5px]" style={{ color: INK2 }}>
-        AI tổng hợp Student Report, bài tập, kết quả test và bài ghi âm trong kỳ cho từng
+        AI tổng hợp phiếu nhận xét buổi, bài tập, kết quả test và bài ghi âm trong kỳ cho từng
         học sinh — mỗi em một bản nháp riêng.
       </p>
 
@@ -138,9 +138,9 @@ function GenPanel({
 
       <div className="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Card label="Học sinh" value={String(students.length)} sub="sẽ được tạo báo cáo" />
-        <Card label="Buổi học trong kỳ" value={String(sessions)} sub="buổi có Student Report" />
+        <Card label="Buổi học trong kỳ" value={String(sessions)} sub="buổi có phiếu nhận xét" />
         <Card
-          label="Student Report khả dụng"
+          label="Phiếu khả dụng"
           value={String(approved.length)}
           sub={`đã QC duyệt / ${inMonth.length} bản`}
           tone={approved.length ? OK : INK3}
@@ -345,6 +345,8 @@ export function MonthlyDetail({
     (r) => r.studentId === s.id && r.date.split("/").slice(1).join("/") === m.month,
   );
   const owed = m.hwTotal - m.hwDone;
+  /** tháng đầu tiên thì chưa có gì để so — ẩn 2 cột so sánh cho khỏi rỗng cả bảng */
+  const hasPrev = m.skills.some((k) => k.prev !== null);
 
   return (
     <div className="flex flex-col gap-4">
@@ -376,7 +378,7 @@ export function MonthlyDetail({
         <Card
           label="Điểm danh"
           value={`${m.attendRate}%`}
-          sub={`${m.present}/${m.reportCount} buổi · trễ ${m.late} · vắng ${m.absent}${m.excused ? ` · phép ${m.excused}` : ""}`}
+          sub={`${m.present}/${m.reportCount} buổi đã duyệt · trễ ${m.late} · vắng ${m.absent}${m.excused ? ` · phép ${m.excused}` : ""}`}
           tone={m.attendRate < 80 ? DANGER : OK}
         />
         <Card
@@ -385,7 +387,7 @@ export function MonthlyDetail({
           sub={owed ? `còn ${owed} bài chưa nộp · trễ ${m.hwLate}` : `nộp đủ · trễ ${m.hwLate}`}
           tone={owed ? WARN : OK}
         />
-        <Card label="Điểm bài tập TB" value={m.avgHw === null ? "—" : String(m.avgHw)} sub="thang 10" />
+        <Card label="Điểm bài tập TB" value={m.avgHw === null ? "—" : String(m.avgHw)} sub="thang điểm 10" />
         <Card
           label="Chủ điểm yếu nhất"
           value={p?.errors[0] ? `${p.errors[0].rate}%` : "—"}
@@ -394,17 +396,28 @@ export function MonthlyDetail({
         />
       </div>
 
+      {m.sessionTotal > m.reportCount && (
+        <p
+          className="rounded-lg px-3 py-2 text-[12.5px]"
+          style={{ background: "#fdf8ef", border: "1px solid #f0dfc0", color: "#7a5410" }}
+        >
+          <strong>Đang tính trên {m.reportCount}/{m.sessionTotal} buổi của tháng.</strong>{" "}
+          Còn {m.sessionTotal - m.reportCount} phiếu nhận xét buổi chưa được duyệt nên AI chưa
+          đưa vào. Duyệt nốt rồi tạo lại báo cáo thì số sẽ đầy đủ.
+        </p>
+      )}
+
       {/* điểm thực hành trên lớp */}
       <section className="rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
         <h2 className="mb-1 text-[15px] font-semibold" style={{ color: INK }}>Điểm thực hành trên lớp</h2>
         <p className="mb-3 text-[12px]" style={{ color: INK3 }}>
-          Trung bình từ {m.reportCount} Student Report đã duyệt trong tháng.
+          Trung bình từ {m.reportCount} phiếu nhận xét buổi đã duyệt trong tháng.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr style={{ color: INK3 }}>
-                {["Kỹ năng", "Tháng trước", "Tháng này", "Thay đổi"].map((h) => (
+                {(hasPrev ? ["Kỹ năng", "Tháng trước", "Tháng này", "Thay đổi"] : ["Kỹ năng", "Tháng này"]).map((h) => (
                   <th key={h} className="whitespace-nowrap px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wide">
                     {h}
                   </th>
@@ -415,14 +428,18 @@ export function MonthlyDetail({
               {m.skills.map((k) => (
                 <tr key={k.name} style={{ borderTop: `1px solid ${LINE}` }}>
                   <td className="px-3 py-2" style={{ color: INK }}>{k.name}</td>
-                  <td className="px-3 py-2 tabular-nums" style={{ color: INK3 }}>{k.prev ?? "—"}</td>
+                  {hasPrev && (
+                    <td className="px-3 py-2 tabular-nums" style={{ color: INK3 }}>{k.prev ?? "—"}</td>
+                  )}
                   <td className="px-3 py-2 font-semibold tabular-nums" style={{ color: INK }}>{k.now ?? "—"}</td>
-                  <td
-                    className="px-3 py-2 tabular-nums"
-                    style={{ color: k.delta === null ? INK3 : k.delta > 0 ? OK : k.delta < 0 ? DANGER : INK2 }}
-                  >
-                    {k.delta === null ? "—" : k.delta > 0 ? `▲ +${k.delta}` : k.delta < 0 ? `▼ ${k.delta}` : "không đổi"}
-                  </td>
+                  {hasPrev && (
+                    <td
+                      className="px-3 py-2 tabular-nums"
+                      style={{ color: k.delta === null ? INK3 : k.delta > 0 ? OK : k.delta < 0 ? DANGER : INK2 }}
+                    >
+                      {k.delta === null ? "—" : k.delta > 0 ? `▲ +${k.delta}` : k.delta < 0 ? `▼ ${k.delta}` : "không đổi"}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -450,7 +467,7 @@ export function MonthlyDetail({
 
       {/* nguồn dữ liệu — để QC biết AI dựa vào đâu */}
       <p className="text-[12px]" style={{ color: INK3 }}>
-        Nguồn dữ liệu AI dùng: {m.reportCount} Student Report đã duyệt ·{" "}
+        Nguồn dữ liệu AI dùng: {m.reportCount} phiếu nhận xét buổi đã duyệt ·{" "}
         {p?.history.length ?? 0} bài tập online · {reps.filter((r) => r.comment).length} nhận xét của giáo viên · 0 bài ghi âm
       </p>
     </div>
@@ -472,7 +489,7 @@ export function MonthlyReportTab({ row }: { row: ClassRow }) {
   if (!months.length)
     return (
       <p className="py-[40px] text-center text-[13px]" style={{ color: INK3 }}>
-        Lớp chưa có Student Report nào nên chưa tạo được Monthly Report.
+        Lớp chưa có phiếu nhận xét buổi nào nên chưa tạo được báo cáo tháng.
       </p>
     );
 
@@ -678,6 +695,24 @@ export function SessionNote({
         <span className="text-[12.5px]" style={{ color: INK2 }}>
           Người điền: <strong style={{ color: INK }}>{rep.by}</strong>
         </span>
+        {rep.status !== "approved" && (
+          <span className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              className="rounded-md px-3 py-[7px] text-[13px]"
+              style={{ border: `1px solid ${LINE}`, color: INK, background: "#fff" }}
+            >
+              Trả lại giáo viên
+            </button>
+            <button
+              type="button"
+              className="rounded-md px-4 py-[7px] text-[13px] font-semibold text-white"
+              style={{ background: NAVY }}
+            >
+              Duyệt phiếu
+            </button>
+          </span>
+        )}
       </div>
 
       <section className="flex flex-col gap-4 rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>

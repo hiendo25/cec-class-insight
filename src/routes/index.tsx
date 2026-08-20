@@ -40,7 +40,7 @@ function Index() {
             <nav
               aria-label="Breadcrumb"
               className="flex items-center gap-[6px] text-[12px]"
-              style={{ color: "#9aa1ae" }}
+              style={{ color: "#6a7386" }}
             >
               <span>Trang chủ</span>
               <span aria-hidden="true">/</span>

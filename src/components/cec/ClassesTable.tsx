@@ -41,7 +41,7 @@ const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
 const INK = "#1f2430";
 const INK2 = "#6b7280";
-const INK3 = "#9aa1ae";
+const INK3 = "#6a7386";
 const DANGER = "#d4342c";
 const OK = "#1f6f4a";
 const WARN = "#b8791c";
@@ -64,10 +64,10 @@ const splitSchedule = (s: string): string[] =>
 const STATUS_STYLE: Record<string, { bg: string; fg: string; dot: string }> = {
   "Đang diễn ra": { bg: "#e6f5ec", fg: "#1f6f4a", dot: "#0fa958" },
   "Sắp diễn ra": { bg: "#eaf1fb", fg: "#2b3f7a", dot: "#3b6bd6" },
-  "Đã kết thúc": { bg: "#f0f2f6", fg: "#6b7280", dot: "#9aa1ae" },
+  "Đã kết thúc": { bg: "#f0f2f6", fg: "#6b7280", dot: "#6a7386" },
   "Tạm dừng": { bg: "#fdf3e7", fg: "#8a5a10", dot: "#e0a020" },
   "Đã huỷ": { bg: "#fdecea", fg: "#a82920", dot: "#d4342c" },
-  default: { bg: "#f0f2f6", fg: "#6b7280", dot: "#9aa1ae" },
+  default: { bg: "#f0f2f6", fg: "#6b7280", dot: "#6a7386" },
 };
 
 const TYPE_STYLE: Record<

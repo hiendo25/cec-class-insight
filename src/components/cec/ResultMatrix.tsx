@@ -1,15 +1,20 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
-import { MONTHLY, REPORTS, type MonthlyReport as Monthly } from "@/data/reports";
+import {
+  MONTHLY,
+  REPORTS,
+  type MonthlyReport as Monthly,
+  type StudentReport,
+} from "@/data/reports";
 import { MonthlyDetail, SessionNote } from "./MonthlyReport";
 
 const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
 const INK = "#1f2430";
 const INK2 = "#6b7280";
-const INK3 = "#9aa1ae";
+const INK3 = "#6a7386";
 const DANGER = "#d4342c";
 const OK = "#1f6f4a";
 const WARN = "#b8791c";
@@ -101,6 +106,60 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
 
   const NAME_W = 200;
 
+  return <Matrix {...{ row, students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W }} />;
+}
+
+/** Bảng ma trận — tách riêng để dùng hook cuộn mà không vướng nhánh return sớm ở trên */
+type MatrixProps = {
+  students: Student[];
+  cols: Col[];
+  reps: StudentReport[];
+  bySession: Map<number, string[]>;
+  mode: ScoreMode;
+  setMode: (m: ScoreMode) => void;
+  score: (s: Student, no: number) => number | null;
+  tone: (v: number) => { bg: string; fg: string };
+  setOpenMonth: (v: { s: Student; m: Monthly }) => void;
+  setOpenNote: (v: { s: Student; no: number }) => void;
+  NAME_W: number;
+};
+
+function Matrix({
+  students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W,
+}: MatrixProps) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [hidden, setHidden] = useState({ left: 0, right: 0 });
+
+  /** đếm xem còn bao nhiêu cột đang khuất mỗi bên, để báo bằng CHỮ */
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const scan = () => {
+      const ths = [...el.querySelectorAll("thead th")].slice(1) as HTMLElement[];
+      const box = el.getBoundingClientRect();
+      const nameEdge = box.left + NAME_W;
+      let l = 0, r = 0;
+      for (const th of ths) {
+        const t = th.getBoundingClientRect();
+        if (t.right <= nameEdge + 1) l++;
+        else if (t.right > box.right + 1) r++;
+      }
+      setHidden({ left: l, right: r });
+    };
+    scan();
+    el.addEventListener("scroll", scan, { passive: true });
+    window.addEventListener("resize", scan);
+    return () => {
+      el.removeEventListener("scroll", scan);
+      window.removeEventListener("resize", scan);
+    };
+  }, [cols, NAME_W]);
+
+  const nudge = (dir: 1 | -1) => {
+    const el = boxRef.current;
+    if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: "smooth" });
+  };
+
   return (
     <div className="flex flex-col gap-[10px]">
       {/* thanh điều khiển — bám theo PROD */}
@@ -136,10 +195,52 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
         <span className="flex items-center gap-[6px]" style={{ color: INK2 }}>
           <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdecea" }} /> dưới 5
         </span>
-        <span style={{ color: INK3 }}>NX = nhận xét buổi · 📋 = báo cáo tháng</span>
+        <span style={{ color: INK2 }}>NX = chưa có điểm · 📋 = báo cáo tháng</span>
       </div>
 
-      <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+      {(hidden.left > 0 || hidden.right > 0) && (
+        <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
+          <button
+            type="button"
+            onClick={() => nudge(-1)}
+            disabled={hidden.left === 0}
+            className="rounded-[6px] px-[10px] py-[5px]"
+            style={{
+              border: `1px solid ${LINE}`,
+              background: "#fff",
+              color: hidden.left ? INK : "#c3c9d4",
+              cursor: hidden.left ? "pointer" : "default",
+            }}
+          >
+            ‹ Buổi trước
+          </button>
+          <button
+            type="button"
+            onClick={() => nudge(1)}
+            disabled={hidden.right === 0}
+            className="rounded-[6px] px-[10px] py-[5px]"
+            style={{
+              border: `1px solid ${LINE}`,
+              background: "#fff",
+              color: hidden.right ? INK : "#c3c9d4",
+              cursor: hidden.right ? "pointer" : "default",
+            }}
+          >
+            Buổi sau ›
+          </button>
+          <span style={{ color: WARN, fontWeight: 600 }}>
+            Đang khuất{hidden.left ? ` ${hidden.left} cột bên trái` : ""}
+            {hidden.left && hidden.right ? " và" : ""}
+            {hidden.right ? ` ${hidden.right} cột bên phải` : ""} — cuộn ngang để xem
+          </span>
+        </div>
+      )}
+
+      <div
+        ref={boxRef}
+        className="cec-scroll overflow-x-auto rounded-[8px] bg-white"
+        style={{ border: `1px solid ${LINE}` }}
+      >
         <table className="border-collapse text-[12.5px]">
           <thead>
             <tr style={{ background: NAVY, color: "#fff" }}>
@@ -230,10 +331,15 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
                       return (
                         <td key={`s-${c.no}`} className="px-[6px] text-center" style={{ background: bg }}>
                           <span
-                            title={rep.absenceReason ?? "Vắng"}
-                            style={{ color: rep.attendance === "absent" ? DANGER : INK2 }}
+                            title={rep.absenceReason ?? (rep.attendance === "absent" ? "Vắng không phép" : "Vắng có phép")}
+                            className="inline-block min-w-[46px] rounded-[5px] px-[6px] py-[3px] text-[11.5px]"
+                            style={{
+                              background: "#eceef3",
+                              color: INK2,
+                              fontStyle: "italic",
+                            }}
                           >
-                            {rep.attendance === "absent" ? "V" : "P"}
+                            {rep.attendance === "absent" ? "vắng" : "phép"}
                           </span>
                         </td>
                       );
@@ -253,7 +359,7 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
                             fontWeight: v === null ? 400 : 600,
                           }}
                         >
-                          {v ?? "NX"}
+                          {v === null ? "NX" : v.toFixed(1)}
                         </button>
                       </td>
                     );
@@ -267,7 +373,7 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
 
       <p className="text-[12px]" style={{ color: INK3 }}>
         Bấm một ô điểm để xem nhận xét buổi · bấm 📋 để xem và duyệt báo cáo tháng ·
-        V = vắng, P = vắng có phép.
+        NX = đã có phiếu nhưng chưa chấm điểm · cuộn ngang để xem các buổi sau.
       </p>
     </div>
   );

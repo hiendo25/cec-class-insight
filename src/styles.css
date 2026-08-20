@@ -26,7 +26,7 @@
   --color-stripe: #f5f8fc;
   --color-ink: #1f2430;
   --color-ink-2: #6b7280;
-  --color-ink-3: #9aa1ae;
+  --color-ink-3: #6a7386;
   --color-btn-line: #d9dde5;
   --color-ok: #1f6f4a;
   --color-ok-bg: #e6f5ec;
@@ -189,12 +189,25 @@
   .cec-btn-secondary:hover {
     background: #f3f5f9;
   }
-  .cec-scroll::-webkit-scrollbar {
-    height: 10px;
-    width: 10px;
-  }
-  .cec-scroll::-webkit-scrollbar-thumb {
-    background: #c9cede;
-    border-radius: 6px;
-  }
+}
+
+/* Thanh cuộn ngang phải LUÔN nhìn thấy: bảng rộng hơn màn hình là chuyện thường
+   ở laptop 1280, QC cần biết ngay là còn dữ liệu bên phải.
+   Để NGOÀI @layer — trong layer thì Tailwind không xuất pseudo-element webkit,
+   thanh cuộn co về 2px coi như vô hình. */
+.cec-scroll::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+.cec-scroll::-webkit-scrollbar-track {
+  background: #eef0f5;
+  border-radius: 6px;
+}
+.cec-scroll::-webkit-scrollbar-thumb {
+  background: #aab2c6;
+  border: 2px solid #eef0f5;
+  border-radius: 6px;
+}
+.cec-scroll::-webkit-scrollbar-thumb:hover {
+  background: #8b95ad;
 }
