@@ -330,14 +330,26 @@ function TabStudents({
 
 /* ---------- tab Lịch học ---------- */
 
+/** Trạng thái giao bài của một buổi — dùng CHỮ chứ không phải chấm tròn,
+ *  vì một chấm màu không nói được "chưa giao" hay "buổi chưa tới". */
 function Dot({ on }: { on: boolean | null }) {
-  if (on === null) return <span style={{ color: INK3 }}>—</span>;
+  if (on === null)
+    return (
+      <span className="text-[12px]" style={{ color: INK3 }}>
+        chưa tới
+      </span>
+    );
   return (
     <span
-      className="inline-block h-[9px] w-[9px] rounded-full align-middle"
-      style={{ background: on ? "#0fa958" : "#c4c4c4" }}
-      title={on ? "Đã xong" : "Chưa làm"}
-    />
+      className="inline-block rounded-[4px] px-[8px] py-[2px] text-[12px]"
+      style={
+        on
+          ? { background: "#e6f5ec", color: OK }
+          : { background: "#fdecea", color: DANGER, fontWeight: 600 }
+      }
+    >
+      {on ? "đã giao" : "chưa giao"}
+    </span>
   );
 }
 
@@ -632,11 +644,22 @@ function AddChip() {
   );
 }
 
+/** Viết tắt vai trò — người mới vào không đoán được EC là gì, nên có chú giải */
+const ROLE_HINT: Record<string, string> = {
+  GV: "Giáo viên đứng lớp",
+  QC: "Người phụ trách lớp — theo sát tiến độ học sinh",
+  EC: "Người chăm sóc khách hàng — học phí, hợp đồng",
+};
+
 function Role({ label, people }: { label: string; people: (string | null)[] }) {
   const list = people.filter((x): x is string => !!x);
   return (
     <span className="flex flex-wrap items-center gap-[6px]">
-      <span className="text-[11.5px] font-semibold" style={{ color: INK3 }}>
+      <span
+        className="text-[11.5px] font-semibold"
+        style={{ color: INK3, cursor: "help", borderBottom: `1px dotted ${INK3}` }}
+        title={ROLE_HINT[label]}
+      >
         {label}
       </span>
       {list.length ? (

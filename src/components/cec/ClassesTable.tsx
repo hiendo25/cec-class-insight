@@ -274,7 +274,7 @@ function ColumnFilter({
               className="rounded-[4px] px-[8px] py-[3px] text-[11px]"
               style={{ border: `1px solid #d9dde5`, color: INK }}
             >
-              Select All
+              Bỏ chọn tất cả
             </button>
             <button
               type="button"
@@ -282,7 +282,7 @@ function ColumnFilter({
               className="rounded-[4px] px-[8px] py-[3px] text-[11px]"
               style={{ border: `1px solid #d9dde5`, color: INK }}
             >
-              Select All Matched
+              Chọn tất cả kết quả
             </button>
           </div>
           <div className="cec-scroll max-h-[300px] overflow-y-auto py-[4px]">
@@ -392,13 +392,27 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
     return () => document.removeEventListener("mousedown", h);
   }, [viewsOpen]);
 
+  /* Hộp thoại đặt tên bộ lọc — trước đây dùng window.prompt của trình duyệt,
+     nó hiện chữ "cec-class-insight.lovable.app says" và lạc hẳn khỏi giao diện. */
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [saveName, setSaveName] = useState("");
+
   const onSaveView = () => {
-    const name = window.prompt("Tên bộ lọc:", activeView ? "" : "Bộ lọc của tôi");
-    if (name === null) return;
-    saveView(name, current);
-    setViews(loadViews());
+    setSaveName(activeView ? "" : "Bộ lọc của tôi");
+    setSaveOpen(true);
     setViewsOpen(false);
   };
+
+  const doSaveView = () => {
+    const name = saveName.trim();
+    if (!name) return;
+    saveView(name, current);
+    setViews(loadViews());
+    setSaveOpen(false);
+  };
+
+  /* Xác nhận xoá bộ lọc — thay cho window.confirm */
+  const [delView, setDelView] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 650);
@@ -595,12 +609,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                       <button
                         type="button"
                         title="Xoá bộ lọc"
-                        onClick={() => {
-                          if (!window.confirm(`Xoá bộ lọc "${v.name}"?`)) return;
-                          removeView(v.id);
-                          setViews(loadViews());
-                          setDefId(getDefaultViewId());
-                        }}
+                        onClick={() => setDelView({ id: v.id, name: v.name })}
                         className="shrink-0 px-[6px] text-[13px] opacity-0 group-hover:opacity-100"
                         style={{ color: INK3 }}
                       >
@@ -1111,6 +1120,102 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
           </>
         )}
       </div>
+
+      {/* Đặt tên bộ lọc — hộp thoại trong app, không dùng window.prompt */}
+      {saveOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center"
+          style={{ background: "rgba(20,28,56,0.34)" }}
+          onClick={() => setSaveOpen(false)}
+        >
+          <div
+            className="w-[380px] rounded-[10px] bg-white p-[18px]"
+            style={{ boxShadow: "0 12px 32px rgba(20,28,56,0.22)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-[15px] font-semibold" style={{ color: INK }}>
+              Lưu bộ lọc hiện tại
+            </h3>
+            <p className="mb-[12px] mt-[4px] text-[12.5px]" style={{ color: INK2 }}>
+              Đặt tên để lần sau mở lại nhanh, không phải chọn lại từ đầu.
+            </p>
+            <input
+              autoFocus
+              value={saveName}
+              onChange={(e) => setSaveName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") doSaveView();
+                if (e.key === "Escape") setSaveOpen(false);
+              }}
+              placeholder="Ví dụ: Lớp cần xử lý tuần này"
+              className="w-full rounded-[6px] px-[11px] py-[8px] text-[13px]"
+              style={{ border: `1px solid #d9dde5`, color: INK }}
+            />
+            <div className="mt-[14px] flex justify-end gap-[8px]">
+              <button
+                type="button"
+                onClick={() => setSaveOpen(false)}
+                className="cec-btn cec-btn-secondary"
+              >
+                Huỷ
+              </button>
+              <button
+                type="button"
+                onClick={doSaveView}
+                disabled={!saveName.trim()}
+                className="rounded-[6px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
+                style={{ background: saveName.trim() ? NAVY : "#b9c0cc" }}
+              >
+                Lưu bộ lọc
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Xác nhận xoá bộ lọc — thay cho window.confirm */}
+      {delView && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center"
+          style={{ background: "rgba(20,28,56,0.34)" }}
+          onClick={() => setDelView(null)}
+        >
+          <div
+            className="w-[380px] rounded-[10px] bg-white p-[18px]"
+            style={{ boxShadow: "0 12px 32px rgba(20,28,56,0.22)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-[15px] font-semibold" style={{ color: INK }}>
+              Xoá bộ lọc “{delView.name}”?
+            </h3>
+            <p className="mb-[14px] mt-[4px] text-[12.5px]" style={{ color: INK2 }}>
+              Chỉ xoá bộ lọc đã lưu, không ảnh hưởng tới lớp hay học sinh.
+            </p>
+            <div className="flex justify-end gap-[8px]">
+              <button
+                type="button"
+                onClick={() => setDelView(null)}
+                className="cec-btn cec-btn-secondary"
+              >
+                Huỷ
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  removeView(delView.id);
+                  setViews(loadViews());
+                  setDefId(getDefaultViewId());
+                  setDelView(null);
+                }}
+                className="rounded-[6px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
+                style={{ background: DANGER }}
+              >
+                Xoá
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
