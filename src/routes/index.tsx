@@ -22,12 +22,12 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div
-      className="flex h-screen overflow-hidden"
+      className="flex min-h-screen"
       style={{ background: "#f7f8fa", color: "#1f2430" }}
     >
       <Sidebar />
 
-      <main className="flex min-w-0 flex-1 flex-col overflow-hidden px-5 pt-4">
+      <main className="flex min-w-0 flex-1 flex-col px-5 pb-6 pt-4">
         <nav
           aria-label="Breadcrumb"
           className="flex items-center gap-[6px] text-[12px]"

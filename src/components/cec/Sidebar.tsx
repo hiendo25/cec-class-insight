@@ -5,6 +5,7 @@ import {
   IconHome,
   IconTask,
 } from "./icons";
+import { Logo } from "./Logo";
 
 const items = [
   { label: "Tổng quan", Icon: IconHome },
@@ -20,16 +21,8 @@ export function Sidebar() {
       className="flex w-[232px] shrink-0 flex-col text-white"
       style={{ background: "#1e2d5c" }}
     >
-      <div className="flex h-[60px] items-center gap-2 px-5">
-        <span
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-[6px] text-[12px] font-bold"
-          style={{ background: "rgba(255,255,255,0.16)" }}
-        >
-          C
-        </span>
-        <span className="text-[15px] font-semibold tracking-[0.02em]">
-          CEC Academic
-        </span>
+      <div className="flex h-[72px] items-center px-4 text-white">
+        <Logo width={92} />
       </div>
 
       <nav className="mt-1 flex flex-col gap-[2px] px-3">
