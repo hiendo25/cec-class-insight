@@ -97,15 +97,15 @@ type Col = {
 const COLS: Col[] = [
   { key: "code", label: "Lớp học", width: 138, filter: "code" },
   { key: "type", label: "Loại lớp", width: 108, filter: "type" },
-  { key: "campus", label: "Cơ sở", width: 138, filter: "campus" },
+  { key: "campus", label: "Cơ sở", width: 138, filter: "campus", optional: true, defaultOff: true },
   { key: "teacher", label: "Giáo viên", width: 130, filter: "teacher" },
   { key: "qc", label: "QC", width: 130, filter: "qc" },
-  { key: "ec", label: "EC", width: 130, filter: "ec" },
+  { key: "ec", label: "EC", width: 130, filter: "ec", optional: true, defaultOff: true },
   { key: "size", label: "Sĩ số", width: 88, filter: "size" },
   { key: "schedule", label: "Lịch học", width: 132, filter: "schedule" },
-  { key: "warn", label: "Cảnh báo", width: 118, filter: "warn" },
-  { key: "start", label: "Bắt đầu", width: 102 },
-  { key: "end", label: "Kết thúc", width: 102 },
+  { key: "warn", label: "Cảnh báo", width: 168, filter: "warn" },
+  { key: "start", label: "Ngày bắt đầu", width: 116 },
+  { key: "end", label: "Ngày kết thúc", width: 116 },
   { key: "status", label: "Trạng thái", width: 118, filter: "status" },
   { key: "note", label: "Ghi chú", width: 160, optional: true, defaultOff: true },
   { key: "actions", label: "", width: 52, align: "center" },
@@ -1077,27 +1077,57 @@ function renderCell(
       return <Dot on={r.report} />;
     case "attendance":
       return <Dot on={r.attendance} />;
-    case "warn":
+    case "warn": {
       if (r.issues === null) return <span style={{ color: INK3 }}>—</span>;
-      if (r.issues.length === 0)
-        return (
-          <span className="inline-flex items-center gap-[5px] text-[12.5px]" style={{ color: OK, opacity: 0.85 }}>
-            <IconCheck size={14} /> Ổn
-          </span>
-        );
+      if (r.issues.length === 0) return null;
+
+      // Ưu tiên việc của QC (chưa giao bài, chưa gán) trước việc của học sinh
+      const isMine = (t: string) => /chưa giao|chưa gán|chưa xếp/i.test(t);
+      const sorted = [...r.issues].sort(
+        (a, b) => Number(isMine(b.title)) - Number(isMine(a.title)),
+      );
+      const top = sorted[0];
+      const rest = sorted.length - 1;
+      const urgent = isMine(top.title);
+
+      // Rút gọn: "Buổi 12 chưa giao bài" -> "Chưa giao bài"
+      //          "3/14 HS chưa nộp Unit 5" -> "3 HS chưa nộp"
+      const short = (() => {
+        const m = top.title.match(/^(\d+)\/\d+\s*HS\s*(chưa nộp)/i);
+        if (m) return `${m[1]} HS chưa nộp`;
+        return top.title.replace(/^Buổi\s*\d+\s*/i, "").replace(/^\w/, (c) => c.toUpperCase());
+      })();
+
       return (
         <button
           type="button"
           onClick={ctl.toggle}
-          className="inline-flex items-center gap-[5px] text-[12.5px] font-semibold"
-          style={{ color: DANGER }}
+          className="inline-flex max-w-full items-center gap-[5px] text-[12.5px] font-medium"
+          style={{ color: urgent ? DANGER : WARN }}
+          title={r.issues.map((i) => i.title).join(" · ")}
         >
-          <IconWarn size={14} /> {r.issues.length} việc
-          <span style={{ transform: ctl.isOpen ? "rotate(180deg)" : undefined, display: "inline-flex" }}>
+          <IconWarn size={14} />
+          <span className="truncate">{short}</span>
+          {rest > 0 && (
+            <span
+              className="shrink-0 rounded-[8px] px-[5px] text-[10.5px] font-semibold"
+              style={{
+                background: urgent ? "#fdecea" : "#fdf3e7",
+                color: urgent ? DANGER : WARN,
+              }}
+            >
+              +{rest}
+            </span>
+          )}
+          <span
+            className="shrink-0"
+            style={{ transform: ctl.isOpen ? "rotate(180deg)" : undefined, display: "inline-flex" }}
+          >
             <IconChevronDown size={13} />
           </span>
         </button>
       );
+    }
     case "next":
       if (!r.next) return muted("Chưa có dữ liệu");
       return (
