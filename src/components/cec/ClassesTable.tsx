@@ -132,10 +132,9 @@ const COLS: Col[] = [
   { key: "actions", label: "", width: 52, align: "center" },
 ];
 
-type Quick = "today" | "issues" | "overdue" | "grading" | null;
+type Quick = "issues" | "overdue" | "grading" | null;
 
 const QUICK_LABEL: Record<Exclude<Quick, null>, string> = {
-  today: "Có buổi hôm nay",
   issues: "Cần xử lý",
   overdue: "Có bài quá hạn",
   grading: "Có bài chờ chấm",
@@ -143,7 +142,6 @@ const QUICK_LABEL: Record<Exclude<Quick, null>, string> = {
 
 const matchQuick = (r: ClassRow, q: Quick) => {
   if (!q) return true;
-  if (q === "today") return !!r.next?.today;
   if (q === "issues") return !!r.issues && r.issues.length > 0;
   if (q === "overdue") return r.overdue > 0;
   return r.grading > 0;
@@ -449,7 +447,6 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
   const summary = useMemo(() => {
     const base = scoped.filter((r) => r.status === "Đang diễn ra");
     return {
-      today: base.filter((r) => r.next?.today).length,
       issues: base.filter((r) => r.issues && r.issues.length > 0).length,
       overdue: base.reduce((a, r) => a + r.overdue, 0),
       grading: base.reduce((a, r) => a + r.grading, 0),
@@ -726,7 +723,6 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
       <div className="flex flex-wrap items-center gap-[10px] text-[13px]" style={{ color: INK2 }}>
         {(
           [
-            ["today", `Hôm nay: ${summary.today} buổi`],
             ["issues", `${summary.issues} lớp cần xử lý`],
             ["overdue", `${summary.overdue} bài quá hạn`],
             ["grading", `${summary.grading} bài chờ chấm`],
@@ -1267,10 +1263,6 @@ function renderCell(
         </span>
       );
     }
-    case "report":
-      return <Dot on={r.report} />;
-    case "attendance":
-      return <Dot on={r.attendance} />;
     case "warn": {
       if (r.issues === null) return <span style={{ color: INK3 }}>—</span>;
       if (r.issues.length === 0) return null;
@@ -1322,17 +1314,6 @@ function renderCell(
         </button>
       );
     }
-    case "next":
-      if (!r.next) return muted("Chưa có dữ liệu");
-      return (
-        <span style={{ fontWeight: r.next.today ? 700 : 400, color: INK }}>
-          {r.next.label}
-        </span>
-      );
-    case "progress":
-      return r.progressDone === null
-        ? muted("Chưa có dữ liệu")
-        : `${r.progressDone}/${r.progressTotal} buổi đã giao`;
     case "start":
       return r.start;
     case "end":

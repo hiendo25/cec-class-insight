@@ -435,18 +435,24 @@ function TabSessions({ row }: { row: ClassRow }) {
 
   return (
     <div className="flex flex-col gap-[12px]">
-      <p className="text-[12.5px]" style={{ color: INK2 }}>
-        {done.length}/{list.length} buổi đã diễn ra
-        {missing > 0 && (
-          <span style={{ color: DANGER, fontWeight: 600 }}> · {missing} buổi chưa giao bài</span>
+      <div className="flex flex-wrap items-center gap-x-[10px] gap-y-[6px] text-[12.5px]">
+        {missing > 0 ? (
+          <span style={{ color: DANGER, fontWeight: 600 }}>
+            {missing} buổi đã dạy mà chưa giao bài
+          </span>
+        ) : (
+          <span style={{ color: OK }}>Mọi buổi đã dạy đều đã giao bài</span>
         )}
-      </p>
+        <span style={{ color: INK3 }}>
+          · Báo cáo buổi và điểm danh là việc của giáo viên — xem ở màn Lớp học trong ngày
+        </span>
+      </div>
 
       <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
         <table className="w-full border-collapse text-[13px]">
           <thead>
             <tr style={{ background: NAVY, color: "#fff" }}>
-              {["Buổi", "Ngày", "Giờ", "Phòng", "Giáo viên", "Trợ giảng", "Báo cáo", "Điểm danh", "Giao bài", ""].map((h, i) => (
+              {["Buổi", "Ngày", "Giờ", "Phòng", "Giáo viên", "Trợ giảng", "Đã giao bài", ""].map((h, i) => (
                 <th key={i} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                   {h}
                 </th>
@@ -476,8 +482,6 @@ function TabSessions({ row }: { row: ClassRow }) {
                 <td className="whitespace-nowrap px-[12px]" style={{ color: s.ta ? INK : INK3 }}>
                   {s.ta ?? "—"}
                 </td>
-                <td className="px-[12px]"><Dot on={s.report} /></td>
-                <td className="px-[12px]"><Dot on={s.attendance} /></td>
                 <td className="px-[12px]"><Dot on={s.homework} /></td>
                 <td className="whitespace-nowrap px-[12px] py-[8px]">
                   {s.past && !s.homework && (
