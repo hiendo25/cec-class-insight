@@ -590,7 +590,7 @@ export function StudentProfile({
         <Stat
           label="Điểm trung bình"
           value={student.avg === null ? "—" : String(student.avg)}
-          sub={student.avg === null ? "chưa có bài chấm" : "thang điểm 10"}
+          sub={student.avg === null ? "chưa có bài chấm" : `trung bình ${history.length} bài online`}
           tone={student.avg === null ? INK3 : scoreTone(student.avg).fg}
         />
         <Stat

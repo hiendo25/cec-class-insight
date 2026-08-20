@@ -15,8 +15,7 @@ const DANGER = "#d4342c";
 const OK = "#1f6f4a";
 const WARN = "#b8791c";
 
-const noAccent = (s: string) =>
-  s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
+import { matchCode, matchWords } from "@/lib/search";
 
 type Row = {
   id: number;
@@ -74,10 +73,9 @@ export function ClassProgress() {
     : rows;
 
   const list = useMemo(() => {
-    const key = noAccent(q.trim());
     return mineRows
       .filter((r) => (todoOnly ? workload(r) > 0 : true))
-      .filter((r) => !key || noAccent(r.code).includes(key) || noAccent(r.teacher ?? "").includes(key))
+      .filter((r) => !q.trim() || matchCode(r.code, q) || matchWords(r.teacher ?? "", q))
       .sort((a, b) => workload(b) - workload(a) || a.code.localeCompare(b.code));
   }, [mineRows, todoOnly, q]);
 

@@ -15,8 +15,7 @@ const DANGER = "#d4342c";
 const OK = "#1f6f4a";
 const WARN = "#b8791c";
 
-const noAccent = (s: string) =>
-  s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
+import { matchCode, matchWords, noAccent } from "@/lib/search";
 
 type Row = {
   st: Student;
@@ -80,15 +79,14 @@ export function OwedStudents() {
     : rows;
 
   const list = useMemo(() => {
-    const key = noAccent(q.trim());
     return mineRows
       .filter((r) => (owedOnly ? r.owed > 0 : true))
       .filter(
         (r) =>
-          !key ||
-          noAccent(r.st.name).includes(key) ||
-          r.st.code.toLowerCase().includes(key) ||
-          noAccent(r.classCode).includes(key),
+          !q.trim() ||
+          matchWords(r.st.name, q) ||
+          matchCode(r.st.code, q) ||
+          matchCode(r.classCode, q),
       );
   }, [mineRows, owedOnly, q]);
 

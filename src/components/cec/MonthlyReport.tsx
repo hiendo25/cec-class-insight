@@ -388,7 +388,11 @@ export function MonthlyDetail({
           sub={owed ? `còn ${owed} bài chưa nộp · trễ ${m.hwLate}` : `nộp đủ · trễ ${m.hwLate}`}
           tone={owed ? WARN : OK}
         />
-        <Card label="Điểm bài tập TB" value={m.avgHw === null ? "—" : String(m.avgHw)} sub="thang điểm 10" />
+        <Card
+          label="Điểm bài tập TB"
+          value={m.avgHw === null ? "—" : String(m.avgHw)}
+          sub={`riêng ${mLabel(m.month).toLowerCase()} · ${m.hwDone}/${m.hwTotal} bài`}
+        />
         <Card
           label="Chủ điểm yếu nhất"
           value={p?.errors[0] ? `${p.errors[0].rate}%` : "—"}
