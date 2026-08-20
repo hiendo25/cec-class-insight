@@ -59,6 +59,16 @@ const sizeLabel = (r: ClassRow) =>
 const splitSchedule = (s: string): string[] =>
   s.includes("/") ? s.split("/").map((x) => x.trim()).filter(Boolean) : [s];
 
+/** 5 trạng thái lớp — mỗi trạng thái một màu riêng */
+const STATUS_STYLE: Record<string, { bg: string; fg: string; dot: string }> = {
+  "Đang diễn ra": { bg: "#e6f5ec", fg: "#1f6f4a", dot: "#0fa958" },
+  "Sắp diễn ra": { bg: "#eaf1fb", fg: "#2b3f7a", dot: "#3b6bd6" },
+  "Đã kết thúc": { bg: "#f0f2f6", fg: "#6b7280", dot: "#9aa1ae" },
+  "Tạm dừng": { bg: "#fdf3e7", fg: "#8a5a10", dot: "#e0a020" },
+  "Đã huỷ": { bg: "#fdecea", fg: "#a82920", dot: "#d4342c" },
+  default: { bg: "#f0f2f6", fg: "#6b7280", dot: "#9aa1ae" },
+};
+
 const TYPE_STYLE: Record<
   string,
   { bg: string; fg: string; bd: string; Icon: (p: { size?: number }) => JSX.Element }
@@ -972,12 +982,6 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                                   padding: "12px 16px",
                                 }}
                               >
-                                <div
-                                  className="mb-[8px] flex items-center gap-[6px] text-[12.5px] font-semibold"
-                                  style={{ color: DANGER }}
-                                >
-                                  <IconWarn size={15} /> Việc cần xử lý trong {r.code}
-                                </div>
                                 <div className="flex flex-col gap-[6px]">
                                   {r.issues.map((it) => (
                                     <div
@@ -1177,6 +1181,26 @@ function RowMenu({ row, onOpen }: { row: ClassRow; onOpen?: () => void }) {
   );
 }
 
+/** Tên người kèm avatar chữ cái đầu — màu suy từ tên nên luôn ổn định */
+const AV = ["#2b3f7a", "#1f6f4a", "#8a5a10", "#6b2fa0", "#136d5e", "#a03c3c"];
+function Person({ name }: { name: string }) {
+  const parts = name.trim().split(/\s+/);
+  const initials = (parts[0][0] + (parts.at(-1)?.[0] ?? "")).toUpperCase();
+  const bg = AV[[...name].reduce((a, c) => a + c.charCodeAt(0), 0) % AV.length];
+  return (
+    <span className="inline-flex min-w-0 items-center gap-[7px]">
+      <span
+        className="grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full text-[10px] font-semibold text-white"
+        style={{ background: bg }}
+        aria-hidden="true"
+      >
+        {initials}
+      </span>
+      <span className="truncate">{name}</span>
+    </span>
+  );
+}
+
 function renderCell(
   key: string,
   r: ClassRow,
@@ -1218,11 +1242,11 @@ function renderCell(
     case "campus":
       return r.campus;
     case "teacher":
-      return r.teacher ?? muted("Chưa gán");
+      return r.teacher ? <Person name={r.teacher} /> : muted("Chưa gán");
     case "qc":
-      return r.qc ?? muted("Chưa gán");
+      return r.qc ? <Person name={r.qc} /> : muted("Chưa gán");
     case "ec":
-      return r.ec ?? muted("Chưa gán");
+      return r.ec ? <Person name={r.ec} /> : muted("Chưa gán");
     case "size":
       return r.enrolled === null ? muted("—") : r.enrolled;
     case "schedule": {
@@ -1230,7 +1254,7 @@ function renderCell(
       const slots = splitSchedule(r.schedule);
       if (slots.length <= 1) return r.schedule;
       return (
-        <span className="inline-flex flex-col gap-[1px] leading-[15px]" title={r.schedule}>
+        <span className="inline-flex flex-col gap-[1px] leading-[15px]">
           {slots.map((sl) => (
             <span key={sl}>{sl}</span>
           ))}
@@ -1308,16 +1332,17 @@ function renderCell(
     case "end":
       return r.end;
     case "status": {
-      const good = r.status === "Đang diễn ra";
+      const st = STATUS_STYLE[r.status] ?? STATUS_STYLE.default;
       return (
         <span
-          className="inline-flex h-[22px] items-center rounded-[4px] px-[8px] text-[12px] font-medium"
-          style={
-            good
-              ? { background: "#e6f5ec", color: OK }
-              : { background: "#f0f2f6", color: INK2 }
-          }
+          className="inline-flex h-[22px] items-center gap-[6px] rounded-[4px] px-[8px] text-[12px] font-medium"
+          style={{ background: st.bg, color: st.fg }}
         >
+          <span
+            className="h-[6px] w-[6px] shrink-0 rounded-full"
+            style={{ background: st.dot }}
+            aria-hidden="true"
+          />
           {r.status}
         </span>
       );
