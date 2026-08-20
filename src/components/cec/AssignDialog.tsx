@@ -89,6 +89,16 @@ export function AssignDialog({ from, onClose }: Props) {
       ? pickedStudents.length
       : states.reduce((a, s) => a + (countByState[s] ?? 0), 0);
 
+  /** số em THỰC SỰ nhận bài ở một lớp, theo đúng tình trạng đang tích.
+   *  Trước đây chip ghi sĩ số lớp (9 em) trong khi chỉ giao cho 7 em đang học. */
+  const willReceive = (classId: number) => {
+    const list = STUDENTS[classId] ?? [];
+    return list.filter((_, i) => {
+      const st = i % 11 === 3 ? "Bảo lưu" : i % 13 === 5 ? "Đã nghỉ" : "Đang học";
+      return states.includes(st);
+    }).length;
+  };
+
   /* ---- lời nhắc, không chặn ---- */
   const notes: string[] = [];
   picked.forEach((c) => {
@@ -191,7 +201,9 @@ export function AssignDialog({ from, onClose }: Props) {
                     style={{ background: "#eef1f7", border: `1px solid #dde2ec` }}
                   >
                     {c.code}
-                    <span style={{ color: INK3 }}>{c.enrolled ?? 0} em</span>
+                    <span style={{ color: INK3 }}>
+                      {willReceive(c.id)}/{c.enrolled ?? 0} em nhận
+                    </span>
                     {classIds.length > 1 && (
                       <button
                         type="button"
@@ -276,7 +288,9 @@ export function AssignDialog({ from, onClose }: Props) {
                           <span className="font-medium">{c.code}</span>
                           <span style={{ color: INK3 }}>{c.teacher ?? "Chưa gán"}</span>
                           <span className="flex-1" />
-                          <span style={{ color: INK3 }}>{c.enrolled ?? 0} em</span>
+                          <span style={{ color: INK3 }}>
+                            {willReceive(c.id)}/{c.enrolled ?? 0} em nhận
+                          </span>
                         </button>
                       );
                     })}
@@ -593,14 +607,12 @@ export function AssignDialog({ from, onClose }: Props) {
           className="flex items-center gap-[12px] px-[20px] py-[13px]"
           style={{ borderTop: `1px solid ${LINE}`, background: "#fbfcfe" }}
         >
-          <span className="min-w-0 flex-1 text-[12.5px]" style={{ color: canSubmit ? INK : INK3 }}>
-            {exam ? (
+          <span className="min-w-0 flex-1 text-[12.5px]" style={{ color: INK }}>
+            {exam && (
               <>
                 Giao <b>{exam.name}</b> cho {picked.length} lớp ·{" "}
                 <b>{totalStudents}</b> học sinh
               </>
-            ) : (
-              "Chọn đề để tiếp tục"
             )}
           </span>
           <button
@@ -611,12 +623,25 @@ export function AssignDialog({ from, onClose }: Props) {
           >
             Huỷ
           </button>
+          {/* lý do chưa giao được phải nằm NGAY CẠNH nút, không để tít bên trái */}
+          {!canSubmit && (
+            <span className="shrink-0 text-[12.5px] font-medium" style={{ color: WARN }}>
+              {!exam ? "Chọn đề trước" : totalStudents === 0 ? "Chưa có em nào nhận bài" : "Chưa đủ điều kiện"}
+            </span>
+          )}
           <button
             type="button"
             disabled={!canSubmit}
             onClick={onClose}
+            title={
+              canSubmit
+                ? undefined
+                : !exam
+                  ? "Chọn đề trước khi giao"
+                  : "Chưa có em nào nhận bài"
+            }
             className="rounded-[6px] px-[16px] py-[8px] text-[12.5px] font-semibold text-white"
-            style={{ background: canSubmit ? NAVY : "#b9c0cc" }}
+            style={{ background: canSubmit ? NAVY : "#b9c0cc", cursor: canSubmit ? "pointer" : "not-allowed" }}
           >
             Giao bài
           </button>

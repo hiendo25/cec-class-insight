@@ -48,15 +48,16 @@ export const BUILT_IN: SavedView[] = [
     state: { ...base, quick: "action" },
   },
   {
-    id: "unassigned",
-    name: "Chưa gán giáo viên",
+    id: "grading",
+    name: "Có bài chờ chấm",
     builtIn: true,
-    state: {
-      ...base,
-      mineOnly: false,
-      filters: { teacher: ["Chưa gán"] },
-      hiddenCols: ["note"],
-    },
+    state: { ...base, quick: "grading" },
+  },
+  {
+    id: "overdue",
+    name: "Có bài quá hạn",
+    builtIn: true,
+    state: { ...base, quick: "overdue" },
   },
 ];
 
