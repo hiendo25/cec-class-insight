@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
+import { AssignDialog } from "./AssignDialog";
 import {
   IconBell,
   IconCalendarCheck,
@@ -766,6 +767,7 @@ function TabHistory({ row }: { row: ClassRow }) {
 
 export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => void }) {
   const [tab, setTab] = useState<Tab>("Tổng quan");
+  const [assignOpen, setAssignOpen] = useState(false);
   const stats = useStats(row);
 
   return (
@@ -812,6 +814,7 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
           </button>
           <button
             type="button"
+            onClick={() => setAssignOpen(true)}
             className="flex items-center gap-[7px] rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
             style={{ background: NAVY }}
           >
@@ -850,6 +853,8 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
       {tab === "Bài tập" && <TabAssignments row={row} />}
       {tab === "Kết quả" && <TabResults row={row} stats={stats} />}
       {tab === "Lịch sử" && <TabHistory row={row} />}
+
+      {assignOpen && <AssignDialog from={row} onClose={() => setAssignOpen(false)} />}
     </div>
   );
 }

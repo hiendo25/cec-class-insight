@@ -165,3 +165,10 @@ export const IconBookmark = ({ size = 16 }: { size?: number }) => (
     <path d="M6.5 4h11a1 1 0 0 1 1 1v15l-6.5-4-6.5 4V5a1 1 0 0 1 1-1z" />
   </svg>
 );
+
+export const IconInfo = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 11v5M12 8v.1" />
+  </svg>
+);
