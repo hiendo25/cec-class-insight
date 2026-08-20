@@ -3,6 +3,7 @@ import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
 import { AssignDialog } from "./AssignDialog";
+import { StudentProfile } from "./StudentProfile";
 import {
   IconBell,
   IconCalendarCheck,
@@ -269,7 +270,13 @@ function TabOverview({ row, stats }: { row: ClassRow; stats: Stats }) {
 
 /* ---------- tab Học sinh ---------- */
 
-function TabStudents({ stats }: { stats: Stats }) {
+function TabStudents({
+  stats,
+  onOpenStudent,
+}: {
+  stats: Stats;
+  onOpenStudent: (s: Student) => void;
+}) {
   const [onlyRisk, setOnlyRisk] = useState(false);
   const list = onlyRisk ? stats.needAttention : stats.students;
 
@@ -338,7 +345,14 @@ function TabStudents({ stats }: { stats: Stats }) {
                   }}
                 >
                   <td className="px-[12px] py-[10px]">
-                    <span className="font-medium">{s.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => onOpenStudent(s)}
+                      className="font-medium hover:underline"
+                      style={{ color: NAVY }}
+                    >
+                      {s.name}
+                    </button>
                     <span className="ml-[7px] text-[11.5px]" style={{ color: INK3 }}>
                       {s.code}
                     </span>
@@ -768,7 +782,17 @@ function TabHistory({ row }: { row: ClassRow }) {
 export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => void }) {
   const [tab, setTab] = useState<Tab>("Tổng quan");
   const [assignOpen, setAssignOpen] = useState(false);
+  const [openStudent, setOpenStudent] = useState<Student | null>(null);
   const stats = useStats(row);
+
+  if (openStudent)
+    return (
+      <StudentProfile
+        student={openStudent}
+        row={row}
+        onBack={() => setOpenStudent(null)}
+      />
+    );
 
   return (
     <div className="flex flex-col gap-[14px]">
@@ -848,7 +872,7 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
       </nav>
 
       {tab === "Tổng quan" && <TabOverview row={row} stats={stats} />}
-      {tab === "Học sinh" && <TabStudents stats={stats} />}
+      {tab === "Học sinh" && <TabStudents stats={stats} onOpenStudent={setOpenStudent} />}
       {tab === "Lịch học" && <TabSessions row={row} />}
       {tab === "Bài tập" && <TabAssignments row={row} />}
       {tab === "Kết quả" && <TabResults row={row} stats={stats} />}

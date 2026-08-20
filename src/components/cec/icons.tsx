@@ -172,3 +172,16 @@ export const IconInfo = ({ size = 16 }: { size?: number }) => (
     <path d="M12 11v5M12 8v.1" />
   </svg>
 );
+
+export const IconClock = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 7.5V12l3 1.8" />
+  </svg>
+);
+
+export const IconPause = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9.5 5.5v13M14.5 5.5v13" />
+  </svg>
+);
