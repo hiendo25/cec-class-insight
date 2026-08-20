@@ -9,6 +9,7 @@ import {
   IconUsers,
 } from "./icons";
 import { Logo } from "./Logo";
+import { ME } from "@/data/me";
 
 /**
  * Menu bám theo CEC PROD: chia nhóm có tiêu đề, không phải một danh sách phẳng.
@@ -93,15 +94,16 @@ export function Sidebar() {
           className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[12px] font-semibold"
           style={{ background: "rgba(255,255,255,0.18)" }}
         >
-          DĐ
+          {ME.name.split(" ")[0]![0]}
+          {ME.name.split(" ").at(-1)![0]}
         </span>
         <div className="min-w-0">
-          <div className="truncate text-[13px] font-medium">Dương Viết Đạt</div>
+          <div className="truncate text-[13px] font-medium">{ME.name}</div>
           <div
             className="truncate text-[11px]"
             style={{ color: "rgba(255,255,255,0.6)" }}
           >
-            QC · CEC Văn quán 2
+            {ME.role} · {ME.campus}
           </div>
         </div>
       </div>

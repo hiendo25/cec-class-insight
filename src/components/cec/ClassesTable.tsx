@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
+import { ME } from "@/data/me";
 import {
   IconCheck,
   IconChevronDown,
@@ -416,7 +417,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
 
   const scoped = useMemo(
     () =>
-      CLASSES.filter((r) => (mineOnly ? r.qc === "Dương Viết Đạt" || r.mine : true)).filter(
+      CLASSES.filter((r) => (mineOnly ? r.qc === ME.name : true)).filter(
         (r) =>
           search.trim() === "" ||
           `${r.code} ${r.teacher ?? ""} ${r.campus}`
@@ -1072,7 +1073,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                   ))}
                 </select>
               </div>
-              <div className="text-center">Total: {rows.length} classes</div>
+              <div className="text-center">Tổng {rows.length} lớp</div>
               <div className="flex items-center justify-end gap-[4px]">
                 <button
                   type="button"
