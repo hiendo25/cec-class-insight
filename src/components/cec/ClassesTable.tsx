@@ -12,6 +12,15 @@ import {
   IconTray,
   IconWarn,
   IconX,
+  IconUsers,
+  IconUserOne,
+  IconRefreshSmall,
+  IconMonitor,
+  IconClipboard,
+  IconCalendarCheck,
+  IconBell,
+  IconExternal,
+  IconChart,
 } from "./icons";
 
 /* ---------- helpers ---------- */
@@ -33,9 +42,22 @@ const warnLabel = (r: ClassRow) =>
       : "Ổn";
 
 const sizeLabel = (r: ClassRow) =>
-  r.enrolled === null || r.capacity === null
-    ? "—"
-    : `${r.enrolled}/${r.capacity} HS`;
+  r.enrolled === null ? "—" : `${r.enrolled}`;
+
+/** Tách "T2 · T4 · 18:00" hoặc "T4 17:45-19:15 / T7 17:30-19:00" thành từng buổi */
+const splitSchedule = (s: string): string[] =>
+  s.includes("/") ? s.split("/").map((x) => x.trim()).filter(Boolean) : [s];
+
+const TYPE_STYLE: Record<
+  string,
+  { bg: string; fg: string; bd: string; Icon: (p: { size?: number }) => JSX.Element }
+> = {
+  "Lớp thường": { bg: "#eef2fb", fg: "#2b3f7a", bd: "#d8e0f2", Icon: IconUsers },
+  "Lớp bù": { bg: "#fdf3e7", fg: "#8a5a10", bd: "#f2e0c4", Icon: IconRefreshSmall },
+  "Lớp 1-1": { bg: "#f6eefc", fg: "#6b2fa0", bd: "#e8d8f5", Icon: IconUserOne },
+  "Lớp online": { bg: "#e8f5f2", fg: "#136d5e", bd: "#cbe8e1", Icon: IconMonitor },
+  default: { bg: "#f0f2f6", fg: "#4b5361", bd: "#e2e5ec", Icon: IconUsers },
+};
 
 type FilterKey =
   | "code"
@@ -73,7 +95,6 @@ type Col = {
 };
 
 const COLS: Col[] = [
-  { key: "idx", label: "#", width: 48, align: "center" },
   { key: "code", label: "Lớp học", width: 138, filter: "code" },
   { key: "type", label: "Loại lớp", width: 108, filter: "type" },
   { key: "campus", label: "Cơ sở", width: 138, filter: "campus" },
@@ -82,11 +103,7 @@ const COLS: Col[] = [
   { key: "ec", label: "EC", width: 130, filter: "ec" },
   { key: "size", label: "Sĩ số", width: 88, filter: "size" },
   { key: "schedule", label: "Lịch học", width: 132, filter: "schedule" },
-  { key: "report", label: "Báo cáo", width: 72, align: "center" },
-  { key: "attendance", label: "Điểm danh", width: 82, align: "center" },
   { key: "warn", label: "Cảnh báo", width: 118, filter: "warn" },
-  { key: "next", label: "Buổi tới", width: 138 },
-  { key: "progress", label: "Tiến độ", width: 138 },
   { key: "start", label: "Bắt đầu", width: 102 },
   { key: "end", label: "Kết thúc", width: 102 },
   { key: "status", label: "Trạng thái", width: 118, filter: "status" },
@@ -194,7 +211,7 @@ function ColumnFilter({
 
   const active = selected.length > 0;
   const label = !active
-    ? "Tất cả"
+    ? "Select"
     : selected.length === 1
       ? selected[0]
       : `${selected.length} mục`;
@@ -204,17 +221,22 @@ function ColumnFilter({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex h-[26px] w-full items-center justify-between gap-1 rounded-[4px] px-[6px] text-[12px]"
+        className="flex h-[28px] w-full items-center gap-[6px] px-0 text-[12.5px]"
         style={{
-          border: `1px solid ${active ? NAVY : "#dfe3ea"}`,
-          background: "#fff",
-          color: active ? INK : INK2,
+          background: "transparent",
+          borderBottom: `1px solid ${active ? NAVY : "#d9dde5"}`,
+          color: active ? NAVY : INK2,
           fontWeight: active ? 600 : 400,
         }}
         data-filter={colKey}
       >
         <span className="truncate">{label}</span>
-        <IconChevronDown size={13} />
+        <span
+          className="shrink-0 text-[9px] leading-none"
+          style={{ color: open || active ? NAVY : INK3 }}
+        >
+          {open ? "▼" : "▲"}
+        </span>
       </button>
 
       {open && (
@@ -389,10 +411,11 @@ export function ClassesTable() {
     setSearch("");
   };
 
-  const stickyLeft: Record<string, number> = { sel: 0, idx: 36, code: 84 };
+  const stickyLeft: Record<string, number> = { sel: 0, code: 36 };
+  // width co dinh de o ghim khong bi co, tranh de len cot ke tiep
   const isSticky = (k: string) => k in stickyLeft;
 
-  const stickyWidth: Record<string, number> = { sel: 36, idx: 48, code: 138 };
+  const stickyWidth: Record<string, number> = { sel: 36, code: 138 };
 
   const cellStyle = (c: Col, bg: string): React.CSSProperties =>
     isSticky(c.key)
@@ -404,7 +427,7 @@ export function ClassesTable() {
           maxWidth: stickyWidth[c.key],
           zIndex: 5,
           background: bg,
-          boxShadow: c.key === "code" ? "4px 0 0 0 #ffffff, 5px 0 0 0 rgba(20,28,56,0.10)" : undefined,
+          boxShadow: c.key === "code" ? "1px 0 0 0 rgba(20,28,56,0.10)" : undefined,
         }
       : {};
 
@@ -655,6 +678,9 @@ export function ClassesTable() {
                             ? {
                                 position: "sticky",
                                 left: stickyLeft[c.key],
+                                width: stickyWidth[c.key],
+                                minWidth: stickyWidth[c.key],
+                                maxWidth: stickyWidth[c.key],
                                 zIndex: 6,
                                 background: NAVY,
                               }
@@ -666,7 +692,7 @@ export function ClassesTable() {
                           {c.filter && filters[c.filter]?.length ? (
                             <span
                               className="inline-block h-[6px] w-[6px] rounded-full"
-                              style={{ background: "#3ddc84" }}
+                              style={{ background: "#ffffff" }}
                             />
                           ) : null}
                         </span>
@@ -927,6 +953,67 @@ export function ClassesTable() {
   );
 }
 
+function RowMenu({ row }: { row: ClassRow }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const h = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [open]);
+
+  const hasIssue = !!row.issues && row.issues.length > 0;
+
+  const items: { label: string; Icon: (p: { size?: number }) => JSX.Element; danger?: boolean }[] = [
+    { label: "Mở lớp", Icon: IconExternal },
+    { label: "Xem học sinh", Icon: IconUsers },
+    { label: "Giao bài cho lớp", Icon: IconClipboard },
+    ...(hasIssue
+      ? [{ label: "Nhắc học sinh chưa nộp", Icon: IconBell, danger: true }]
+      : []),
+    { label: "Xem kết quả", Icon: IconChart },
+    { label: "Lịch học của lớp", Icon: IconCalendarCheck },
+  ];
+
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="grid h-[26px] w-[26px] place-items-center rounded-[5px] hover:bg-[#eef1f7]"
+        style={{ color: open ? NAVY : INK2 }}
+        aria-label={`Thao tác với lớp ${row.code}`}
+      >
+        <IconDots />
+      </button>
+
+      {open && (
+        <div
+          className="absolute right-0 top-[30px] z-50 w-[210px] overflow-hidden rounded-[6px] bg-white py-[4px] text-left shadow-[0_8px_24px_rgba(20,28,56,0.18)]"
+          style={{ border: `1px solid ${LINE}` }}
+        >
+          {items.map(({ label, Icon, danger }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center gap-[9px] px-[11px] py-[7px] text-[12.5px] hover:bg-[#f5f8fc]"
+              style={{ color: danger ? DANGER : INK }}
+            >
+              <Icon size={14} />
+              <span className="truncate">{label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function renderCell(
   key: string,
   r: ClassRow,
@@ -952,15 +1039,18 @@ function renderCell(
           {r.code}
         </a>
       );
-    case "type":
+    case "type": {
+      const t = TYPE_STYLE[r.type] ?? TYPE_STYLE.default;
       return (
         <span
-          className="inline-flex h-[22px] items-center rounded-[4px] px-[8px] text-[12px]"
-          style={{ background: "#f0f2f6", color: INK2 }}
+          className="inline-flex h-[22px] items-center gap-[5px] rounded-[11px] px-[8px] text-[11.5px] font-medium"
+          style={{ background: t.bg, color: t.fg, border: `1px solid ${t.bd}` }}
         >
+          <t.Icon size={12} />
           {r.type}
         </span>
       );
+    }
     case "campus":
       return r.campus;
     case "teacher":
@@ -970,9 +1060,19 @@ function renderCell(
     case "ec":
       return r.ec ?? muted("Chưa gán");
     case "size":
-      return r.enrolled === null ? muted("—") : `${r.enrolled}/${r.capacity} HS`;
-    case "schedule":
-      return r.schedule ?? <span style={{ color: WARN }}>Chưa xếp lịch</span>;
+      return r.enrolled === null ? muted("—") : r.enrolled;
+    case "schedule": {
+      if (!r.schedule) return <span style={{ color: WARN }}>Chưa xếp lịch</span>;
+      const slots = splitSchedule(r.schedule);
+      if (slots.length <= 1) return r.schedule;
+      return (
+        <span className="inline-flex flex-col gap-[1px] leading-[15px]" title={r.schedule}>
+          {slots.map((sl) => (
+            <span key={sl}>{sl}</span>
+          ))}
+        </span>
+      );
+    }
     case "report":
       return <Dot on={r.report} />;
     case "attendance":
@@ -1037,11 +1137,7 @@ function renderCell(
         <span style={{ color: INK3 }}>—</span>
       );
     case "actions":
-      return (
-        <button type="button" style={{ color: INK2 }}>
-          <IconDots />
-        </button>
-      );
+      return <RowMenu row={r} />;
     default:
       return null;
   }

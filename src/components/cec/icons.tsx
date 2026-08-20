@@ -101,3 +101,61 @@ export const IconDots = ({ size = 16, className }: P) => (
     <circle cx="19" cy="12" r="1.2" fill="currentColor" />
   </svg>
 );
+export const IconUsers = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="8" r="3.2" />
+    <path d="M3 20c.8-3 3-4.5 6-4.5s5.2 1.5 6 4.5" />
+    <path d="M16.5 6.2a3 3 0 0 1 0 5.6M18 20c-.3-1.6-.9-2.8-1.8-3.7" />
+  </svg>
+);
+
+export const IconUserOne = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="3.4" />
+    <path d="M5.5 20c.9-3.2 3.4-4.8 6.5-4.8s5.6 1.6 6.5 4.8" />
+  </svg>
+);
+
+export const IconRefreshSmall = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 11A8 8 0 0 0 5.3 8M4 5v3.5h3.5" />
+    <path d="M4 13a8 8 0 0 0 14.7 3M20 19v-3.5h-3.5" />
+  </svg>
+);
+
+export const IconMonitor = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4.5" width="18" height="12" rx="1.6" />
+    <path d="M9 20h6M12 16.5V20" />
+  </svg>
+);
+
+export const IconClipboard = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 4h6v3H9z" />
+    <path d="M6 5.5H5a1 1 0 0 0-1 1V19a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6.5a1 1 0 0 0-1-1h-1" />
+    <path d="M8 12h8M8 16h5" />
+  </svg>
+);
+
+export const IconCalendarCheck = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3.5" y="5" width="17" height="15" rx="1.8" />
+    <path d="M8 3v4M16 3v4M3.5 10h17" />
+    <path d="M9 15l2 2 4-4" />
+  </svg>
+);
+
+export const IconBell = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 15V10a6 6 0 1 0-12 0v5l-1.5 2.5h15z" />
+    <path d="M10 20.5h4" />
+  </svg>
+);
+
+export const IconExternal = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 4h6v6M20 4l-8 8" />
+    <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+  </svg>
+);
