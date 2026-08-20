@@ -20,8 +20,19 @@ import {
   IconCalendarCheck,
   IconBell,
   IconExternal,
+  IconBookmark,
   IconChart,
 } from "./icons";
+import {
+  loadViews,
+  saveView,
+  removeView,
+  getDefaultViewId,
+  setDefaultViewId,
+  sameState,
+  type SavedView,
+  type ViewState,
+} from "./savedViews";
 
 /* ---------- helpers ---------- */
 
@@ -297,7 +308,7 @@ function ColumnFilter({
 
 /* ---------- main ---------- */
 
-export function ClassesTable() {
+export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => void }) {
   const initial = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
 
   const [tab, setTab] = useState<Status | "Tất cả">(
@@ -323,6 +334,62 @@ export function ClassesTable() {
   const [error, setError] = useState(initial?.get("error") === "1");
   const [pageSize, setPageSize] = useState(100);
   const [page, setPage] = useState(1);
+
+  /* ---- bộ lọc đã lưu ---- */
+  const [views, setViews] = useState<SavedView[]>(() => loadViews());
+  const [viewsOpen, setViewsOpen] = useState(false);
+  const [defaultId, setDefId] = useState<string | null>(() => getDefaultViewId());
+  const viewsRef = useRef<HTMLDivElement>(null);
+
+  const current: ViewState = {
+    tab,
+    quick,
+    mineOnly,
+    search,
+    filters: filters as Record<string, string[]>,
+    hiddenCols,
+    pageSize,
+  };
+  const activeView = views.find((v) => sameState(v.state, current));
+
+  const applyView = (v: SavedView) => {
+    setTab(v.state.tab);
+    setQuick(v.state.quick as Quick);
+    setMineOnly(v.state.mineOnly);
+    setSearch(v.state.search);
+    setFilters(v.state.filters as Partial<Record<FilterKey, string[]>>);
+    setHiddenCols(v.state.hiddenCols);
+    setPageSize(v.state.pageSize);
+    setPage(1);
+    setViewsOpen(false);
+  };
+
+  // mở màn: áp bộ lọc mặc định nếu có
+  useEffect(() => {
+    if (!defaultId) return;
+    const v = loadViews().find((x) => x.id === defaultId);
+    if (v) applyView(v);
+    // chỉ chạy một lần khi khởi tạo
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!viewsOpen) return;
+    const h = (e: MouseEvent) => {
+      if (viewsRef.current && !viewsRef.current.contains(e.target as Node))
+        setViewsOpen(false);
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [viewsOpen]);
+
+  const onSaveView = () => {
+    const name = window.prompt("Tên bộ lọc:", activeView ? "" : "Bộ lọc của tôi");
+    if (name === null) return;
+    saveView(name, current);
+    setViews(loadViews());
+    setViewsOpen(false);
+  };
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 650);
@@ -461,6 +528,93 @@ export function ClassesTable() {
         <button type="button" className="cec-btn cec-btn-secondary" onClick={resetAll}>
           Đặt lại bộ lọc
         </button>
+
+        <div ref={viewsRef} className="relative">
+          <button
+            type="button"
+            onClick={() => setViewsOpen((o) => !o)}
+            className="cec-btn cec-btn-secondary flex items-center gap-[7px]"
+            style={activeView ? { borderColor: NAVY, color: NAVY, fontWeight: 600 } : undefined}
+          >
+            <IconBookmark size={14} />
+            {activeView ? activeView.name : "Bộ lọc đã lưu"}
+            <IconChevronDown size={12} />
+          </button>
+
+          {viewsOpen && (
+            <div
+              className="absolute left-0 top-[38px] z-40 w-[268px] rounded-[6px] bg-white py-[4px] shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
+              style={{ border: `1px solid ${LINE}` }}
+            >
+              {views.map((v) => {
+                const on = activeView?.id === v.id;
+                const isDefault = defaultId === v.id;
+                return (
+                  <div
+                    key={v.id}
+                    className="group flex items-center gap-[6px] px-[6px] hover:bg-[#f5f8fc]"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => applyView(v)}
+                      className="flex min-w-0 flex-1 items-center gap-[8px] py-[8px] pl-[6px] text-left text-[12.5px]"
+                      style={{ color: on ? NAVY : INK, fontWeight: on ? 600 : 400 }}
+                    >
+                      <span className="w-[13px] shrink-0">{on ? "✓" : ""}</span>
+                      <span className="truncate">{v.name}</span>
+                      {isDefault && (
+                        <span className="shrink-0 text-[10.5px]" style={{ color: INK3 }}>
+                          mặc định
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      title={isDefault ? "Bỏ đặt mặc định" : "Đặt làm mặc định"}
+                      onClick={() => {
+                        const id = isDefault ? null : v.id;
+                        setDefaultViewId(id);
+                        setDefId(id);
+                      }}
+                      className="shrink-0 px-[4px] text-[13px] opacity-0 group-hover:opacity-100"
+                      style={{ color: isDefault ? WARN : INK3 }}
+                    >
+                      {isDefault ? "★" : "☆"}
+                    </button>
+
+                    {!v.builtIn && (
+                      <button
+                        type="button"
+                        title="Xoá bộ lọc"
+                        onClick={() => {
+                          if (!window.confirm(`Xoá bộ lọc "${v.name}"?`)) return;
+                          removeView(v.id);
+                          setViews(loadViews());
+                          setDefId(getDefaultViewId());
+                        }}
+                        className="shrink-0 px-[6px] text-[13px] opacity-0 group-hover:opacity-100"
+                        style={{ color: INK3 }}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+
+              <div className="my-[4px] h-[1px]" style={{ background: LINE }} />
+              <button
+                type="button"
+                onClick={onSaveView}
+                className="flex w-full items-center gap-[8px] px-[12px] py-[8px] text-left text-[12.5px] hover:bg-[#f5f8fc]"
+                style={{ color: NAVY, fontWeight: 600 }}
+              >
+                + Lưu bộ lọc hiện tại
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="relative ml-auto">
           <button
@@ -802,6 +956,7 @@ export function ClassesTable() {
                                 {renderCell(c.key, r, (i + 1) + (page - 1) * pageSize, {
                                   isOpen,
                                   toggle: () => setExpanded(isOpen ? null : r.id),
+                                  open: () => onOpenClass?.(r),
                                 })}
                               </td>
                             ))}
@@ -953,7 +1108,7 @@ export function ClassesTable() {
   );
 }
 
-function RowMenu({ row }: { row: ClassRow }) {
+function RowMenu({ row, onOpen }: { row: ClassRow; onOpen?: () => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -968,8 +1123,13 @@ function RowMenu({ row }: { row: ClassRow }) {
 
   const hasIssue = !!row.issues && row.issues.length > 0;
 
-  const items: { label: string; Icon: (p: { size?: number }) => JSX.Element; danger?: boolean }[] = [
-    { label: "Mở lớp", Icon: IconExternal },
+  const items: {
+    label: string;
+    Icon: (p: { size?: number }) => JSX.Element;
+    danger?: boolean;
+    run?: () => void;
+  }[] = [
+    { label: "Mở lớp", Icon: IconExternal, run: onOpen },
     { label: "Xem học sinh", Icon: IconUsers },
     { label: "Giao bài cho lớp", Icon: IconClipboard },
     ...(hasIssue
@@ -996,11 +1156,14 @@ function RowMenu({ row }: { row: ClassRow }) {
           className="absolute right-0 top-[30px] z-50 w-[210px] overflow-hidden rounded-[6px] bg-white py-[4px] text-left shadow-[0_8px_24px_rgba(20,28,56,0.18)]"
           style={{ border: `1px solid ${LINE}` }}
         >
-          {items.map(({ label, Icon, danger }) => (
+          {items.map(({ label, Icon, danger, run }) => (
             <button
               key={label}
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                run?.();
+              }}
               className="flex w-full items-center gap-[9px] px-[11px] py-[7px] text-[12.5px] hover:bg-[#f5f8fc]"
               style={{ color: danger ? DANGER : INK }}
             >
@@ -1018,7 +1181,7 @@ function renderCell(
   key: string,
   r: ClassRow,
   idx: number,
-  ctl: { isOpen: boolean; toggle: () => void },
+  ctl: { isOpen: boolean; toggle: () => void; open: () => void },
 ) {
   const muted = (t: string) => (
     <span className="italic" style={{ color: INK3 }}>
@@ -1031,13 +1194,14 @@ function renderCell(
       return <span style={{ color: INK2 }}>{idx}</span>;
     case "code":
       return (
-        <a
-          href="#"
+        <button
+          type="button"
+          onClick={ctl.open}
           className="font-semibold underline-offset-[3px] hover:underline"
           style={{ color: NAVY }}
         >
           {r.code}
-        </a>
+        </button>
       );
     case "type": {
       const t = TYPE_STYLE[r.type] ?? TYPE_STYLE.default;
@@ -1167,7 +1331,7 @@ function renderCell(
         <span style={{ color: INK3 }}>—</span>
       );
     case "actions":
-      return <RowMenu row={r} />;
+      return <RowMenu row={r} onOpen={ctl.open} />;
     default:
       return null;
   }
