@@ -1,3 +1,4 @@
+import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactElement } from "react";
 import {
   IconBook,
@@ -16,35 +17,40 @@ import { ME } from "@/data/me";
  * Chỉ giữ mục QC thật sự dùng. Việc của giáo viên (báo cáo buổi, điểm danh)
  * nằm ở "Lớp học trong ngày" — QC mở sang xem chứ không thao tác.
  */
-type Item = { label: string; Icon: (p: { size?: number }) => ReactElement; active?: boolean };
+type Item = {
+  label: string;
+  Icon: (p: { size?: number }) => ReactElement;
+  /** đường dẫn thật; chưa có thì để trống và hiện nhãn "sắp có" */
+  to?: string;
+};
 
 const GROUPS: { title: string; items: Item[] }[] = [
   {
     title: "Vận hành",
     items: [
-      { label: "Tổng quan", Icon: IconHome },
-      { label: "Lớp học", Icon: IconBook, active: true },
+      { label: "Lớp học", Icon: IconBook, to: "/class" },
       { label: "Lớp học trong ngày", Icon: IconUsers },
     ],
   },
   {
     title: "Bài tập",
     items: [
+      { label: "Học sinh nợ bài", Icon: IconClipboard, to: "/assignment/student" },
+      { label: "Tiến độ theo lớp", Icon: IconTask, to: "/assignment/class" },
       { label: "Bài đã giao", Icon: IconTask },
-      { label: "Bài tập theo học sinh", Icon: IconClipboard },
-      { label: "Bài tập theo lớp", Icon: IconClipboard },
     ],
   },
   {
     title: "Khác",
     items: [
       { label: "Báo cáo", Icon: IconChart },
-      { label: "Cấu hình", Icon: IconGear },
     ],
   },
 ];
 
 export function Sidebar() {
+  const path = useRouterState({ select: (st) => st.location.pathname });
+
   return (
     <aside
       className="flex w-[255px] shrink-0 flex-col text-white"
@@ -64,22 +70,36 @@ export function Sidebar() {
             >
               {g.title}
             </span>
-            {g.items.map(({ label, Icon, active }) => (
-              <button
-                key={label}
-                type="button"
-                className="flex h-[36px] items-center gap-[10px] rounded-[6px] text-[13.5px]"
-                style={{
-                  padding: "8px 10px",
-                  background: active ? "rgba(255,255,255,0.14)" : "transparent",
-                  fontWeight: active ? 600 : 400,
-                  color: active ? "#fff" : "rgba(255,255,255,0.82)",
-                }}
-              >
-                <Icon size={17} />
-                <span className="truncate">{label}</span>
-              </button>
-            ))}
+            {g.items.map(({ label, Icon, to }) => {
+              const active = !!to && path.startsWith(to);
+              const style = {
+                padding: "8px 10px",
+                background: active ? "rgba(255,255,255,0.14)" : "transparent",
+                fontWeight: active ? 600 : 400,
+                color: to ? (active ? "#fff" : "rgba(255,255,255,0.82)") : "rgba(255,255,255,0.38)",
+              } as const;
+              const cls = "flex h-[36px] items-center gap-[10px] rounded-[6px] text-[13.5px]";
+
+              /* Mục chưa có màn thì KHÔNG cho bấm và nói rõ "sắp có" —
+                 thà thiếu còn hơn bấm vào không đi đâu. */
+              if (!to)
+                return (
+                  <span key={label} className={cls} style={{ ...style, cursor: "default" }} title="Sắp có">
+                    <Icon size={17} />
+                    <span className="truncate">{label}</span>
+                    <span className="ml-auto text-[10px]" style={{ color: "rgba(255,255,255,0.34)" }}>
+                      sắp có
+                    </span>
+                  </span>
+                );
+
+              return (
+                <Link key={label} to={to} className={cls} style={style}>
+                  <Icon size={17} />
+                  <span className="truncate">{label}</span>
+                </Link>
+              );
+            })}
           </div>
         ))}
       </nav>
