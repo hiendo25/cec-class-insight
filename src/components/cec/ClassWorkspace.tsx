@@ -4,6 +4,7 @@ import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
 import { AssignDialog } from "./AssignDialog";
 import { StudentProfile } from "./StudentProfile";
+import { MonthlyReportTab, StudentReportTab } from "./MonthlyReport";
 import {
   IconBell,
   IconCalendarCheck,
@@ -29,6 +30,8 @@ const TABS = [
   "Lịch học",
   "Bài tập",
   "Kết quả",
+  "Phiếu buổi học",
+  "Nhận xét tháng",
   "Lịch sử",
 ] as const;
 type Tab = (typeof TABS)[number];
@@ -880,6 +883,8 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
       {tab === "Lịch học" && <TabSessions row={row} />}
       {tab === "Bài tập" && <TabAssignments row={row} />}
       {tab === "Kết quả" && <TabResults row={row} stats={stats} />}
+      {tab === "Phiếu buổi học" && <StudentReportTab row={row} />}
+      {tab === "Nhận xét tháng" && <MonthlyReportTab row={row} />}
       {tab === "Lịch sử" && <TabHistory row={row} />}
 
       {assignOpen && <AssignDialog from={row} onClose={() => setAssignOpen(false)} />}
