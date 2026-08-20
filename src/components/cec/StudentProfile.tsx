@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { ClassRow } from "@/data/classes";
 import type { Student } from "@/data/students";
+import { topicVi } from "@/data/topics";
 import {
   PROFILES,
   type DailyPoint,
@@ -222,7 +223,7 @@ function ErrorGroups({ errors }: { errors: ErrorGroup[] }) {
                 style={{ background: TOPIC_COLOR[i % TOPIC_COLOR.length] }}
               />
               <span className="min-w-0 flex-1 truncate" style={{ color: INK }}>
-                {e.topic}
+                {topicVi(e.topic)}
               </span>
               <span className="w-[86px] text-right" style={{ color: tone, fontVariantNumeric: "tabular-nums" }}>
                 {e.rate}%{" "}
@@ -355,7 +356,7 @@ function Unfinished({ items }: { items: InProgress[] }) {
               {q.title}
             </span>
             <span className="rounded-full px-2 py-0.5 text-[11px]" style={{ background: "#f0f2f6", color: INK2 }}>
-              {q.topic}
+              {topicVi(q.topic)}
             </span>
             <span className="text-[12px]" style={{ color: INK2, fontVariantNumeric: "tabular-nums" }}>
               mở {q.openedAt}
@@ -400,7 +401,7 @@ function HistoryRow({ h }: { h: HistoryItem }) {
           className="shrink-0 rounded-full px-2 py-0.5 text-[11px]"
           style={{ background: "#f0f2f6", color: INK2 }}
         >
-          {h.topic}
+          {topicVi(h.topic)}
         </span>
         <span className="w-[64px] shrink-0 text-right text-[12px]" style={{ color: INK3 }}>
           Buổi {h.session}
@@ -526,7 +527,7 @@ export function StudentProfile({
   if (worst && worst.rate >= 40)
     todos.push({
       tone: WARN,
-      text: `Yếu rõ ở ${worst.topic} — sai ${worst.rate}% và đang ${worst.trend}`,
+      text: `Yếu rõ ở ${topicVi(worst.topic)} — sai ${worst.rate}% và đang ${worst.trend}`,
       action: "Giao bài luyện thêm",
     });
 
@@ -613,7 +614,7 @@ export function StudentProfile({
         <Stat
           label="Chủ điểm yếu nhất"
           value={worst ? `${worst.rate}%` : "—"}
-          sub={worst ? worst.topic : "chưa đủ dữ liệu"}
+          sub={worst ? topicVi(worst.topic) : "chưa đủ dữ liệu"}
           tone={worst && worst.rate >= 40 ? DANGER : INK}
         />
       </div>

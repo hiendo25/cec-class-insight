@@ -9,6 +9,7 @@ import {
   type ReportStatus,
 } from "@/data/reports";
 import { IconCheck, IconChevronLeft, IconClipboard, IconWarn } from "./icons";
+import { topicFull, topicVi } from "@/data/topics";
 
 const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
@@ -260,13 +261,13 @@ function draft(s: Student, m: Monthly) {
   if (len.length)
     manh.push(`Tiến bộ ở ${len.map((k) => `${k.name} (+${k.delta})`).join(", ")} so với tháng trước.`);
   if (vung.length)
-    manh.push(`Nắm vững ${vung.map((v) => v.topic).join(", ")} — tỉ lệ sai dưới 15%.`);
+    manh.push(`Nắm vững ${vung.map((v) => topicFull(v.topic)).join(", ")} — tỉ lệ sai dưới 15%.`);
   if (m.attendRate === 100) manh.push("Đi học đầy đủ cả tháng, không nghỉ buổi nào.");
   if (!owed && m.hwTotal) manh.push(`Nộp đủ ${m.hwTotal} bài tập được giao.`);
 
   const caithien: string[] = [];
   for (const e of yeu)
-    caithien.push(`${e.topic}: sai ${e.wrong}/${e.total} câu (${e.rate}%)${e.trend === "tăng" ? ", đang tăng so với tháng trước" : ""}.`);
+    caithien.push(`${topicFull(e.topic)}: sai ${e.wrong}/${e.total} câu (${e.rate}%)${e.trend === "tăng" ? ", đang tăng so với tháng trước" : ""}.`);
   if (xuong.length)
     caithien.push(`Điểm thực hành giảm ở ${xuong.map((k) => `${k.name} (${k.delta})`).join(", ")}.`);
   if (owed) caithien.push(`Còn ${owed} bài chưa nộp trong tháng.`);
@@ -274,7 +275,7 @@ function draft(s: Student, m: Monthly) {
 
   const giaiphap: string[] = [];
   for (const e of yeu)
-    giaiphap.push(`Giao thêm 2 bài luyện ${e.topic} trong tháng tới, chữa từng câu sai cùng con.`);
+    giaiphap.push(`Giao thêm 2 bài luyện ${topicFull(e.topic)} trong tháng tới, chữa từng câu sai cùng con.`);
   if (owed)
     giaiphap.push("Cố định giờ làm bài ở nhà 30 phút/ngày; cơ sở sẽ giữ con lại cuối giờ nếu chưa nộp.");
   if (m.attendRate < 80)
@@ -391,7 +392,7 @@ export function MonthlyDetail({
         <Card
           label="Chủ điểm yếu nhất"
           value={p?.errors[0] ? `${p.errors[0].rate}%` : "—"}
-          sub={p?.errors[0]?.topic ?? "chưa đủ dữ liệu"}
+          sub={p?.errors[0] ? topicVi(p.errors[0].topic) : "chưa đủ dữ liệu"}
           tone={p?.errors[0] && p.errors[0].rate >= 40 ? DANGER : INK}
         />
       </div>
