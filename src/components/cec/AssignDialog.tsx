@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { CLASSES, type ClassRow } from "@/data/classes";
-import { STUDENTS } from "@/data/students";
+import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS } from "@/data/sessions";
 import {
   IconBookmark,
@@ -68,6 +68,34 @@ export function AssignDialog({ from, onClose }: Props) {
   const [lockAfterDue, setLockAfterDue] = useState(true);
 
   const picked = classIds.map((id) => CLASSES.find((c) => c.id === id)!).filter(Boolean);
+
+  /** Toàn bộ học sinh kèm lớp, để tra theo mã hoặc tên — không giới hạn trong một lớp,
+   *  vì giao học sinh lẻ là giao cho em bất kỳ, có thể em ở lớp khác. */
+  const allStudents = useMemo(
+    () =>
+      Object.entries(STUDENTS).flatMap(([cid, list]) => {
+        const cls = CLASSES.find((c) => String(c.id) === cid);
+        return list.map((st) => ({ st, cls }));
+      }),
+    [],
+  );
+
+  const [stuQuery, setStuQuery] = useState("");
+  const stuHits = useMemo(() => {
+    const q = noAccent(stuQuery.trim());
+    if (!q) return [];
+    return allStudents
+      .filter(
+        ({ st }) =>
+          !pickedStudents.includes(st.id) &&
+          (noAccent(st.name).includes(q) || st.code.toLowerCase().includes(q)),
+      )
+      .slice(0, 8);
+  }, [stuQuery, pickedStudents, allStudents]);
+
+  const pickedStudentRows = pickedStudents
+    .map((id) => allStudents.find((x) => x.st.id === id))
+    .filter((x): x is { st: Student; cls: ClassRow | undefined } => !!x);
 
   /* ---- đếm học sinh theo tình trạng ---- */
   const countByState = useMemo(() => {
@@ -193,6 +221,84 @@ export function AssignDialog({ from, onClose }: Props) {
                 ))}
               </div>
 
+              {mode === "students" ? (
+                <div className="flex flex-col gap-[9px]">
+                  <div className="relative">
+                    <span className="pointer-events-none absolute left-[11px] top-[10px]" style={{ color: INK3 }}>
+                      <IconSearch size={14} />
+                    </span>
+                    <input
+                      value={stuQuery}
+                      onChange={(e) => setStuQuery(e.target.value)}
+                      placeholder="Gõ mã học sinh hoặc tên, ví dụ 43064HN hoặc Hà Hải"
+                      className="w-full rounded-[6px] py-[8px] pl-[32px] pr-[11px] text-[13px]"
+                      style={{ border: `1px solid #d9dde5`, color: INK }}
+                    />
+                    {stuHits.length > 0 && (
+                      <div
+                        className="absolute left-0 right-0 top-[40px] z-[5] overflow-hidden rounded-[8px]"
+                        style={{ border: `1px solid ${LINE}`, background: "#fff", boxShadow: "0 6px 18px rgba(20,28,56,0.12)" }}
+                      >
+                        {stuHits.map(({ st, cls }) => (
+                          <button
+                            key={st.id}
+                            type="button"
+                            onClick={() => {
+                              setPickedStudents((v) => [...v, st.id]);
+                              setStuQuery("");
+                            }}
+                            className="flex w-full items-center gap-[9px] px-[11px] py-[8px] text-left text-[13px] hover:bg-[#f4f6fa]"
+                          >
+                            <span className="font-medium" style={{ color: INK }}>{st.name}</span>
+                            <span className="tabular-nums" style={{ color: INK3 }}>{st.code}</span>
+                            <span className="flex-1" />
+                            <span style={{ color: INK2 }}>{cls?.code ?? "—"}</span>
+                            <span
+                              className="rounded-full px-[7px] py-[1px] text-[11.5px]"
+                              style={{
+                                background: st.state === "Đang học" ? "#e6f5ec" : "#f0f2f6",
+                                color: st.state === "Đang học" ? "#1f6f4a" : INK2,
+                              }}
+                            >
+                              {st.state}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {pickedStudentRows.length > 0 ? (
+                    <div className="flex flex-wrap items-center gap-[7px]">
+                      {pickedStudentRows.map(({ st, cls }) => (
+                        <span
+                          key={st.id}
+                          className="inline-flex items-center gap-[7px] rounded-[14px] py-[4px] pl-[10px] pr-[6px] text-[12.5px]"
+                          style={{ background: "#eef1f7", border: `1px solid #dde2ec` }}
+                        >
+                          {st.name}
+                          <span className="tabular-nums" style={{ color: INK3 }}>
+                            {st.code} · {cls?.code ?? "—"}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setPickedStudents((v) => v.filter((x) => x !== st.id))}
+                            style={{ color: INK3 }}
+                            aria-label={`Bỏ ${st.name}`}
+                          >
+                            <IconX size={12} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[12.5px]" style={{ color: INK3 }}>
+                      Chưa chọn em nào. Gõ mã hoặc tên để tìm — tìm được cả em ở lớp khác.
+                    </p>
+                  )}
+                </div>
+              ) : (
+              <>
               <div className="flex flex-wrap items-center gap-[7px]">
                 {picked.map((c) => (
                   <span
@@ -296,6 +402,8 @@ export function AssignDialog({ from, onClose }: Props) {
                     })}
                   </div>
                 </div>
+              )}
+              </>
               )}
 
               {mode === "class" && (

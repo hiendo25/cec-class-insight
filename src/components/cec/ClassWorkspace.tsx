@@ -27,7 +27,7 @@ const WARN = "#b8791c";
 /** 5 tab đúng như CEC PROD — không tự đẻ thêm tab.
  *  Báo cáo tháng và nhận xét buổi nằm TRONG tab Kết quả, giống PROD. */
 const TABS = ["Học sinh", "Lịch học", "Bài tập", "Kết quả", "Lịch sử"] as const;
-type Tab = (typeof TABS)[number];
+export type Tab = (typeof TABS)[number];
 
 /* ---------- chỉ số của lớp ---------- */
 
@@ -719,8 +719,18 @@ function ClassMeta({ row, stats }: { row: ClassRow; stats: Stats }) {
 
 /* ---------- khung ---------- */
 
-export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => void }) {
-  const [tab, setTab] = useState<Tab>("Học sinh");
+export function ClassWorkspace({
+  row,
+  tab,
+  onTab,
+  onBack,
+}: {
+  row: ClassRow;
+  /** tab hiện tại do URL quyết định — để F5 và nút Back của trình duyệt chạy đúng */
+  tab: Tab;
+  onTab: (t: Tab) => void;
+  onBack: () => void;
+}) {
   const [assignOpen, setAssignOpen] = useState(false);
   const [openStudent, setOpenStudent] = useState<Student | null>(null);
   const stats = useStats(row);
@@ -796,7 +806,7 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
             <button
               key={t}
               type="button"
-              onClick={() => setTab(t)}
+              onClick={() => onTab(t)}
               className="-mb-px rounded-t-[6px] px-[15px] py-[9px] text-[13px]"
               style={{
                 color: on ? NAVY : INK2,

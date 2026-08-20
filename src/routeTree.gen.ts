@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClassIndexRouteImport } from './routes/class/index'
+import { Route as ClassClassIdTabRouteImport } from './routes/class/$classId.$tab'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClassIndexRoute = ClassIndexRouteImport.update({
+  id: '/class/',
+  path: '/class/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClassClassIdTabRoute = ClassClassIdTabRouteImport.update({
+  id: '/class/$classId/$tab',
+  path: '/class/$classId/$tab',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/class/': typeof ClassIndexRoute
+  '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/class': typeof ClassIndexRoute
+  '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/class/': typeof ClassIndexRoute
+  '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/class/' | '/class/$classId/$tab'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/class' | '/class/$classId/$tab'
+  id: '__root__' | '/' | '/class/' | '/class/$classId/$tab'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClassIndexRoute: typeof ClassIndexRoute
+  ClassClassIdTabRoute: typeof ClassClassIdTabRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/class/': {
+      id: '/class/'
+      path: '/class'
+      fullPath: '/class/'
+      preLoaderRoute: typeof ClassIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/class/$classId/$tab': {
+      id: '/class/$classId/$tab'
+      path: '/class/$classId/$tab'
+      fullPath: '/class/$classId/$tab'
+      preLoaderRoute: typeof ClassClassIdTabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClassIndexRoute: ClassIndexRoute,
+  ClassClassIdTabRoute: ClassClassIdTabRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
