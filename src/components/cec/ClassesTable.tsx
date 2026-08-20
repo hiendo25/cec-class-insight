@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import {
   IconCheck,
@@ -392,14 +392,19 @@ export function ClassesTable() {
   const stickyLeft: Record<string, number> = { sel: 0, idx: 36, code: 84 };
   const isSticky = (k: string) => k in stickyLeft;
 
+  const stickyWidth: Record<string, number> = { sel: 36, idx: 48, code: 138 };
+
   const cellStyle = (c: Col, bg: string): React.CSSProperties =>
     isSticky(c.key)
       ? {
           position: "sticky",
           left: stickyLeft[c.key],
-          zIndex: 2,
+          width: stickyWidth[c.key],
+          minWidth: stickyWidth[c.key],
+          maxWidth: stickyWidth[c.key],
+          zIndex: 5,
           background: bg,
-          boxShadow: c.key === "code" ? "2px 0 0 rgba(20,28,56,0.06)" : undefined,
+          boxShadow: c.key === "code" ? "4px 0 0 0 #ffffff, 5px 0 0 0 rgba(20,28,56,0.10)" : undefined,
         }
       : {};
 
@@ -623,7 +628,7 @@ export function ClassesTable() {
                         height: 40,
                         position: "sticky",
                         left: 0,
-                        zIndex: 3,
+                        zIndex: 6,
                         background: NAVY,
                       }}
                     >
@@ -650,7 +655,7 @@ export function ClassesTable() {
                             ? {
                                 position: "sticky",
                                 left: stickyLeft[c.key],
-                                zIndex: 3,
+                                zIndex: 6,
                                 background: NAVY,
                               }
                             : {}),
@@ -673,7 +678,7 @@ export function ClassesTable() {
                       style={{
                         position: "sticky",
                         left: 0,
-                        zIndex: 3,
+                        zIndex: 6,
                         background: "#fff",
                         borderBottom: `1px solid ${LINE}`,
                       }}
@@ -688,7 +693,7 @@ export function ClassesTable() {
                             ? {
                                 position: "sticky",
                                 left: stickyLeft[c.key],
-                                zIndex: 3,
+                                zIndex: 6,
                                 background: "#fff",
                               }
                             : {}),
@@ -732,15 +737,15 @@ export function ClassesTable() {
                       const bg = i % 2 ? "#f5f8fc" : "#ffffff";
                       const isOpen = expanded === r.id;
                       return (
-                        <>
-                          <tr key={r.id} style={{ background: bg }}>
+                        <React.Fragment key={r.id}>
+                          <tr style={{ background: bg }}>
                             <td
                               className="px-[10px]"
                               style={{
                                 height: 46,
                                 position: "sticky",
                                 left: 0,
-                                zIndex: 2,
+                                zIndex: 5,
                                 background: bg,
                                 borderBottom: `1px solid ${LINE}`,
                                 borderLeft: hasIssue ? `3px solid ${DANGER}` : "3px solid transparent",
@@ -810,7 +815,7 @@ export function ClassesTable() {
                               </td>
                             </tr>
                           )}
-                        </>
+                        </React.Fragment>
                       );
                     })}
                 </tbody>
