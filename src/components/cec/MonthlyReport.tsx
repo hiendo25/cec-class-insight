@@ -328,7 +328,7 @@ function Box({
   );
 }
 
-function Detail({
+export function MonthlyDetail({
   s,
   m,
   row,
@@ -477,7 +477,7 @@ export function MonthlyReportTab({ row }: { row: ClassRow }) {
     );
 
   if (open)
-    return <Detail s={open.s} m={open.m} row={row} onBack={() => setOpen(null)} />;
+    return <MonthlyDetail s={open.s} m={open.m} row={row} onBack={() => setOpen(null)} />;
 
   return (
     <div className="flex flex-col gap-4">
@@ -608,6 +608,157 @@ export function StudentReportTab({ row }: { row: ClassRow }) {
       <p className="flex items-center gap-1.5 text-[12px]" style={{ color: INK3 }}>
         <IconClipboard size={13} />
         Em vắng thì bài tập, điểm thực hành và nhận xét đều bị khoá — đúng quy tắc của phiếu.
+      </p>
+    </div>
+  );
+}
+
+/* ---------------- nhận xét một buổi của một em ---------------- */
+
+const ATT_LABEL: Record<string, { label: string; fg: string; bg: string }> = {
+  present: { label: "Có mặt", fg: OK, bg: "#e6f5ec" },
+  late: { label: "Đi trễ", fg: WARN, bg: "#fdf3e7" },
+  excused: { label: "Vắng có phép", fg: "#2b3f7a", bg: "#eaf1fb" },
+  absent: { label: "Vắng", fg: DANGER, bg: "#fdecea" },
+};
+
+const HW_LABEL: Record<string, { label: string; fg: string }> = {
+  ontime: { label: "Nộp đúng hạn", fg: OK },
+  late: { label: "Nộp trễ", fg: WARN },
+  missing: { label: "Chưa nộp", fg: DANGER },
+};
+
+export function SessionNote({
+  student,
+  session,
+  row,
+  onBack,
+}: {
+  student: Student;
+  session: number;
+  row: ClassRow;
+  onBack: () => void;
+}) {
+  const rep = (REPORTS[row.id] ?? []).find(
+    (r) => r.studentId === student.id && r.session === session,
+  );
+
+  if (!rep)
+    return (
+      <div className="flex flex-col gap-4">
+        <button type="button" onClick={onBack} className="flex w-fit items-center gap-1 text-[13px]" style={{ color: NAVY }}>
+          <IconChevronLeft size={15} /> Về bảng kết quả
+        </button>
+        <p className="text-[13px]" style={{ color: INK3 }}>
+          Buổi này chưa có phiếu nhận xét cho em {student.name}.
+        </p>
+      </div>
+    );
+
+  const a = ATT_LABEL[rep.attendance]!;
+  const vang = rep.attendance === "absent" || rep.attendance === "excused";
+  const skills = rep.skills ?? {};
+
+  return (
+    <div className="flex flex-col gap-4">
+      <button type="button" onClick={onBack} className="flex w-fit items-center gap-1 text-[13px]" style={{ color: NAVY }}>
+        <IconChevronLeft size={15} /> Về bảng kết quả
+      </button>
+
+      <div className="flex flex-wrap items-center gap-3 rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
+        <Avatar name={student.name} size={40} />
+        <div className="min-w-0">
+          <h1 className="truncate text-[17px] font-semibold" style={{ color: INK }}>{student.name}</h1>
+          <p className="text-[12.5px]" style={{ color: INK2 }}>
+            {student.code} · Lớp {row.code} · Buổi {rep.session} · {rep.date}
+          </p>
+        </div>
+        <Badge status={rep.status} />
+        <span className="flex-1" />
+        <span className="text-[12.5px]" style={{ color: INK2 }}>
+          Người điền: <strong style={{ color: INK }}>{rep.by}</strong>
+        </span>
+      </div>
+
+      <section className="flex flex-col gap-4 rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
+        {/* 1. điểm danh */}
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-[13px] font-semibold" style={{ color: INK }}>Điểm danh</span>
+          <span className="rounded-full px-2.5 py-1 text-[12.5px] font-medium" style={{ background: a.bg, color: a.fg }}>
+            {a.label}
+          </span>
+          {rep.absenceReason && (
+            <span className="text-[12.5px]" style={{ color: INK2 }}>Lý do: {rep.absenceReason}</span>
+          )}
+        </div>
+
+        {vang ? (
+          <p
+            className="rounded-lg px-3 py-2 text-[12.5px]"
+            style={{ background: "#f6f7fa", border: `1px solid ${LINE}`, color: INK2 }}
+          >
+            Em vắng buổi này nên bài tập, điểm thực hành và nhận xét đều bị khoá.
+          </p>
+        ) : (
+          <>
+            {/* 2. bài tập về nhà */}
+            <div className="flex flex-wrap items-center gap-3" style={{ borderTop: `1px solid ${LINE}`, paddingTop: 14 }}>
+              <span className="text-[13px] font-semibold" style={{ color: INK }}>Bài tập về nhà</span>
+              {rep.hwStatus && (
+                <span className="text-[12.5px] font-medium" style={{ color: HW_LABEL[rep.hwStatus]!.fg }}>
+                  {HW_LABEL[rep.hwStatus]!.label}
+                </span>
+              )}
+              <span className="text-[12.5px]" style={{ color: INK2, fontVariantNumeric: "tabular-nums" }}>
+                Điểm bài tập online: <strong style={{ color: INK }}>{rep.hwScore ?? "—"}</strong>
+              </span>
+              <button type="button" className="text-[12.5px] font-medium" style={{ color: NAVY }}>
+                Xem chi tiết bài làm ›
+              </button>
+            </div>
+
+            {/* 3. điểm thực hành trên lớp */}
+            <div style={{ borderTop: `1px solid ${LINE}`, paddingTop: 14 }}>
+              <p className="mb-2 text-[13px] font-semibold" style={{ color: INK }}>
+                Điểm thực hành trên lớp
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(skills).map(([k, v]) => (
+                  <span
+                    key={k}
+                    className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12.5px]"
+                    style={{ border: `1px solid ${LINE}`, color: v === null ? INK3 : INK }}
+                  >
+                    {k}
+                    <strong style={{ fontVariantNumeric: "tabular-nums" }}>{v ?? "—"}</strong>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 4. thái độ & tương tác */}
+            <div style={{ borderTop: `1px solid ${LINE}`, paddingTop: 14 }}>
+              <p className="mb-1.5 text-[13px] font-semibold" style={{ color: INK }}>
+                Thái độ &amp; tương tác trên lớp
+              </p>
+              <p className="text-[13px] leading-[1.6]" style={{ color: rep.attitude ? INK2 : INK3 }}>
+                {rep.attitude ?? "Chưa ghi."}
+              </p>
+            </div>
+
+            {/* 5. nhận xét chung */}
+            <div style={{ borderTop: `1px solid ${LINE}`, paddingTop: 14 }}>
+              <p className="mb-1.5 text-[13px] font-semibold" style={{ color: INK }}>Nhận xét chung</p>
+              <p className="text-[13px] leading-[1.6]" style={{ color: rep.comment ? INK2 : INK3 }}>
+                {rep.comment ?? "Chưa ghi."}
+              </p>
+            </div>
+          </>
+        )}
+      </section>
+
+      <p className="text-[12px]" style={{ color: INK3 }}>
+        Giáo viên và trợ giảng điền phiếu này, QC duyệt. Đây là nguồn của báo cáo tháng.
       </p>
     </div>
   );

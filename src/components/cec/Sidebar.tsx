@@ -51,7 +51,7 @@ export function Sidebar() {
     >
       {/* logo: PROD đặt 84×64, lề trái 20, cách trên 8 */}
       <div className="flex items-center" style={{ padding: "8px 20px 14px" }}>
-        <Logo width={84} />
+        <Logo width={104} />
       </div>
 
       <nav className="flex flex-col gap-[18px] px-[18px]">

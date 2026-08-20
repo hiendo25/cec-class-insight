@@ -2,6 +2,8 @@ export type ClassRow = {
   id: number;
   code: string;
   type: string;
+  /** ma giao trinh, PROD hien dang D3.180H.1.5H/L.120L.01 */
+  course: string;
   campus: string;
   teacher: string | null;
   qc: string | null;
@@ -38,6 +40,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 1,
     code: "LG-D3-2503",
+    course: "D3.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Cherry Scholey",
@@ -58,6 +61,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 2,
     code: "LG-D3-2504",
+    course: "D3.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Boughelam Joseph",
@@ -78,6 +82,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 3,
     code: "LG-D4-2504",
+    course: "D4.180H.1.5H/L.120L.01 · v1",
     type: "Lớp bù",
     campus: "CEC Liễu Giai",
     teacher: "Marcus Brown",
@@ -98,6 +103,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 4,
     code: "LG-GA2-2501",
+    course: "GA2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Phùng Thị Thùy Dung",
@@ -118,6 +124,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 5,
     code: "LG-D1-2503",
+    course: "D1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp 1-1",
     campus: "CEC Liễu Giai",
     teacher: "Kamilla Khasanova",
@@ -138,6 +145,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 6,
     code: "LG-D2-2502",
+    course: "D2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Julius Phyll",
@@ -158,6 +166,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 7,
     code: "LG-D1-2504",
+    course: "D1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -178,6 +187,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 8,
     code: "LG-E2L-2506",
+    course: "E2L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -198,6 +208,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 9,
     code: "LG-E3L-2505",
+    course: "E3L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -218,6 +229,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 10,
     code: "LG-D3-2505",
+    course: "D3.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -238,6 +250,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 11,
     code: "LG-CF-2502",
+    course: "CF.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Bill Bougamouza",
@@ -258,6 +271,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 12,
     code: "LG-E3L-2601",
+    course: "E3L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Melvin Godfried Paige",
@@ -278,6 +292,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 13,
     code: "LG-E5.2L-2601",
+    course: "E5.2L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Boughelam Joseph",
@@ -298,6 +313,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 14,
     code: "LG-R2-2601",
+    course: "R2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp bù",
     campus: "CEC Liễu Giai",
     teacher: "Kamilla Khasanova",
@@ -318,6 +334,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 15,
     code: "LG-C3-2601",
+    course: "C3.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Kamilla Khasanova",
@@ -338,6 +355,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 16,
     code: "LG-D3-2601",
+    course: "D3.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Adjabi Meryem",
@@ -358,6 +376,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 17,
     code: "LG-C1-2602",
+    course: "C1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Ruairi Cullen",
@@ -378,6 +397,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 18,
     code: "LG-E5.2L-2602",
+    course: "E5.2L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp 1-1",
     campus: "CEC Liễu Giai",
     teacher: "Daniel Hall",
@@ -398,6 +418,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 19,
     code: "LG-PR-2605",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Phương Anh Đặng",
@@ -418,6 +439,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 20,
     code: "LG-PR-2606",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Nguyễn Hoàng Linh",
@@ -438,6 +460,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 21,
     code: "LG-CF-2601",
+    course: "CF.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Magalhaes Kelvin",
@@ -458,6 +481,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 22,
     code: "LG-D2-2601",
+    course: "D2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Runguruah Magret",
@@ -478,6 +502,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 23,
     code: "LG-C2-2601",
+    course: "C2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Boughelam Joseph",
@@ -498,6 +523,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 24,
     code: "LG-C2-2602",
+    course: "C2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Juan-Pierre Millen",
@@ -518,6 +544,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 25,
     code: "LG-D1-2601",
+    course: "D1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp bù",
     campus: "CEC Liễu Giai",
     teacher: "Tim Welsh",
@@ -538,6 +565,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 26,
     code: "LG-E2L-2601",
+    course: "E2L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Edward Stacey",
@@ -558,6 +586,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 27,
     code: "LG-PR-2607",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Michael Thompson",
@@ -578,6 +607,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 28,
     code: "LG-E2L-2603",
+    course: "E2L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Kate Skrynnyk",
@@ -598,6 +628,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 29,
     code: "LG-E2L-2602",
+    course: "E2L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Runguruah Magret",
@@ -618,6 +649,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 30,
     code: "LG-PR-2610",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp 1-1",
     campus: "CEC Liễu Giai",
     teacher: "Dương Khánh Hiền",
@@ -638,6 +670,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 31,
     code: "LG-C1-2603",
+    course: "C1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp 1-1",
     campus: "CEC Liễu Giai",
     teacher: "Melvin Godfried Paige",
@@ -658,6 +691,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 32,
     code: "LG-B.MD-2601",
+    course: "D1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp bù",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -678,6 +712,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 33,
     code: "LG-PR-2611",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Nguyễn Thủy Nguyên",
@@ -698,6 +733,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 34,
     code: "LG-B.ME-2601",
+    course: "D1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp bù",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -718,6 +754,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 35,
     code: "LG-E1L-2601",
+    course: "E1L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Elis Rosana",
@@ -738,6 +775,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 36,
     code: "LG-R1-2602",
+    course: "R1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp bù",
     campus: "CEC Liễu Giai",
     teacher: "Jeandre Benade",
@@ -758,6 +796,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 37,
     code: "LG-PR-2612",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Nguyễn Thủy Nguyên",
@@ -778,6 +817,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 38,
     code: "LG-IEF.1-2601",
+    course: "IEF.1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Michael Thompson",
@@ -798,6 +838,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 39,
     code: "LG-D4-2601",
+    course: "D4.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Cherry Scholey",
@@ -818,6 +859,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 40,
     code: "LG-PR-2616",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Lê Phương Yến",
@@ -838,6 +880,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 41,
     code: "LG-PR-2618",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp 1-1",
     campus: "CEC Liễu Giai",
     teacher: "Nguyễn Hoàng Linh",
@@ -858,6 +901,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 42,
     code: "LG-R2-2602",
+    course: "R2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Adjabi Meryem",
@@ -878,6 +922,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 43,
     code: "LG-E3L-2603",
+    course: "E3L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Boughelam Joseph",
@@ -898,6 +943,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 44,
     code: "LG-PR-2620",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp 1-1",
     campus: "CEC Liễu Giai",
     teacher: "Lê Phương Yến",
@@ -918,6 +964,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 45,
     code: "LG-PR-2619",
+    course: "PR.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Dương Khánh Hiền",
@@ -938,6 +985,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 46,
     code: "LG-E5.1L-2601",
+    course: "E5.1L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: "Kamilla Khasanova",
@@ -958,6 +1006,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 47,
     code: "LG-C1-2604",
+    course: "C1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp bù",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -978,6 +1027,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 48,
     code: "LG-C3-2603",
+    course: "C3.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -998,6 +1048,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 49,
     code: "LG-CF-2602",
+    course: "CF.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -1018,6 +1069,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 50,
     code: "LG-D2-2602",
+    course: "D2.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -1038,6 +1090,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 51,
     code: "LG-D4-2602",
+    course: "D4.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -1058,6 +1111,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 52,
     code: "LG-E3L-2604",
+    course: "E3L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -1078,6 +1132,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 53,
     code: "LG-E5.1L-2602",
+    course: "E5.1L.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,
@@ -1098,6 +1153,7 @@ export const CLASSES: ClassRow[] = [
   {
     id: 54,
     code: "LG-IE1.1-2601",
+    course: "IE1.1.180H.1.5H/L.120L.01 · v1",
     type: "Lớp thường",
     campus: "CEC Liễu Giai",
     teacher: null,

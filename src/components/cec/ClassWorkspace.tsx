@@ -4,7 +4,7 @@ import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
 import { AssignDialog } from "./AssignDialog";
 import { StudentProfile } from "./StudentProfile";
-import { MonthlyReportTab, StudentReportTab } from "./MonthlyReport";
+import { ResultMatrix } from "./ResultMatrix";
 import {
   IconBell,
   IconCalendarCheck,
@@ -24,16 +24,9 @@ const DANGER = "#d4342c";
 const OK = "#1f6f4a";
 const WARN = "#b8791c";
 
-const TABS = [
-  "Tổng quan",
-  "Học sinh",
-  "Lịch học",
-  "Bài tập",
-  "Kết quả",
-  "Phiếu buổi học",
-  "Nhận xét tháng",
-  "Lịch sử",
-] as const;
+/** 5 tab đúng như CEC PROD — không tự đẻ thêm tab.
+ *  Báo cáo tháng và nhận xét buổi nằm TRONG tab Kết quả, giống PROD. */
+const TABS = ["Học sinh", "Lịch học", "Bài tập", "Kết quả", "Lịch sử"] as const;
 type Tab = (typeof TABS)[number];
 
 /* ---------- chỉ số của lớp ---------- */
@@ -126,148 +119,6 @@ function Bar({ value }: { value: number }) {
         {pct}%
       </span>
     </span>
-  );
-}
-
-/* ---------- tab Tổng quan ---------- */
-
-function TabOverview({ row, stats }: { row: ClassRow; stats: Stats }) {
-  const issues = row.issues ?? [];
-  return (
-    <div className="flex flex-col gap-[16px]">
-      <div className="flex gap-[12px]">
-        <StatCard
-          label="Tiến độ giao bài"
-          value={`${stats.assignedTotal} bài`}
-          sub={`cho ${stats.students.length} học sinh`}
-        />
-        <StatCard
-          label="Tỉ lệ nộp"
-          value={
-            stats.submitRate === null
-              ? "—"
-              : `${stats.submittedTotal}/${stats.assignedTotal}`
-          }
-          sub={
-            stats.submitRate === null
-              ? "chưa giao bài"
-              : `${Math.round(stats.submitRate * 100)}% đã nộp`
-          }
-          tone={
-            stats.submitRate === null
-              ? "ink"
-              : stats.submitRate >= 0.85
-                ? "ok"
-                : stats.submitRate >= 0.65
-                  ? "warn"
-                  : "danger"
-          }
-        />
-        <StatCard
-          label="Chưa nộp"
-          value={stats.overdue ? `${stats.overdue} bài` : "0"}
-          sub={stats.overdue ? "cần nhắc học sinh" : "không còn bài tồn"}
-          tone={stats.overdue ? "danger" : "ok"}
-        />
-        <StatCard
-          label="Điểm trung bình"
-          value={stats.avg === null ? "—" : `${stats.avg}`}
-          sub={stats.avg === null ? "chưa có bài chấm" : "trên thang 10"}
-          tone={stats.avg === null ? "ink" : stats.avg >= 7 ? "ok" : "warn"}
-        />
-        <StatCard
-          label="Cần chú ý"
-          value={`${stats.needAttention.length} em`}
-          sub={stats.needAttention.length ? "điểm thấp / nợ bài / vắng" : "cả lớp ổn"}
-          tone={stats.needAttention.length ? "warn" : "ok"}
-        />
-      </div>
-
-      <div className="flex gap-[16px]">
-        <section
-          className="flex min-w-0 flex-1 flex-col rounded-[8px] bg-white"
-          style={{ border: `1px solid ${LINE}` }}
-        >
-          <header
-            className="flex items-center gap-[8px] px-[16px] py-[12px] text-[13px] font-semibold"
-            style={{ borderBottom: `1px solid ${LINE}` }}
-          >
-            <IconWarn size={15} />
-            Việc cần xử lý
-          </header>
-
-          {issues.length === 0 ? (
-            <p
-              className="flex items-center gap-[7px] px-[16px] py-[18px] text-[13px]"
-              style={{ color: OK }}
-            >
-              <IconCheck size={15} />
-              Lớp không có việc cần xử lý.
-            </p>
-          ) : (
-            <ul className="flex flex-col">
-              {issues.map((it) => (
-                <li
-                  key={it.title}
-                  className="flex items-center gap-[12px] px-[16px] py-[11px]"
-                  style={{ borderBottom: `1px solid #f1f3f7` }}
-                >
-                  <span
-                    className="h-[6px] w-[6px] shrink-0 rounded-full"
-                    style={{ background: DANGER }}
-                  />
-                  <span className="min-w-0 flex-1 truncate text-[13px]">{it.title}</span>
-                  <button
-                    type="button"
-                    className="shrink-0 rounded-[6px] px-[11px] py-[6px] text-[12.5px] font-semibold"
-                    style={{ border: `1px solid ${LINE}`, color: NAVY }}
-                  >
-                    {it.action} ›
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        <section
-          className="flex w-[300px] shrink-0 flex-col rounded-[8px] bg-white"
-          style={{ border: `1px solid ${LINE}` }}
-        >
-          <header
-            className="px-[16px] py-[12px] text-[13px] font-semibold"
-            style={{ borderBottom: `1px solid ${LINE}` }}
-          >
-            Thông tin lớp
-          </header>
-          <dl className="flex flex-col gap-[10px] px-[16px] py-[13px] text-[12.5px]">
-            {[
-              ["Giáo viên", row.teacher ?? "Chưa gán"],
-              ["QC phụ trách", row.qc ?? "Chưa gán"],
-              ["EC", row.ec ?? "Chưa gán"],
-              ["Cơ sở", row.campus],
-              ["Lịch học", row.schedule ?? "Chưa xếp lịch"],
-              ["Thời gian", `${row.start} – ${row.end}`],
-            ].map(([k, v]) => (
-              <div key={k} className="flex gap-[10px]">
-                <dt className="w-[92px] shrink-0" style={{ color: INK2 }}>
-                  {k}
-                </dt>
-                <dd
-                  className="min-w-0 flex-1 whitespace-pre-line"
-                  style={{
-                    color: v === "Chưa gán" || v === "Chưa xếp lịch" ? INK3 : INK,
-                    fontStyle: v === "Chưa gán" || v === "Chưa xếp lịch" ? "italic" : undefined,
-                  }}
-                >
-                  {String(v).replace(" / ", "\n")}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      </div>
-    </div>
   );
 }
 
@@ -589,116 +440,6 @@ function TabAssignments({ row }: { row: ClassRow }) {
   );
 }
 
-/* ---------- tab Kết quả ---------- */
-
-function TabResults({ row, stats }: { row: ClassRow; stats: Stats }) {
-  const list = ASSIGNMENTS[row.id] ?? [];
-  if (list.length === 0 || stats.students.length === 0)
-    return (
-      <p className="py-[40px] text-center text-[13px]" style={{ color: INK3 }}>
-        Chưa có bài nào được chấm.
-      </p>
-    );
-
-  const cell = (s: Student, i: number) => {
-    if (s.avg === null || i >= s.submitted) return null;
-    const base = list[i].avg ?? s.avg;
-    const v = Math.max(2, Math.min(10, (s.avg * 2 + base) / 3 + ((i % 3) - 1) * 0.4));
-    return Math.round(v * 10) / 10;
-  };
-
-  return (
-    <div className="flex flex-col gap-[10px]">
-      <div className="flex items-center gap-[16px] text-[12px]" style={{ color: INK2 }}>
-        <span className="flex items-center gap-[6px]">
-          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#e6f5ec" }} /> từ 7 trở lên
-        </span>
-        <span className="flex items-center gap-[6px]">
-          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdf3e7" }} /> từ 5 đến dưới 7
-        </span>
-        <span className="flex items-center gap-[6px]">
-          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdecea" }} /> dưới 5
-        </span>
-        <span className="flex items-center gap-[6px]">
-          <span style={{ color: INK3 }}>—</span> chưa nộp
-        </span>
-      </div>
-
-      <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
-        <table className="border-collapse text-[13px]">
-          <thead>
-            <tr style={{ background: NAVY, color: "#fff" }}>
-              <th
-                className="sticky left-0 z-[2] whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold"
-                style={{ background: NAVY, minWidth: 190 }}
-              >
-                Học sinh
-              </th>
-              {list.map((a) => (
-                <th
-                  key={a.id}
-                  className="whitespace-nowrap px-[10px] py-[10px] text-center text-[12px] font-semibold"
-                  title={a.title + " · buổi " + a.session}
-                  style={{ minWidth: 74 }}
-                >
-                  B{a.session}
-                </th>
-              ))}
-              <th className="whitespace-nowrap px-[12px] text-center text-[12.5px] font-semibold">TB</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stats.students.map((s, ri) => {
-              const bg = ri % 2 ? "#f5f8fc" : "#fff";
-              const cells = list.map((_, i) => cell(s, i)).filter((v): v is number => v !== null);
-              const rowAvg = cells.length
-                ? Math.round((cells.reduce((a, v) => a + v, 0) / cells.length) * 10) / 10
-                : null;
-              return (
-                <tr key={s.id} style={{ background: bg, borderBottom: "1px solid #edeff4" }}>
-                  <td
-                    className="sticky left-0 z-[1] whitespace-nowrap px-[12px] py-[9px]"
-                    style={{ background: bg, boxShadow: "1px 0 0 #e6e8ee" }}
-                  >
-                    {s.name}
-                  </td>
-                  {list.map((a, i) => {
-                    const v = cell(s, i);
-                    const tone =
-                      v === null
-                        ? { bg: "transparent", fg: INK3 }
-                        : v >= 7
-                          ? { bg: "#e6f5ec", fg: OK }
-                          : v >= 5
-                            ? { bg: "#fdf3e7", fg: WARN }
-                            : { bg: "#fdecea", fg: DANGER };
-                    return (
-                      <td key={a.id} className="px-[6px] py-[6px] text-center">
-                        <span
-                          className="inline-block min-w-[38px] rounded-[4px] py-[4px] text-[12.5px] font-medium tabular-nums"
-                          style={{ background: tone.bg, color: tone.fg }}
-                        >
-                          {v ?? "—"}
-                        </span>
-                      </td>
-                    );
-                  })}
-                  <td
-                    className="px-[12px] text-center text-[12.5px] font-semibold tabular-nums"
-                    style={{ color: rowAvg === null ? INK3 : rowAvg >= 7 ? OK : rowAvg >= 5 ? WARN : DANGER }}
-                  >
-                    {rowAvg ?? "—"}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
 /* ---------- tab Lịch sử ---------- */
 
 function TabHistory({ row }: { row: ClassRow }) {
@@ -784,10 +525,136 @@ function TabHistory({ row }: { row: ClassRow }) {
   );
 }
 
+/* ---------- dải thông tin lớp (bám theo PROD) ---------- */
+
+/** thẻ một người phụ trách — có nút gỡ, giống PROD cho sửa ngay tại chỗ */
+function PersonChip({ name }: { name: string }) {
+  const parts = name.trim().split(/\s+/);
+  const ini = ((parts[0]?.[0] ?? "") + (parts.at(-1)?.[0] ?? "")).toUpperCase();
+  const bg = ["#2b3f7a", "#1f6f4a", "#8a5a10", "#6b2fa0", "#136d5e", "#a03c3c"][
+    [...name].reduce((a, c) => a + c.charCodeAt(0), 0) % 6
+  ];
+  return (
+    <span
+      className="inline-flex items-center gap-[6px] rounded-full bg-white py-[3px] pl-[3px] pr-[7px] text-[12.5px]"
+      style={{ border: `1px solid ${LINE}` }}
+    >
+      <span
+        className="grid h-[19px] w-[19px] place-items-center rounded-full text-[9.5px] font-semibold text-white"
+        style={{ background: bg }}
+      >
+        {ini}
+      </span>
+      <span className="max-w-[132px] truncate">{name}</span>
+      <button type="button" style={{ color: INK3 }} aria-label={`Gỡ ${name}`}>
+        ×
+      </button>
+    </span>
+  );
+}
+
+function AddChip() {
+  return (
+    <button
+      type="button"
+      className="grid h-[25px] w-[25px] place-items-center rounded-full bg-white text-[15px]"
+      style={{ border: `1px dashed #c9cfda`, color: INK2 }}
+      aria-label="Thêm người phụ trách"
+    >
+      +
+    </button>
+  );
+}
+
+function Role({ label, people }: { label: string; people: (string | null)[] }) {
+  const list = people.filter((x): x is string => !!x);
+  return (
+    <span className="flex flex-wrap items-center gap-[6px]">
+      <span className="text-[11.5px] font-semibold" style={{ color: INK3 }}>
+        {label}
+      </span>
+      {list.length ? (
+        list.map((n) => <PersonChip key={n} name={n} />)
+      ) : (
+        <span className="text-[12.5px]" style={{ color: DANGER }}>
+          chưa gán
+        </span>
+      )}
+      <AddChip />
+    </span>
+  );
+}
+
+function ClassMeta({ row, stats }: { row: ClassRow; stats: Stats }) {
+  const sessions = SESSIONS[row.id] ?? [];
+  const done = sessions.filter((x) => x.past).length;
+  const pct = sessions.length ? Math.round((done / sessions.length) * 100) : 0;
+  /** giờ học quy từ số buổi — mỗi buổi 1,5 giờ theo mã giáo trình CEC */
+  const H = 1.5;
+
+  return (
+    <div
+      className="flex flex-col gap-[10px] rounded-[8px] bg-white px-[14px] py-[11px]"
+      style={{ border: `1px solid ${LINE}` }}
+    >
+      <div className="flex flex-wrap items-center gap-x-[16px] gap-y-[8px]">
+        <span className="flex items-center gap-[7px] text-[12.5px]" style={{ color: INK2 }}>
+          <IconCalendarCheck size={14} />
+          bắt đầu <strong style={{ color: INK }}>{row.start}</strong>
+          <span style={{ color: LINE }}>|</span>
+          kết thúc <strong style={{ color: INK }}>{row.end}</strong>
+        </span>
+        <span className="text-[12.5px]" style={{ color: INK2 }}>
+          {row.schedule ?? <span style={{ color: DANGER }}>Chưa cấu hình lịch học</span>}
+        </span>
+
+        <span className="flex-1" />
+
+        <span className="flex items-center gap-[9px]">
+          <span className="text-[11.5px] font-semibold uppercase tracking-wide" style={{ color: INK3 }}>
+            Tiến độ
+          </span>
+          <span className="h-[6px] w-[132px] overflow-hidden rounded-full" style={{ background: "#eef0f5" }}>
+            <span className="block h-full rounded-full" style={{ width: `${pct}%`, background: NAVY }} />
+          </span>
+          <span className="text-[12.5px] font-semibold tabular-nums" style={{ color: INK }}>
+            {pct}%
+          </span>
+        </span>
+        <span className="flex items-center gap-[6px] rounded-[6px] px-[9px] py-[4px] text-[12.5px]" style={{ background: "#f4f6fa", color: INK }}>
+          <IconUsers size={14} />
+          <strong className="tabular-nums">{stats.students.length}</strong> học viên
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-[16px] gap-y-[8px]">
+        <span className="text-[12.5px]" style={{ color: INK2 }}>
+          Đã học <strong style={{ color: INK }}>{(done * H).toFixed(1)} giờ</strong> / tổng{" "}
+          <strong style={{ color: INK }}>{(sessions.length * H).toFixed(1)} giờ</strong>
+          {" · "}còn {((sessions.length - done) * H).toFixed(1)}h
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-[18px] gap-y-[8px]" style={{ borderTop: `1px solid ${LINE}`, paddingTop: 10 }}>
+        <Role label="GV" people={[row.teacher]} />
+        <Role label="QC" people={[row.qc]} />
+        <Role label="EC" people={[row.ec]} />
+      </div>
+
+      {row.note && (
+        <p className="text-[12.5px]" style={{ color: INK2 }}>
+          <span style={{ color: INK3 }}>Ghi chú lớp: </span>
+          {row.note}
+        </p>
+      )}
+    </div>
+  );
+}
+
 /* ---------- khung ---------- */
 
 export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => void }) {
-  const [tab, setTab] = useState<Tab>("Tổng quan");
+  const [tab, setTab] = useState<Tab>("Học sinh");
   const [assignOpen, setAssignOpen] = useState(false);
   const [openStudent, setOpenStudent] = useState<Student | null>(null);
   const stats = useStats(row);
@@ -829,8 +696,7 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
             </span>
           </div>
           <p className="text-[12px]" style={{ color: INK2 }}>
-            {row.type} · {row.campus} · {stats.students.length} học sinh ·{" "}
-            {row.teacher ?? "Chưa gán giáo viên"}
+            {row.campus} · {row.course} · {row.type}
           </p>
         </div>
 
@@ -855,6 +721,8 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
         </div>
       </div>
 
+      <ClassMeta row={row} stats={stats} />
+
       <nav className="flex items-end gap-[3px]" style={{ borderBottom: `1px solid ${LINE}` }}>
         {TABS.map((t) => {
           const on = t === tab;
@@ -878,13 +746,11 @@ export function ClassWorkspace({ row, onBack }: { row: ClassRow; onBack: () => v
         })}
       </nav>
 
-      {tab === "Tổng quan" && <TabOverview row={row} stats={stats} />}
+
       {tab === "Học sinh" && <TabStudents stats={stats} onOpenStudent={setOpenStudent} />}
       {tab === "Lịch học" && <TabSessions row={row} />}
       {tab === "Bài tập" && <TabAssignments row={row} />}
-      {tab === "Kết quả" && <TabResults row={row} stats={stats} />}
-      {tab === "Phiếu buổi học" && <StudentReportTab row={row} />}
-      {tab === "Nhận xét tháng" && <MonthlyReportTab row={row} />}
+      {tab === "Kết quả" && <ResultMatrix row={row} />}
       {tab === "Lịch sử" && <TabHistory row={row} />}
 
       {assignOpen && <AssignDialog from={row} onClose={() => setAssignOpen(false)} />}
