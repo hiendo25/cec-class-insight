@@ -19,6 +19,23 @@
  */
 
 @theme inline {
+  --color-navy: #1e2d5c;
+  --color-page: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-line: #e6e8ee;
+  --color-stripe: #f5f8fc;
+  --color-ink: #1f2430;
+  --color-ink-2: #6b7280;
+  --color-ink-3: #9aa1ae;
+  --color-btn-line: #d9dde5;
+  --color-ok: #1f6f4a;
+  --color-ok-bg: #e6f5ec;
+  --color-danger: #d4342c;
+  --color-warn: #b8791c;
+  --color-dot-on: #0fa958;
+  --color-dot-off: #c4c4c4;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -140,5 +157,44 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+}
+
+@layer components {
+  .cec-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .cec-btn-primary {
+    background: var(--color-navy);
+    color: #fff;
+  }
+  .cec-btn-primary:hover {
+    background: #1a2750;
+  }
+  .cec-btn-secondary {
+    background: #fff;
+    color: var(--color-ink);
+    border: 1px solid var(--color-btn-line);
+  }
+  .cec-btn-secondary:hover {
+    background: #f3f5f9;
+  }
+  .cec-scroll::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+  .cec-scroll::-webkit-scrollbar-thumb {
+    background: #c9cede;
+    border-radius: 6px;
   }
 }
