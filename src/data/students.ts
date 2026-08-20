@@ -15,6 +15,12 @@ export type Student = {
   note: string;
   /** phản hồi từ phụ huynh */
   parentFeedback: string;
+  /** tình trạng học — 4 giá trị như PROD và modal Giao bài đang dùng */
+  state: "Đang học" | "Bảo lưu" | "Đã chuyển lớp" | "Đã nghỉ";
+  /** PROD chỉ ghi chữ khi em học lại; em mới thì để trống */
+  kind: "Mới" | "Quay lại";
+  /** ngày em vào lớp này */
+  joinedAt: string;
 };
 
 /** Học sinh theo mã lớp (ClassRow.id) */
@@ -30,7 +36,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/02/2025"
   },
   {
    "id": "1-1",
@@ -42,7 +51,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.4,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "07/01/2025"
   },
   {
    "id": "1-2",
@@ -54,7 +66,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "25/04/2025"
   },
   {
    "id": "1-3",
@@ -66,7 +81,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "08/09/2025"
   },
   {
    "id": "1-4",
@@ -78,7 +96,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "22/11/2024"
   },
   {
    "id": "1-5",
@@ -90,7 +111,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 2,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "12/05/2025"
   },
   {
    "id": "1-6",
@@ -102,7 +126,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "16/08/2025"
   },
   {
    "id": "1-7",
@@ -114,7 +141,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 1,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "23/06/2026"
   },
   {
    "id": "1-8",
@@ -126,7 +156,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "09/05/2025"
   },
   {
    "id": "1-9",
@@ -138,7 +171,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "26/02/2026"
   }
  ],
  "2": [
@@ -152,7 +188,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.3,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "25/01/2026"
   },
   {
    "id": "2-1",
@@ -164,7 +203,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.1,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "22/04/2025"
   },
   {
    "id": "2-2",
@@ -176,7 +218,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 1,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/04/2025"
   },
   {
    "id": "2-3",
@@ -188,7 +233,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.1,
    "absent": 1,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "30/12/2025"
   },
   {
    "id": "2-4",
@@ -200,7 +248,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 3,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "10/05/2026"
   },
   {
    "id": "2-5",
@@ -212,7 +263,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 1,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "17/11/2025"
   },
   {
    "id": "2-6",
@@ -224,7 +278,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "07/08/2025"
   },
   {
    "id": "2-7",
@@ -236,7 +293,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "17/03/2026"
   },
   {
    "id": "2-8",
@@ -248,7 +308,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.6,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/06/2026"
   }
  ],
  "3": [
@@ -262,7 +325,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/12/2024"
   },
   {
    "id": "3-1",
@@ -274,7 +340,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 3,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "04/08/2025"
   },
   {
    "id": "3-2",
@@ -286,7 +355,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/06/2025"
   },
   {
    "id": "3-3",
@@ -298,7 +370,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "22/05/2025"
   },
   {
    "id": "3-4",
@@ -310,7 +385,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "09/11/2025"
   },
   {
    "id": "3-5",
@@ -322,7 +400,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "20/08/2025"
   }
  ],
  "4": [
@@ -336,7 +417,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "25/02/2025"
   },
   {
    "id": "4-1",
@@ -348,7 +432,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": null,
    "absent": 1,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/02/2025"
   },
   {
    "id": "4-2",
@@ -360,7 +447,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.1,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/07/2026"
   },
   {
    "id": "4-3",
@@ -372,7 +462,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 3.6,
    "absent": 1,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "26/11/2024"
   },
   {
    "id": "4-4",
@@ -384,7 +477,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "08/07/2025"
   },
   {
    "id": "4-5",
@@ -396,7 +492,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.5,
    "absent": 1,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "13/06/2025"
   },
   {
    "id": "4-6",
@@ -408,7 +507,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 1,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "07/11/2025"
   },
   {
    "id": "4-7",
@@ -420,7 +522,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/04/2025"
   }
  ],
  "5": [
@@ -434,7 +539,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.2,
    "absent": 1,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/02/2025"
   },
   {
    "id": "5-1",
@@ -446,7 +554,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 3,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "22/02/2025"
   },
   {
    "id": "5-2",
@@ -458,7 +569,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 2,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "21/07/2025"
   },
   {
    "id": "5-3",
@@ -470,7 +584,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "13/10/2025"
   },
   {
    "id": "5-4",
@@ -482,7 +599,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/11/2024"
   },
   {
    "id": "5-5",
@@ -494,7 +614,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 1,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "10/01/2025"
   },
   {
    "id": "5-6",
@@ -506,7 +629,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "09/04/2025"
   },
   {
    "id": "5-7",
@@ -518,7 +644,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 2,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "20/09/2025"
   },
   {
    "id": "5-8",
@@ -530,7 +659,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/04/2026"
   }
  ],
  "6": [
@@ -544,7 +676,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/05/2025"
   },
   {
    "id": "6-1",
@@ -556,7 +691,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 1,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/01/2025"
   },
   {
    "id": "6-2",
@@ -568,7 +706,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 1,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "18/08/2025"
   },
   {
    "id": "6-3",
@@ -580,7 +721,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.2,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "26/07/2025"
   },
   {
    "id": "6-4",
@@ -592,7 +736,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 3,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "27/06/2025"
   },
   {
    "id": "6-5",
@@ -604,7 +751,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "05/07/2025"
   },
   {
    "id": "6-6",
@@ -616,7 +766,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "18/08/2025"
   },
   {
    "id": "6-7",
@@ -628,7 +781,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/02/2026"
   },
   {
    "id": "6-8",
@@ -640,7 +796,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.7,
    "absent": 2,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "17/06/2026"
   },
   {
    "id": "6-9",
@@ -652,7 +811,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "06/02/2026"
   },
   {
    "id": "6-10",
@@ -664,7 +826,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "05/02/2026"
   },
   {
    "id": "6-11",
@@ -676,7 +841,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "05/05/2026"
   },
   {
    "id": "6-12",
@@ -688,7 +856,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.2,
    "absent": 2,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/04/2026"
   },
   {
    "id": "6-13",
@@ -700,7 +871,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": null,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "26/11/2025"
   }
  ],
  "7": [
@@ -714,7 +888,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/12/2024"
   },
   {
    "id": "7-1",
@@ -726,7 +903,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.8,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/02/2026"
   },
   {
    "id": "7-2",
@@ -738,7 +918,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/04/2026"
   },
   {
    "id": "7-3",
@@ -750,7 +933,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "11/06/2026"
   },
   {
    "id": "7-4",
@@ -762,7 +948,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 3,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/05/2025"
   },
   {
    "id": "7-5",
@@ -774,7 +963,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.6,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "26/11/2024"
   },
   {
    "id": "7-6",
@@ -786,7 +978,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 1,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "14/01/2025"
   },
   {
    "id": "7-7",
@@ -798,7 +993,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 1,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "14/04/2025"
   },
   {
    "id": "7-8",
@@ -810,7 +1008,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 1,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "05/02/2025"
   }
  ],
  "8": [
@@ -824,7 +1025,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "20/03/2025"
   },
   {
    "id": "8-1",
@@ -836,7 +1040,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "18/06/2025"
   },
   {
    "id": "8-2",
@@ -848,7 +1055,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 1,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/06/2026"
   },
   {
    "id": "8-3",
@@ -860,7 +1070,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "04/01/2025"
   },
   {
    "id": "8-4",
@@ -872,7 +1085,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "25/03/2026"
   },
   {
    "id": "8-5",
@@ -884,7 +1100,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "09/09/2025"
   },
   {
    "id": "8-6",
@@ -896,7 +1115,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 1,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "14/05/2025"
   },
   {
    "id": "8-7",
@@ -908,7 +1130,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "19/12/2025"
   },
   {
    "id": "8-8",
@@ -920,7 +1145,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/05/2025"
   },
   {
    "id": "8-9",
@@ -932,7 +1160,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.5,
    "absent": 1,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "27/01/2026"
   },
   {
    "id": "8-10",
@@ -944,7 +1175,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.4,
    "absent": 3,
    "note": "",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "06/04/2025"
   }
  ],
  "9": [
@@ -958,7 +1192,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "22/07/2025"
   },
   {
    "id": "9-1",
@@ -970,7 +1207,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4.4,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "25/11/2025"
   },
   {
    "id": "9-2",
@@ -982,7 +1222,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "10/07/2025"
   },
   {
    "id": "9-3",
@@ -994,7 +1237,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "04/02/2026"
   },
   {
    "id": "9-4",
@@ -1006,7 +1252,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.4,
    "absent": 1,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "22/06/2026"
   },
   {
    "id": "9-5",
@@ -1018,7 +1267,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "28/03/2026"
   },
   {
    "id": "9-6",
@@ -1030,7 +1282,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 3,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "26/09/2025"
   },
   {
    "id": "9-7",
@@ -1042,7 +1297,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 3,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/04/2026"
   }
  ],
  "10": [
@@ -1056,7 +1314,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "28/02/2026"
   },
   {
    "id": "10-1",
@@ -1068,7 +1329,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.5,
    "absent": 3,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "19/12/2024"
   },
   {
    "id": "10-2",
@@ -1080,7 +1344,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/04/2026"
   },
   {
    "id": "10-3",
@@ -1092,7 +1359,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "20/01/2025"
   },
   {
    "id": "10-4",
@@ -1104,7 +1374,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "28/11/2024"
   },
   {
    "id": "10-5",
@@ -1116,7 +1389,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "02/02/2025"
   },
   {
    "id": "10-6",
@@ -1128,7 +1404,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/10/2025"
   },
   {
    "id": "10-7",
@@ -1140,7 +1419,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "31/12/2024"
   },
   {
    "id": "10-8",
@@ -1152,7 +1434,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "05/01/2026"
   }
  ],
  "11": [
@@ -1166,7 +1451,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "17/06/2025"
   },
   {
    "id": "11-1",
@@ -1178,7 +1466,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "18/05/2026"
   },
   {
    "id": "11-2",
@@ -1190,7 +1481,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.6,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "21/04/2025"
   },
   {
    "id": "11-3",
@@ -1202,7 +1496,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.7,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "11/07/2025"
   },
   {
    "id": "11-4",
@@ -1214,7 +1511,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "26/05/2026"
   },
   {
    "id": "11-5",
@@ -1226,7 +1526,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "08/12/2024"
   },
   {
    "id": "11-6",
@@ -1238,7 +1541,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "11/07/2025"
   },
   {
    "id": "11-7",
@@ -1250,7 +1556,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.7,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "14/05/2025"
   },
   {
    "id": "11-8",
@@ -1262,7 +1571,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 3,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "23/03/2026"
   },
   {
    "id": "11-9",
@@ -1274,7 +1586,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "06/04/2025"
   },
   {
    "id": "11-10",
@@ -1286,7 +1601,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4.8,
    "absent": 2,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/10/2025"
   },
   {
    "id": "11-11",
@@ -1298,7 +1616,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "07/01/2026"
   },
   {
    "id": "11-12",
@@ -1310,7 +1631,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 2,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "26/04/2026"
   }
  ],
  "12": [
@@ -1324,7 +1648,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": null,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/10/2025"
   },
   {
    "id": "12-1",
@@ -1336,7 +1663,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "12/04/2025"
   },
   {
    "id": "12-2",
@@ -1348,7 +1678,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.3,
    "absent": 3,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "03/07/2026"
   },
   {
    "id": "12-3",
@@ -1360,7 +1693,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "11/04/2025"
   },
   {
    "id": "12-4",
@@ -1372,7 +1708,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/11/2024"
   },
   {
    "id": "12-5",
@@ -1384,7 +1723,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "23/07/2025"
   },
   {
    "id": "12-6",
@@ -1396,7 +1738,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/09/2025"
   },
   {
    "id": "12-7",
@@ -1408,7 +1753,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.6,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/06/2025"
   },
   {
    "id": "12-8",
@@ -1420,7 +1768,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "06/08/2025"
   }
  ],
  "13": [
@@ -1434,7 +1785,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "24/06/2026"
   },
   {
    "id": "13-1",
@@ -1446,7 +1800,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/01/2026"
   },
   {
    "id": "13-2",
@@ -1458,7 +1815,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 1,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "16/01/2026"
   },
   {
    "id": "13-3",
@@ -1470,7 +1830,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "26/11/2024"
   },
   {
    "id": "13-4",
@@ -1482,7 +1845,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "25/03/2026"
   },
   {
    "id": "13-5",
@@ -1494,7 +1860,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.2,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "14/12/2025"
   },
   {
    "id": "13-6",
@@ -1506,7 +1875,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "14/04/2025"
   },
   {
    "id": "13-7",
@@ -1518,7 +1890,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "17/01/2026"
   }
  ],
  "14": [
@@ -1532,7 +1907,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/03/2025"
   },
   {
    "id": "14-1",
@@ -1544,7 +1922,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "10/05/2026"
   },
   {
    "id": "14-2",
@@ -1556,7 +1937,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.3,
    "absent": 1,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/01/2025"
   },
   {
    "id": "14-3",
@@ -1568,7 +1952,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "05/09/2025"
   },
   {
    "id": "14-4",
@@ -1580,7 +1967,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/10/2025"
   },
   {
    "id": "14-5",
@@ -1592,7 +1982,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "19/10/2025"
   },
   {
    "id": "14-6",
@@ -1604,7 +1997,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "26/08/2025"
   },
   {
    "id": "14-7",
@@ -1616,7 +2012,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": null,
    "absent": 2,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "09/07/2025"
   },
   {
    "id": "14-8",
@@ -1628,7 +2027,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "14/03/2026"
   },
   {
    "id": "14-9",
@@ -1640,7 +2042,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 3,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "10/04/2025"
   },
   {
    "id": "14-10",
@@ -1652,7 +2057,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.7,
    "absent": 2,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "31/01/2026"
   },
   {
    "id": "14-11",
@@ -1664,7 +2072,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "15/12/2025"
   },
   {
    "id": "14-12",
@@ -1676,7 +2087,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "10/09/2025"
   },
   {
    "id": "14-13",
@@ -1688,7 +2102,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 2,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "23/10/2025"
   }
  ],
  "15": [
@@ -1702,7 +2119,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "16/09/2025"
   },
   {
    "id": "15-1",
@@ -1714,7 +2134,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/08/2025"
   },
   {
    "id": "15-2",
@@ -1726,7 +2149,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "24/01/2026"
   },
   {
    "id": "15-3",
@@ -1738,7 +2164,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "18/06/2025"
   },
   {
    "id": "15-4",
@@ -1750,7 +2179,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.7,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "18/07/2026"
   },
   {
    "id": "15-5",
@@ -1762,7 +2194,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "29/03/2026"
   },
   {
    "id": "15-6",
@@ -1774,7 +2209,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.5,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "22/01/2026"
   },
   {
    "id": "15-7",
@@ -1786,7 +2224,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/12/2025"
   },
   {
    "id": "15-8",
@@ -1798,7 +2239,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/05/2026"
   },
   {
    "id": "15-9",
@@ -1810,7 +2254,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.5,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "10/06/2025"
   },
   {
    "id": "15-10",
@@ -1822,7 +2269,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "10/12/2025"
   },
   {
    "id": "15-11",
@@ -1834,7 +2284,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 2,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/11/2025"
   },
   {
    "id": "15-12",
@@ -1846,7 +2299,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.7,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "07/05/2026"
   },
   {
    "id": "15-13",
@@ -1858,7 +2314,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "22/03/2026"
   },
   {
    "id": "15-14",
@@ -1870,7 +2329,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "27/04/2026"
   }
  ],
  "16": [
@@ -1884,7 +2346,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 1,
    "note": "",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/08/2025"
   },
   {
    "id": "16-1",
@@ -1896,7 +2361,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "08/11/2025"
   },
   {
    "id": "16-2",
@@ -1908,7 +2376,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.8,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/05/2026"
   },
   {
    "id": "16-3",
@@ -1920,7 +2391,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.5,
    "absent": 2,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "20/03/2025"
   },
   {
    "id": "16-4",
@@ -1932,7 +2406,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": null,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "21/11/2024"
   },
   {
    "id": "16-5",
@@ -1944,7 +2421,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "03/06/2026"
   },
   {
    "id": "16-6",
@@ -1956,7 +2436,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "07/02/2026"
   },
   {
    "id": "16-7",
@@ -1968,7 +2451,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/01/2025"
   },
   {
    "id": "16-8",
@@ -1980,7 +2466,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "20/07/2025"
   },
   {
    "id": "16-9",
@@ -1992,7 +2481,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/04/2026"
   }
  ],
  "17": [
@@ -2006,7 +2498,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 1,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "14/05/2026"
   },
   {
    "id": "17-1",
@@ -2018,7 +2513,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 2,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "16/08/2025"
   },
   {
    "id": "17-2",
@@ -2030,7 +2528,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "07/04/2025"
   },
   {
    "id": "17-3",
@@ -2042,7 +2543,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "23/12/2024"
   },
   {
    "id": "17-4",
@@ -2054,7 +2558,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "06/10/2025"
   },
   {
    "id": "17-5",
@@ -2066,7 +2573,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 3,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "15/08/2025"
   },
   {
    "id": "17-6",
@@ -2078,7 +2588,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "17/05/2026"
   },
   {
    "id": "17-7",
@@ -2090,7 +2603,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "03/04/2025"
   },
   {
    "id": "17-8",
@@ -2102,7 +2618,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/02/2026"
   },
   {
    "id": "17-9",
@@ -2114,7 +2633,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.4,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "27/04/2026"
   }
  ],
  "18": [
@@ -2128,7 +2650,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "18/05/2026"
   },
   {
    "id": "18-1",
@@ -2140,7 +2665,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.4,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/04/2026"
   },
   {
    "id": "18-2",
@@ -2152,7 +2680,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 2,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "21/01/2025"
   },
   {
    "id": "18-3",
@@ -2164,7 +2695,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "10/01/2026"
   },
   {
    "id": "18-4",
@@ -2176,7 +2710,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "01/12/2024"
   },
   {
    "id": "18-5",
@@ -2188,7 +2725,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "09/10/2025"
   },
   {
    "id": "18-6",
@@ -2200,7 +2740,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 1,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "19/02/2025"
   },
   {
    "id": "18-7",
@@ -2212,7 +2755,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 3,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "24/02/2025"
   }
  ],
  "19": [
@@ -2226,7 +2772,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.5,
    "absent": 1,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "11/02/2025"
   }
  ],
  "20": [
@@ -2240,7 +2789,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/11/2025"
   }
  ],
  "21": [
@@ -2254,7 +2806,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.8,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "14/12/2025"
   },
   {
    "id": "21-1",
@@ -2266,7 +2821,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/10/2025"
   },
   {
    "id": "21-2",
@@ -2278,7 +2836,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "08/06/2025"
   },
   {
    "id": "21-3",
@@ -2290,7 +2851,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "20/01/2025"
   },
   {
    "id": "21-4",
@@ -2302,7 +2866,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 3,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "15/06/2026"
   },
   {
    "id": "21-5",
@@ -2314,7 +2881,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "28/10/2025"
   },
   {
    "id": "21-6",
@@ -2326,7 +2896,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/09/2025"
   },
   {
    "id": "21-7",
@@ -2338,7 +2911,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 2,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "27/01/2026"
   },
   {
    "id": "21-8",
@@ -2350,7 +2926,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 2,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "08/07/2025"
   },
   {
    "id": "21-9",
@@ -2362,7 +2941,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.3,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "18/08/2025"
   },
   {
    "id": "21-10",
@@ -2374,7 +2956,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": null,
    "absent": 1,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "04/04/2025"
   },
   {
    "id": "21-11",
@@ -2386,7 +2971,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "24/03/2025"
   },
   {
    "id": "21-12",
@@ -2398,7 +2986,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/08/2025"
   },
   {
    "id": "21-13",
@@ -2410,7 +3001,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/07/2025"
   },
   {
    "id": "21-14",
@@ -2422,7 +3016,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "30/01/2026"
   }
  ],
  "22": [
@@ -2436,7 +3033,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/06/2026"
   },
   {
    "id": "22-1",
@@ -2448,7 +3048,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 2,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "06/06/2025"
   },
   {
    "id": "22-2",
@@ -2460,7 +3063,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 2,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "10/07/2026"
   },
   {
    "id": "22-3",
@@ -2472,7 +3078,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "19/04/2026"
   },
   {
    "id": "22-4",
@@ -2484,7 +3093,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "30/05/2026"
   },
   {
    "id": "22-5",
@@ -2496,7 +3108,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 2,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "08/02/2025"
   },
   {
    "id": "22-6",
@@ -2508,7 +3123,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4.3,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/11/2025"
   },
   {
    "id": "22-7",
@@ -2520,7 +3138,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.1,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "28/12/2024"
   },
   {
    "id": "22-8",
@@ -2532,7 +3153,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/06/2026"
   },
   {
    "id": "22-9",
@@ -2544,7 +3168,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 2,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/03/2026"
   }
  ],
  "23": [
@@ -2558,7 +3185,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 1,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "05/09/2025"
   },
   {
    "id": "23-1",
@@ -2570,7 +3200,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.2,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "19/09/2025"
   },
   {
    "id": "23-2",
@@ -2582,7 +3215,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "16/03/2026"
   },
   {
    "id": "23-3",
@@ -2594,7 +3230,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": null,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "06/02/2025"
   },
   {
    "id": "23-4",
@@ -2606,7 +3245,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4.1,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "31/01/2025"
   },
   {
    "id": "23-5",
@@ -2618,7 +3260,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "12/06/2026"
   },
   {
    "id": "23-6",
@@ -2630,7 +3275,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 2,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/12/2024"
   },
   {
    "id": "23-7",
@@ -2642,7 +3290,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/06/2026"
   },
   {
    "id": "23-8",
@@ -2654,7 +3305,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "23/03/2026"
   },
   {
    "id": "23-9",
@@ -2666,7 +3320,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "26/06/2026"
   },
   {
    "id": "23-10",
@@ -2678,7 +3335,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "25/11/2025"
   },
   {
    "id": "23-11",
@@ -2690,7 +3350,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "15/06/2026"
   },
   {
    "id": "23-12",
@@ -2702,7 +3365,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "30/04/2025"
   },
   {
    "id": "23-13",
@@ -2714,7 +3380,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "08/08/2025"
   }
  ],
  "24": [
@@ -2728,7 +3397,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "20/03/2025"
   },
   {
    "id": "24-1",
@@ -2740,7 +3412,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 3,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "02/06/2025"
   },
   {
    "id": "24-2",
@@ -2752,7 +3427,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "08/03/2025"
   },
   {
    "id": "24-3",
@@ -2764,7 +3442,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "30/04/2026"
   },
   {
    "id": "24-4",
@@ -2776,7 +3457,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.8,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/11/2025"
   },
   {
    "id": "24-5",
@@ -2788,7 +3472,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "11/06/2025"
   },
   {
    "id": "24-6",
@@ -2800,7 +3487,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "21/04/2026"
   },
   {
    "id": "24-7",
@@ -2812,7 +3502,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "07/12/2025"
   },
   {
    "id": "24-8",
@@ -2824,7 +3517,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 2,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "23/04/2026"
   },
   {
    "id": "24-9",
@@ -2836,7 +3532,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "24/04/2026"
   },
   {
    "id": "24-10",
@@ -2848,7 +3547,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/07/2025"
   },
   {
    "id": "24-11",
@@ -2860,7 +3562,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7,
    "absent": 1,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/10/2025"
   },
   {
    "id": "24-12",
@@ -2872,7 +3577,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "17/11/2025"
   },
   {
    "id": "24-13",
@@ -2884,7 +3592,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.2,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/12/2024"
   }
  ],
  "25": [
@@ -2898,7 +3609,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.2,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "20/02/2025"
   },
   {
    "id": "25-1",
@@ -2910,7 +3624,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "29/03/2025"
   },
   {
    "id": "25-2",
@@ -2922,7 +3639,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "26/05/2025"
   },
   {
    "id": "25-3",
@@ -2934,7 +3654,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 3,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "19/11/2024"
   },
   {
    "id": "25-4",
@@ -2946,7 +3669,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 2,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/01/2026"
   },
   {
    "id": "25-5",
@@ -2958,7 +3684,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 1,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "10/08/2025"
   },
   {
    "id": "25-6",
@@ -2970,7 +3699,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/01/2025"
   },
   {
    "id": "25-7",
@@ -2982,7 +3714,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 1,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/03/2026"
   },
   {
    "id": "25-8",
@@ -2994,7 +3729,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "16/10/2025"
   },
   {
    "id": "25-9",
@@ -3006,7 +3744,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/11/2024"
   },
   {
    "id": "25-10",
@@ -3018,7 +3759,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "13/05/2025"
   },
   {
    "id": "25-11",
@@ -3030,7 +3774,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "09/10/2025"
   },
   {
    "id": "25-12",
@@ -3042,7 +3789,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 1,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "05/06/2025"
   }
  ],
  "26": [
@@ -3056,7 +3806,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 1,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "14/05/2025"
   },
   {
    "id": "26-1",
@@ -3068,7 +3821,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 2,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "08/10/2025"
   },
   {
    "id": "26-2",
@@ -3080,7 +3836,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.5,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "11/12/2024"
   },
   {
    "id": "26-3",
@@ -3092,7 +3851,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "21/03/2026"
   },
   {
    "id": "26-4",
@@ -3104,7 +3866,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/05/2026"
   },
   {
    "id": "26-5",
@@ -3116,7 +3881,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "28/03/2026"
   },
   {
    "id": "26-6",
@@ -3128,7 +3896,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "16/01/2026"
   },
   {
    "id": "26-7",
@@ -3140,7 +3911,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "31/07/2025"
   },
   {
    "id": "26-8",
@@ -3152,7 +3926,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "25/01/2026"
   },
   {
    "id": "26-9",
@@ -3164,7 +3941,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "19/04/2025"
   },
   {
    "id": "26-10",
@@ -3176,7 +3956,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/03/2025"
   }
  ],
  "27": [
@@ -3190,7 +3973,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "26/08/2025"
   }
  ],
  "28": [
@@ -3204,7 +3990,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "06/03/2026"
   },
   {
    "id": "28-1",
@@ -3216,7 +4005,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.9,
    "absent": 1,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/11/2025"
   },
   {
    "id": "28-2",
@@ -3228,7 +4020,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.5,
    "absent": 2,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "21/09/2025"
   },
   {
    "id": "28-3",
@@ -3240,7 +4035,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "17/12/2024"
   },
   {
    "id": "28-4",
@@ -3252,7 +4050,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 1,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "15/10/2025"
   },
   {
    "id": "28-5",
@@ -3264,7 +4065,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.5,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "11/09/2025"
   },
   {
    "id": "28-6",
@@ -3276,7 +4080,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.4,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/04/2025"
   },
   {
    "id": "28-7",
@@ -3288,7 +4095,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.5,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "07/04/2025"
   },
   {
    "id": "28-8",
@@ -3300,7 +4110,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "26/04/2026"
   },
   {
    "id": "28-9",
@@ -3312,7 +4125,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/08/2025"
   },
   {
    "id": "28-10",
@@ -3324,7 +4140,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "15/03/2025"
   },
   {
    "id": "28-11",
@@ -3336,7 +4155,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "06/01/2026"
   },
   {
    "id": "28-12",
@@ -3348,7 +4170,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "26/05/2026"
   }
  ],
  "29": [
@@ -3362,7 +4187,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/06/2025"
   },
   {
    "id": "29-1",
@@ -3374,7 +4202,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "26/06/2026"
   },
   {
    "id": "29-2",
@@ -3386,7 +4217,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 2,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "05/01/2025"
   },
   {
    "id": "29-3",
@@ -3398,7 +4232,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4.4,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "30/06/2026"
   },
   {
    "id": "29-4",
@@ -3410,7 +4247,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/08/2025"
   },
   {
    "id": "29-5",
@@ -3422,7 +4262,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "23/06/2026"
   },
   {
    "id": "29-6",
@@ -3434,7 +4277,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 1,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "17/01/2026"
   },
   {
    "id": "29-7",
@@ -3446,7 +4292,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "22/06/2026"
   },
   {
    "id": "29-8",
@@ -3458,7 +4307,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.7,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "15/09/2025"
   },
   {
    "id": "29-9",
@@ -3470,7 +4322,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 3,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/10/2025"
   },
   {
    "id": "29-10",
@@ -3482,7 +4337,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "15/07/2025"
   }
  ],
  "30": [
@@ -3496,7 +4354,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "05/07/2025"
   }
  ],
  "31": [
@@ -3510,7 +4371,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "22/11/2024"
   },
   {
    "id": "31-1",
@@ -3522,7 +4386,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "15/10/2025"
   },
   {
    "id": "31-2",
@@ -3534,7 +4401,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/10/2025"
   },
   {
    "id": "31-3",
@@ -3546,7 +4416,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 1,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "02/12/2025"
   },
   {
    "id": "31-4",
@@ -3558,7 +4431,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.7,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "14/08/2025"
   },
   {
    "id": "31-5",
@@ -3570,7 +4446,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.8,
    "absent": 2,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "25/05/2025"
   },
   {
    "id": "31-6",
@@ -3582,7 +4461,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/10/2025"
   },
   {
    "id": "31-7",
@@ -3594,7 +4476,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "31/12/2025"
   },
   {
    "id": "31-8",
@@ -3606,7 +4491,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "05/07/2025"
   },
   {
    "id": "31-9",
@@ -3618,7 +4506,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "27/03/2026"
   },
   {
    "id": "31-10",
@@ -3630,7 +4521,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 2,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "13/03/2025"
   }
  ],
  "32": [],
@@ -3645,7 +4539,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.7,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "11/03/2026"
   }
  ],
  "34": [],
@@ -3660,7 +4557,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 3,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/10/2025"
   },
   {
    "id": "35-1",
@@ -3672,7 +4572,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.1,
    "absent": 2,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/07/2025"
   },
   {
    "id": "35-2",
@@ -3684,7 +4587,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "01/06/2025"
   },
   {
    "id": "35-3",
@@ -3696,7 +4602,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "04/08/2025"
   },
   {
    "id": "35-4",
@@ -3708,7 +4617,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "01/11/2025"
   },
   {
    "id": "35-5",
@@ -3720,7 +4632,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.5,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "16/06/2026"
   },
   {
    "id": "35-6",
@@ -3732,7 +4647,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.4,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/03/2025"
   },
   {
    "id": "35-7",
@@ -3744,7 +4662,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "06/03/2026"
   },
   {
    "id": "35-8",
@@ -3756,7 +4677,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "06/06/2026"
   },
   {
    "id": "35-9",
@@ -3768,7 +4692,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/06/2026"
   }
  ],
  "36": [
@@ -3782,7 +4709,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.2,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/06/2026"
   },
   {
    "id": "36-1",
@@ -3794,7 +4724,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 1,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "17/07/2026"
   },
   {
    "id": "36-2",
@@ -3806,7 +4739,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/08/2025"
   },
   {
    "id": "36-3",
@@ -3818,7 +4754,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "18/07/2026"
   },
   {
    "id": "36-4",
@@ -3830,7 +4769,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "27/11/2024"
   },
   {
    "id": "36-5",
@@ -3842,7 +4784,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.8,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "05/03/2026"
   },
   {
    "id": "36-6",
@@ -3854,7 +4799,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "01/06/2026"
   },
   {
    "id": "36-7",
@@ -3866,7 +4814,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.5,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "19/06/2025"
   },
   {
    "id": "36-8",
@@ -3878,7 +4829,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.9,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/04/2025"
   },
   {
    "id": "36-9",
@@ -3890,7 +4844,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "14/06/2025"
   },
   {
    "id": "36-10",
@@ -3902,7 +4859,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.4,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "30/04/2025"
   },
   {
    "id": "36-11",
@@ -3914,7 +4874,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "01/06/2025"
   },
   {
    "id": "36-12",
@@ -3926,7 +4889,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.5,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "23/04/2025"
   }
  ],
  "37": [
@@ -3940,7 +4906,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.7,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "14/06/2025"
   }
  ],
  "38": [
@@ -3954,7 +4923,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/12/2024"
   },
   {
    "id": "38-1",
@@ -3966,7 +4938,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "19/04/2025"
   },
   {
    "id": "38-2",
@@ -3978,7 +4953,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.7,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "24/01/2025"
   },
   {
    "id": "38-3",
@@ -3990,7 +4968,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "27/04/2025"
   },
   {
    "id": "38-4",
@@ -4002,7 +4983,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 2,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "08/03/2025"
   },
   {
    "id": "38-5",
@@ -4014,7 +4998,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.3,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Quay lại",
+   "joinedAt": "22/06/2026"
   },
   {
    "id": "38-6",
@@ -4026,7 +5013,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "20/07/2026"
   },
   {
    "id": "38-7",
@@ -4038,7 +5028,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 2,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "12/09/2025"
   },
   {
    "id": "38-8",
@@ -4050,7 +5043,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.8,
    "absent": 3,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "02/07/2025"
   },
   {
    "id": "38-9",
@@ -4062,7 +5058,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 2,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "31/03/2026"
   },
   {
    "id": "38-10",
@@ -4074,7 +5073,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.1,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/01/2025"
   },
   {
    "id": "38-11",
@@ -4086,7 +5088,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "12/07/2025"
   }
  ],
  "39": [
@@ -4100,7 +5105,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 0,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "29/12/2025"
   },
   {
    "id": "39-1",
@@ -4112,7 +5120,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.6,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "27/01/2026"
   },
   {
    "id": "39-2",
@@ -4124,7 +5135,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 3,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "24/01/2025"
   },
   {
    "id": "39-3",
@@ -4136,7 +5150,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Bảo lưu",
+   "kind": "Quay lại",
+   "joinedAt": "23/08/2025"
   },
   {
    "id": "39-4",
@@ -4148,7 +5165,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 3.3,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/03/2026"
   },
   {
    "id": "39-5",
@@ -4160,7 +5180,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.1,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "30/05/2026"
   },
   {
    "id": "39-6",
@@ -4172,7 +5195,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 3,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "11/05/2026"
   }
  ],
  "40": [
@@ -4186,7 +5212,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "29/08/2025"
   }
  ],
  "41": [
@@ -4200,7 +5229,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "25/04/2026"
   }
  ],
  "42": [
@@ -4214,7 +5246,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4,
    "absent": 1,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "25/07/2025"
   },
   {
    "id": "42-1",
@@ -4226,7 +5261,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 2,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "16/06/2025"
   },
   {
    "id": "42-2",
@@ -4238,7 +5276,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.4,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "08/07/2026"
   },
   {
    "id": "42-3",
@@ -4250,7 +5291,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "25/10/2025"
   },
   {
    "id": "42-4",
@@ -4262,7 +5306,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con."
+   "parentFeedback": "PH đã nắm tình hình, sẽ nhắc con.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "11/04/2026"
   },
   {
    "id": "42-5",
@@ -4274,7 +5321,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "13/09/2025"
   },
   {
    "id": "42-6",
@@ -4286,7 +5336,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.6,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "04/07/2025"
   },
   {
    "id": "42-7",
@@ -4298,7 +5351,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.3,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "14/02/2025"
   },
   {
    "id": "42-8",
@@ -4310,7 +5366,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 3,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "11/04/2026"
   },
   {
    "id": "42-9",
@@ -4322,7 +5381,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.9,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "08/05/2026"
   },
   {
    "id": "42-10",
@@ -4334,7 +5396,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "03/08/2025"
   },
   {
    "id": "42-11",
@@ -4346,7 +5411,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 0,
    "note": "",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "13/02/2026"
   }
  ],
  "43": [
@@ -4360,7 +5428,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.4,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "08/03/2026"
   },
   {
    "id": "43-1",
@@ -4372,7 +5443,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 10,
    "absent": 2,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "05/06/2026"
   },
   {
    "id": "43-2",
@@ -4384,7 +5458,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.3,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "17/08/2025"
   },
   {
    "id": "43-3",
@@ -4396,7 +5473,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.5,
    "absent": 2,
    "note": "Tiến bộ rõ trong 3 tuần gần đây.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Bảo lưu",
+   "kind": "Mới",
+   "joinedAt": "12/01/2025"
   },
   {
    "id": "43-4",
@@ -4408,7 +5488,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.2,
    "absent": 0,
    "note": "Tiếp thu tốt, chủ động phát biểu.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "21/04/2026"
   },
   {
    "id": "43-5",
@@ -4420,7 +5503,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 6.4,
    "absent": 0,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đã nghỉ",
+   "kind": "Mới",
+   "joinedAt": "03/05/2026"
   },
   {
    "id": "43-6",
@@ -4432,7 +5518,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 9.5,
    "absent": 0,
    "note": "Hay quên làm bài về nhà.",
-   "parentFeedback": "PH mong con tăng phần nói."
+   "parentFeedback": "PH mong con tăng phần nói.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "20/04/2026"
   },
   {
    "id": "43-7",
@@ -4444,7 +5533,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.9,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH phản hồi tích cực."
+   "parentFeedback": "PH phản hồi tích cực.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "14/03/2025"
   },
   {
    "id": "43-8",
@@ -4456,7 +5548,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.7,
    "absent": 0,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "31/12/2025"
   },
   {
    "id": "43-9",
@@ -4468,7 +5563,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 7.8,
    "absent": 3,
    "note": "Phát âm cần luyện thêm.",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "09/12/2024"
   },
   {
    "id": "43-10",
@@ -4480,7 +5578,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 5.9,
    "absent": 0,
    "note": "Cần theo sát phần ngữ pháp.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "06/12/2024"
   }
  ],
  "44": [
@@ -4494,7 +5595,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 4.8,
    "absent": 1,
    "note": "Rụt rè, cần khích lệ.",
-   "parentFeedback": ""
+   "parentFeedback": "",
+   "state": "Đang học",
+   "kind": "Mới",
+   "joinedAt": "23/12/2025"
   }
  ],
  "45": [
@@ -4508,7 +5612,10 @@ export const STUDENTS: Record<number, Student[]> = {
    "avg": 8.2,
    "absent": 3,
    "note": "",
-   "parentFeedback": "PH bận, khó liên lạc."
+   "parentFeedback": "PH bận, khó liên lạc.",
+   "state": "Đang học",
+   "kind": "Quay lại",
+   "joinedAt": "03/01/2025"
   }
  ],
  "46": [],

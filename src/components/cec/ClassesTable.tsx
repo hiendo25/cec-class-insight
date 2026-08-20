@@ -66,7 +66,7 @@ const STATUS_STYLE: Record<string, { bg: string; fg: string; dot: string }> = {
   "Sắp diễn ra": { bg: "#eaf1fb", fg: "#2b3f7a", dot: "#3b6bd6" },
   "Đã kết thúc": { bg: "#f0f2f6", fg: "#6b7280", dot: "#6a7386" },
   "Tạm dừng": { bg: "#fdf3e7", fg: "#8a5a10", dot: "#e0a020" },
-  "Đã huỷ": { bg: "#fdecea", fg: "#a82920", dot: "#d4342c" },
+  "Đã hủy": { bg: "#fdecea", fg: "#a82920", dot: "#d4342c" },
   default: { bg: "#f0f2f6", fg: "#6b7280", dot: "#6a7386" },
 };
 

@@ -124,6 +124,17 @@ function Bar({ value }: { value: number }) {
 
 /* ---------- tab Học sinh ---------- */
 
+/** Nhóm học sinh theo tình trạng — bám PROD: Đang học / Lịch sử / Tất cả.
+ *  "Lịch sử" gộp em đã bảo lưu, chuyển lớp, nghỉ — tức không còn học ở lớp này. */
+type Group = "Đang học" | "Lịch sử" | "Tất cả";
+
+const STATE_STYLE: Record<string, { background: string; color: string }> = {
+  "Đang học": { background: "#e6f5ec", color: OK },
+  "Bảo lưu": { background: "#fdf3e7", color: WARN },
+  "Đã chuyển lớp": { background: "#eaf1fb", color: "#2b3f7a" },
+  "Đã nghỉ": { background: "#f0f2f6", color: INK2 },
+};
+
 function TabStudents({
   stats,
   onOpenStudent,
@@ -132,7 +143,18 @@ function TabStudents({
   onOpenStudent: (s: Student) => void;
 }) {
   const [onlyRisk, setOnlyRisk] = useState(false);
-  const list = onlyRisk ? stats.needAttention : stats.students;
+  const [group, setGroup] = useState<Group>("Đang học");
+
+  const inGroup = (s: Student) =>
+    group === "Tất cả" ? true : group === "Đang học" ? s.state === "Đang học" : s.state !== "Đang học";
+
+  const count = {
+    "Đang học": stats.students.filter((s) => s.state === "Đang học").length,
+    "Lịch sử": stats.students.filter((s) => s.state !== "Đang học").length,
+    "Tất cả": stats.students.length,
+  };
+
+  const list = (onlyRisk ? stats.needAttention : stats.students).filter(inGroup);
 
   if (stats.students.length === 0)
     return (
@@ -143,7 +165,25 @@ function TabStudents({
 
   return (
     <div className="flex flex-col gap-[12px]">
-      <div className="flex items-center gap-[10px] text-[12.5px]">
+      <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
+        <span className="flex rounded-[6px] p-[2px]" style={{ background: "#eef0f5" }}>
+          {(["Đang học", "Lịch sử", "Tất cả"] as Group[]).map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => setGroup(g)}
+              className="rounded-[5px] px-[11px] py-[5px] text-[12.5px]"
+              style={{
+                background: group === g ? "#fff" : "transparent",
+                fontWeight: group === g ? 600 : 400,
+                color: group === g ? INK : INK2,
+                boxShadow: group === g ? "0 1px 2px rgba(20,28,56,0.10)" : undefined,
+              }}
+            >
+              {g} ({count[g]})
+            </button>
+          ))}
+        </span>
         <button
           type="button"
           onClick={() => setOnlyRisk((v) => !v)}
@@ -168,6 +208,9 @@ function TabStudents({
             <tr style={{ background: NAVY, color: "#fff" }}>
               {[
                 "Học sinh",
+                "Tình trạng",
+                "Loại",
+                "Ngày vào lớp",
                 "Số điện thoại",
                 "Bài đã nộp",
                 "Điểm TB",
@@ -210,6 +253,29 @@ function TabStudents({
                     <span className="ml-[7px] text-[11.5px]" style={{ color: INK3 }}>
                       {s.code}
                     </span>
+                  </td>
+                  <td className="whitespace-nowrap px-[12px]">
+                    <span
+                      className="rounded-full px-[8px] py-[2px] text-[11.5px]"
+                      style={STATE_STYLE[s.state] ?? { background: "#f0f2f6", color: INK2 }}
+                    >
+                      {s.state}
+                    </span>
+                  </td>
+                  <td className="whitespace-nowrap px-[12px] text-[12px]" style={{ color: INK2 }}>
+                    {s.kind === "Quay lại" ? (
+                      <span
+                        className="rounded-[4px] px-[7px] py-[2px]"
+                        style={{ border: `1px solid #cfe3d6`, color: OK }}
+                      >
+                        Quay lại
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </td>
+                  <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>
+                    {s.joinedAt}
                   </td>
                   <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>
                     {s.phone}

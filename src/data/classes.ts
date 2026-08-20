@@ -25,14 +25,14 @@ export type Status =
   | "Đang diễn ra"
   | "Sắp diễn ra"
   | "Đã kết thúc"
-  | "Đã huỷ"
+  | "Đã hủy"
   | "Tạm dừng";
 
 export const STATUS_ORDER: Status[] = [
   "Đang diễn ra",
   "Sắp diễn ra",
   "Đã kết thúc",
-  "Đã huỷ",
+  "Đã hủy",
   "Tạm dừng",
 ];
 
@@ -41,7 +41,7 @@ export const CLASSES: ClassRow[] = [
     id: 1,
     code: "LG-D3-2503",
     course: "D3.180H.1.5H/L.120L.01 · v1",
-    type: "Lớp thường",
+    type: "Lớp doanh nghiệp",
     campus: "CEC Liễu Giai",
     teacher: "Cherry Scholey",
     qc: "Lê Phương Yến",
@@ -62,7 +62,7 @@ export const CLASSES: ClassRow[] = [
     id: 2,
     code: "LG-D3-2504",
     course: "D3.180H.1.5H/L.120L.01 · v1",
-    type: "Lớp thường",
+    type: "Lớp doanh nghiệp",
     campus: "CEC Liễu Giai",
     teacher: "Boughelam Joseph",
     qc: "Dương Khánh Hiền",
@@ -409,7 +409,7 @@ export const CLASSES: ClassRow[] = [
     issues: [],
     start: "19/03/2026",
     end: "24/12/2026",
-    status: "Đã huỷ",
+    status: "Đã hủy",
     note: "",
     mine: false,
     overdue: 2,
@@ -1018,7 +1018,7 @@ export const CLASSES: ClassRow[] = [
     issues: null,
     start: "",
     end: "",
-    status: "Đã huỷ",
+    status: "Đã hủy",
     note: "",
     mine: false,
     overdue: 4,
