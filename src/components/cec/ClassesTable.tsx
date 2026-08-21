@@ -123,7 +123,7 @@ const COLS: Col[] = [
   { key: "teacher", label: "Giáo viên", width: 130, filter: "teacher" },
   { key: "qc", label: "QC", width: 130, filter: "qc" },
   { key: "ec", label: "EC", width: 130, filter: "ec", optional: true, defaultOff: true },
-  { key: "size", label: "Sĩ số", width: 88, filter: "size" },
+  { key: "size", label: "Sĩ số", width: 88, filter: "size" },  /* tính cả em bảo lưu/nghỉ */
   { key: "schedule", label: "Lịch học", width: 132, filter: "schedule" },
   { key: "warn", label: "Cảnh báo", width: 168, filter: "warn" },
   { key: "start", label: "Ngày bắt đầu", width: 116 },
@@ -318,6 +318,35 @@ function ColumnFilter({
 /* ---------- main ---------- */
 
 export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => void }) {
+  /* Bảng rộng hơn màn hình ở laptop 1280 — phải BÁO BẰNG CHỮ là còn cột bên phải,
+     vì thanh cuộn có máy bật overlay là coi như vô hình. Cùng cách đã dùng ở tab Kết quả. */
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [hiddenRight, setHiddenRight] = useState(0);
+
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const scan = () => {
+      const ths = [...el.querySelectorAll("thead tr:first-child th")] as HTMLElement[];
+      const box = el.getBoundingClientRect();
+      setHiddenRight(ths.filter((th) => th.getBoundingClientRect().right > box.right + 1).length);
+    };
+    scan();
+    el.addEventListener("scroll", scan, { passive: true });
+    window.addEventListener("resize", scan);
+    const t = window.setTimeout(scan, 300);
+    return () => {
+      el.removeEventListener("scroll", scan);
+      window.removeEventListener("resize", scan);
+      window.clearTimeout(t);
+    };
+  });
+
+  const nudge = (dir: 1 | -1) => {
+    const el = boxRef.current;
+    if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: "smooth" });
+  };
+
   const initial = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
 
   const [tab, setTab] = useState<Status | "Tất cả">(
@@ -810,7 +839,33 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
           </div>
         ) : (
           <>
-            <div className="cec-scroll overflow-x-auto">
+            {hiddenRight > 0 && (
+              <div
+                className="mb-[8px] flex flex-wrap items-center gap-[10px] text-[12.5px]"
+              >
+                <button
+                  type="button"
+                  onClick={() => nudge(-1)}
+                  className="rounded-[6px] px-[10px] py-[5px]"
+                  style={{ border: `1px solid ${LINE}`, background: "#fff", color: INK }}
+                >
+                  ‹ Cột trước
+                </button>
+                <button
+                  type="button"
+                  onClick={() => nudge(1)}
+                  className="rounded-[6px] px-[10px] py-[5px]"
+                  style={{ border: `1px solid ${LINE}`, background: "#fff", color: INK }}
+                >
+                  Cột sau ›
+                </button>
+                <span style={{ color: WARN, fontWeight: 600 }}>
+                  Đang khuất {hiddenRight} cột bên phải — cuộn ngang để xem
+                </span>
+              </div>
+            )}
+
+            <div ref={boxRef} className="cec-scroll overflow-x-auto">
               <table
                 className="border-collapse text-[13px]"
                 style={{ minWidth: "100%", color: INK }}

@@ -155,7 +155,7 @@ export function ClassProgress() {
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr style={{ background: NAVY, color: "#fff" }}>
-                {["Lớp", "Giáo viên", "Sĩ số", "Việc cần xử lý", "Tình hình nộp", "Chờ chấm", ""].map((h) => (
+                {["Lớp", "Giáo viên", "Đang học", "Việc cần xử lý", "Tình hình nộp", "Chờ chấm", ""].map((h) => (
                   <th key={h} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                     {h}
                   </th>
@@ -262,6 +262,7 @@ export function ClassProgress() {
 
       <p className="text-[12px]" style={{ color: INK3 }}>
         Lớp nhiều việc nhất xếp lên đầu — xử lý từ trên xuống là hết việc trong ngày.
+        Cột “Đang học” chỉ đếm em còn học; sĩ số ở màn Lớp học tính cả em đã bảo lưu, nghỉ.
       </p>
     </div>
   );
