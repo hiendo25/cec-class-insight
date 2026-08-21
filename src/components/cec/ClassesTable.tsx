@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import { ME } from "@/data/me";
 import { useAction } from "./ActionDialog";
+import { Modal } from "./Modal";
 import {
   IconCheck,
   IconChevronDown,
@@ -1159,18 +1160,8 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
 
       {/* Đặt tên bộ lọc — hộp thoại trong app, không dùng window.prompt */}
       {saveOpen && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center"
-          role="dialog"
-          aria-modal="true"
-          style={{ background: "rgba(20,28,56,0.34)" }}
-          onClick={() => setSaveOpen(false)}
-        >
-          <div
-            className="w-[380px] rounded-[10px] bg-white p-[18px]"
-            style={{ boxShadow: "0 12px 32px rgba(20,28,56,0.22)" }}
-            onClick={(e) => e.stopPropagation()}
-          >
+        <Modal label="Lưu bộ lọc hiện tại" onClose={() => setSaveOpen(false)}>
+          <>
             <h3 className="text-[15px] font-semibold" style={{ color: INK }}>
               Lưu bộ lọc hiện tại
             </h3>
@@ -1207,24 +1198,14 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 Lưu bộ lọc
               </button>
             </div>
-          </div>
-        </div>
+          </>
+        </Modal>
       )}
 
       {/* Xác nhận xoá bộ lọc — thay cho window.confirm */}
       {delView && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center"
-          role="dialog"
-          aria-modal="true"
-          style={{ background: "rgba(20,28,56,0.34)" }}
-          onClick={() => setDelView(null)}
-        >
-          <div
-            className="w-[380px] rounded-[10px] bg-white p-[18px]"
-            style={{ boxShadow: "0 12px 32px rgba(20,28,56,0.22)" }}
-            onClick={(e) => e.stopPropagation()}
-          >
+        <Modal label={`Xoá bộ lọc ${delView.name}`} onClose={() => setDelView(null)}>
+          <>
             <h3 className="text-[15px] font-semibold" style={{ color: INK }}>
               Xoá bộ lọc “{delView.name}”?
             </h3>
@@ -1253,8 +1234,8 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 Xoá
               </button>
             </div>
-          </div>
-        </div>
+          </>
+        </Modal>
       )}
     </div>
   );

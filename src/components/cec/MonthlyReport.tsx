@@ -33,7 +33,7 @@ const AV = ["#2b3f7a", "#1f6f4a", "#8a5a10", "#6b2fa0", "#136d5e", "#a03c3c"];
 
 /** nhãn trạng thái — màu theo tài liệu CEC */
 const ST: Record<ReportStatus, { label: string; bg: string; fg: string }> = {
-  draft: { label: "Nháp — chờ review", bg: "#fdf3e7", fg: WARN },
+  draft: { label: "Nháp", bg: "#fdf3e7", fg: WARN },
   pending: { label: "Chờ QC duyệt", bg: "#eaf1fb", fg: "#2b3f7a" },
   approved: { label: "Đã duyệt", bg: "#e6f5ec", fg: OK },
 };
@@ -853,6 +853,14 @@ export function SessionNote({
     );
 
   const status = reportStatusOf(rep.id, rep.status);
+  /* Ở PHIẾU BUỔI, "Nháp" nghĩa là giáo viên chưa nộp — khác hẳn báo cáo tháng
+     (nháp do QC/AI soạn), nên phải nói rõ chứ không dùng chung một nhãn. */
+  const nhanPhieu =
+    status === "draft"
+      ? { label: "Giáo viên chưa nộp", bg: "#fdf3e7", fg: WARN }
+      : status === "pending"
+        ? { label: "Chờ bạn duyệt", bg: "#eaf1fb", fg: "#2b3f7a" }
+        : { label: "Đã duyệt", bg: "#e6f5ec", fg: OK };
   const a = ATT_LABEL[rep.attendance]!;
   const vang = rep.attendance === "absent" || rep.attendance === "excused";
   const skills = rep.skills ?? {};
@@ -871,7 +879,12 @@ export function SessionNote({
             {student.code} · Lớp {row.code} · Buổi {rep.session} · {rep.date}
           </p>
         </div>
-        <Badge status={status} />
+        <span
+          className="shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium"
+          style={{ background: nhanPhieu.bg, color: nhanPhieu.fg }}
+        >
+          {nhanPhieu.label}
+        </span>
         <span className="flex-1" />
         <span className="text-[12.5px]" style={{ color: INK2 }}>
           Người điền: <strong style={{ color: INK }}>{rep.by}</strong>

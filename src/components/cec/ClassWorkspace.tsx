@@ -299,7 +299,7 @@ function TabStudents({
                   </td>
                   <td className="whitespace-nowrap px-[12px]">
                     <span className="mr-[8px] tabular-nums">
-                      {s.submitted}/{s.assigned}
+                      nộp {s.submitted}/{s.assigned}
                     </span>
                     <Bar value={rate} />
                   </td>

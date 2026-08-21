@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ClassRow } from "@/data/classes";
+import { SESSIONS } from "@/data/sessions";
 import type { Student } from "@/data/students";
 import { topicVi } from "@/data/topics";
 import { useAction } from "./ActionDialog";
@@ -417,7 +418,7 @@ function Unfinished({ items, onRemind }: { items: InProgress[]; onRemind?: (titl
 }
 
 /** một dòng lịch sử làm bài, mở ra xem từng lần thử */
-function HistoryRow({ h }: { h: HistoryItem }) {
+function HistoryRow({ h, coLich }: { h: HistoryItem; coLich: boolean }) {
   const [open, setOpen] = useState(false);
   const v = to10(h);
   const tone = scoreTone(v);
@@ -445,7 +446,7 @@ function HistoryRow({ h }: { h: HistoryItem }) {
           {topicVi(h.topic)}
         </span>
         <span className="w-[64px] shrink-0 text-right text-[12px]" style={{ color: INK3 }}>
-          Buổi {h.session}
+          {coLich ? `Buổi ${h.session}` : ""}
         </span>
         {multi && (
           <span className="shrink-0 text-[11px]" style={{ color: NAVY }}>
@@ -503,6 +504,8 @@ export function StudentProfile({
 }) {
   const profile: Profile = PROFILES[student.id] ?? { history: [], errors: [], daily: [], inProgress: [] };
   const { ask } = useAction();
+  /* Lớp chưa xếp lịch thì không có buổi nào — đừng in "Buổi 89" bịa ra */
+  const coLich = (SESSIONS[row.id] ?? []).length > 0;
   const history = useMemo(
     () => [...profile.history].sort((a, b) => (dnum(a.assignedAt) > dnum(b.assignedAt) ? -1 : 1)),
     [profile.history],
@@ -794,7 +797,7 @@ export function StudentProfile({
             Em chưa nộp bài nào.
           </p>
         ) : (
-          history.map((h) => <HistoryRow key={h.id} h={h} />)
+          history.map((h) => <HistoryRow key={h.id} h={h} coLich={coLich} />)
         )}
       </section>
 

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { CLASSES, type ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
+import { useModal } from "@/lib/useModal";
 import { SESSIONS } from "@/data/sessions";
 import {
   IconBookmark,
@@ -49,6 +50,7 @@ type Props = {
 };
 
 export function AssignDialog({ from, onClose, studentId }: Props) {
+  const modalRef = useModal(onClose);
   const [classIds, setClassIds] = useState<number[]>([from.id]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickQuery, setPickQuery] = useState("");
@@ -183,12 +185,14 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
   return (
     <div
       className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto py-[36px]"
-          role="dialog"
-          aria-modal="true"
       style={{ background: "rgba(20,28,56,0.42)" }}
       onClick={onClose}
     >
       <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Giao bài tập"
         className="w-[720px] rounded-[10px] bg-white shadow-[0_20px_60px_rgba(20,28,56,0.28)]"
         onClick={(e) => e.stopPropagation()}
       >

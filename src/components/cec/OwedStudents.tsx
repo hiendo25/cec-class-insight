@@ -247,7 +247,7 @@ export function OwedStudents() {
                   <td className="whitespace-nowrap px-[12px] tabular-nums">
                     {r.owed > 0 ? (
                       <span style={{ color: r.owed >= 3 ? DANGER : WARN, fontWeight: 600 }}>
-                        {r.owed}/{r.st.assigned} bài
+                        nợ {r.owed}/{r.st.assigned} bài
                       </span>
                     ) : (
                       <span style={{ color: OK }}>nộp đủ</span>
