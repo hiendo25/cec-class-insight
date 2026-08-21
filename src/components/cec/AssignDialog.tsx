@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { CLASSES, type ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { useModal } from "@/lib/useModal";
+import { EXAMS as KHO_DE, EXAM_LOAI, EXAM_KY_NANG, EXAM_CAP_DO } from "@/data/exams";
 import { SESSIONS } from "@/data/sessions";
 import {
   IconBookmark,
@@ -30,13 +31,29 @@ const WARN = "#b8791c";
 const noAccent = (s: string) =>
   s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
 
-/** Đề mẫu — sau nối kho đề thật */
-const EXAMS = [
-  { id: "e1", name: "Unit 6 · Present Simple", version: "v3", latest: "v3", published: true, attempts: 3, minutes: null, autoPublish: true, retryAfter: true },
-  { id: "e2", name: "Unit 7 · Past Simple", version: "v2", latest: "v5", published: true, attempts: 1, minutes: 30, autoPublish: true, retryAfter: false },
-  { id: "e3", name: "Review 2 · Mixed Grammar", version: "v1", latest: "v1", published: true, attempts: 3, minutes: 45, autoPublish: false, retryAfter: true },
-  { id: "e4", name: "Progress Test 2", version: "v1", latest: "v1", published: false, attempts: 1, minutes: 60, autoPublish: true, retryAfter: false },
-];
+/**
+ * Kho đề của modal giao bài = CHÍNH kho đề thật (180 đề), không phải danh sách riêng.
+ *
+ * Trước đây chỗ này là 4 đề giả cứng nên QC chỉ tìm được bằng tên. Thực tế QC giao bài
+ * không nhớ tên đề — nhớ "buổi này học Present Simple, lấy đề A2 Ngữ pháp". Vì vậy
+ * ô chọn đề phải lọc được theo CHỦ ĐIỂM · KỸ NĂNG · CẤP ĐỘ · LOẠI, giống kho đề.
+ */
+const EXAMS = KHO_DE.map((e) => ({
+  id: e.id,
+  name: e.ten,
+  version: e.phienBan,
+  latest: e.trangThai === "Đã xuất bản · đang sửa bản mới" ? "v" + (Number(e.phienBan.slice(1)) + 1) : e.phienBan,
+  published: e.trangThai !== "Nháp",
+  attempts: e.soLanLam,
+  minutes: e.thoiGian,
+  autoPublish: e.tuCongBoKetQua,
+  retryAfter: e.soLanLam !== 1,
+  topic: e.topic,
+  kyNang: e.kyNang,
+  capDo: e.capDo,
+  loai: e.loai,
+  soCau: e.soCau,
+}));
 
 const STUDENT_STATES = ["Đang học", "Bảo lưu", "Đã chuyển lớp", "Đã nghỉ"] as const;
 
@@ -49,12 +66,42 @@ type Props = {
   studentId?: string | undefined;
 };
 
+/** Ô lọc nhỏ dùng trong danh sách chọn đề */
+function LocDe({
+  nhan, giaTri, cac, onChon,
+}: { nhan: string; giaTri: string; cac: readonly string[]; onChon: (v: string) => void }) {
+  return (
+    <select
+      value={giaTri}
+      onChange={(e) => onChon(e.target.value)}
+      className="rounded-[5px] px-[7px] py-[5px] text-[11.5px]"
+      style={{
+        border: `1px solid ${giaTri ? NAVY : "#d9dde5"}`,
+        background: "#fff",
+        color: giaTri ? INK : INK2,
+        fontWeight: giaTri ? 600 : 400,
+      }}
+    >
+      <option value="">{nhan}</option>
+      {cac.map((v) => (
+        <option key={v} value={v}>{v}</option>
+      ))}
+    </select>
+  );
+}
+
 export function AssignDialog({ from, onClose, studentId }: Props) {
   const modalRef = useModal(onClose);
   const [classIds, setClassIds] = useState<number[]>([from.id]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickQuery, setPickQuery] = useState("");
   const [mineOnly, setMineOnly] = useState(true);
+
+  /* Lọc đề theo CHỦ ĐIỂM · CẤP ĐỘ · KỸ NĂNG — QC chọn đề theo đó, không nhớ tên đề */
+  const [fTopic, setFTopic] = useState("");
+  const [fKyNang, setFKyNang] = useState("");
+  const [fCapDo, setFCapDo] = useState("");
+  const [fLoai, setFLoai] = useState("");
 
   const [mode, setMode] = useState<"class" | "students">(studentId ? "students" : "class");
   const [states, setStates] = useState<string[]>(["Đang học"]);
@@ -174,9 +221,23 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
     return noAccent(c.code).includes(q) || noAccent(c.teacher ?? "").includes(q);
   });
 
-  const examList = EXAMS.filter((e) =>
-    !examQuery.trim() ? true : noAccent(e.name).includes(noAccent(examQuery)),
+  /* Danh sách chủ điểm có thật trong kho, để QC chọn thay vì gõ mò */
+  const topicList = useMemo(
+    () => [...new Set(EXAMS.map((e) => e.topic).filter(Boolean))].sort((a, b) => a.localeCompare(b, "vi")),
+    [],
   );
+
+  const examList = EXAMS.filter((e) => {
+    const q = examQuery.trim();
+    /* tìm được cả bằng tên LẪN chủ điểm — QC hay nhớ chủ điểm hơn nhớ tên đề */
+    if (q && !noAccent(e.name).includes(noAccent(q)) && !noAccent(e.topic).includes(noAccent(q)))
+      return false;
+    if (fTopic && e.topic !== fTopic) return false;
+    if (fKyNang && e.kyNang !== fKyNang) return false;
+    if (fCapDo && e.capDo !== fCapDo) return false;
+    if (fLoai && e.loai !== fLoai) return false;
+    return true;
+  });
 
   const row = "flex gap-[14px] py-[11px]";
   const label = "w-[112px] shrink-0 pt-[6px] text-[12.5px]";
@@ -488,12 +549,29 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
                       <input
                         value={examQuery}
                         onChange={(e) => setExamQuery(e.target.value)}
-                        placeholder="Tìm bằng tiếng Việt hoặc tiếng Anh"
+                        placeholder="Tìm theo tên đề hoặc chủ điểm"
                         className="w-full text-[12.5px] outline-none"
                       />
                     </span>
+
+                    {/* Lọc theo đúng các chiều kho đề — QC nhớ chủ điểm/kỹ năng, không nhớ tên */}
+                    <div className="mt-[7px] flex flex-wrap items-center gap-[6px]">
+                      <LocDe nhan="Chủ điểm" giaTri={fTopic} cac={topicList} onChon={setFTopic} />
+                      <LocDe nhan="Cấp độ" giaTri={fCapDo} cac={EXAM_CAP_DO} onChon={setFCapDo} />
+                      <LocDe nhan="Kỹ năng" giaTri={fKyNang} cac={EXAM_KY_NANG} onChon={setFKyNang} />
+                      <LocDe nhan="Loại đề" giaTri={fLoai} cac={EXAM_LOAI} onChon={setFLoai} />
+                      <span className="flex-1" />
+                      <span className="text-[11.5px]" style={{ color: INK3 }}>
+                        {examList.length} đề
+                      </span>
+                    </div>
                   </div>
                   <div className="max-h-[170px] overflow-y-auto px-[6px] pb-[6px]">
+                    {examList.length === 0 && (
+                      <p className="px-[8px] py-[16px] text-center text-[12px]" style={{ color: INK3 }}>
+                        Không có đề nào khớp bộ lọc. Bỏ bớt chủ điểm hoặc cấp độ.
+                      </p>
+                    )}
                     {examList.map((e) => (
                       <button
                         key={e.id}
@@ -507,13 +585,18 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
                         }}
                         className="flex w-full items-center gap-[9px] rounded-[5px] px-[8px] py-[7px] text-left text-[12.5px] hover:bg-white"
                       >
-                        <span className="flex-1 truncate">{e.name}</span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate">{e.name}</span>
+                          <span className="block truncate text-[11.5px]" style={{ color: INK3 }}>
+                            {e.topic} · {e.kyNang} · {e.capDo} · {e.soCau} câu
+                          </span>
+                        </span>
                         {!e.published && (
-                          <span style={{ color: WARN }} className="text-[11.5px]">
+                          <span style={{ color: WARN }} className="shrink-0 text-[11.5px]">
                             chưa xuất bản
                           </span>
                         )}
-                        <span style={{ color: INK3 }}>{e.latest}</span>
+                        <span className="shrink-0" style={{ color: INK3 }}>{e.latest}</span>
                       </button>
                     ))}
                   </div>
