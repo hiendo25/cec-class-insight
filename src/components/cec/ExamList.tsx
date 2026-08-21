@@ -6,6 +6,7 @@ import {
   EXAM_KY_NANG,
   EXAM_LOAI,
   EXAM_TRANG_THAI,
+  EXAM_CO_SO,
   type Exam,
 } from "@/data/exams";
 import { ME } from "@/data/me";
@@ -27,8 +28,8 @@ const TT_STYLE: Record<string, { bg: string; fg: string; ngan: string }> = {
   "Đã xuất bản · đang sửa bản mới": { bg: "#fdf3e7", fg: WARN, ngan: "Đã xuất bản · đang sửa v2" },
 };
 
-type Loc = { loai: string; kyNang: string; capDo: string; trangThai: string };
-const TRONG: Loc = { loai: "", kyNang: "", capDo: "", trangThai: "" };
+type Loc = { loai: string; kyNang: string; capDo: string; trangThai: string; coSo: string; nguoiTao: string };
+const TRONG: Loc = { loai: "", kyNang: "", capDo: "", trangThai: "", coSo: "", nguoiTao: "" };
 
 function Chon({
   nhan,
@@ -78,6 +79,12 @@ export function ExamList() {
   const [loc, setLoc] = useState<Loc>(TRONG);
   const [q, setQ] = useState("");
 
+  /* Người tạo lấy từ chính kho đề — PROD dùng dropdown động có ô tìm kiếm */
+  const nguoiTaoList = useMemo(
+    () => [...new Set(EXAMS.map((e) => e.nguoiTao))].sort((a, b) => a.localeCompare(b, "vi")),
+    [],
+  );
+
   const theoTab = useMemo(
     () =>
       EXAMS.filter((e) =>
@@ -98,6 +105,8 @@ export function ExamList() {
           (!loc.kyNang || e.kyNang === loc.kyNang) &&
           (!loc.capDo || e.capDo === loc.capDo) &&
           (!loc.trangThai || e.trangThai === loc.trangThai) &&
+          (!loc.coSo || e.coSo === loc.coSo) &&
+          (!loc.nguoiTao || e.nguoiTao === loc.nguoiTao) &&
           (!q.trim() || matchWords(e.ten, q) || matchCode(e.ma, q) || matchWords(e.topic, q)),
       ),
     [theoTab, loc, q],
@@ -172,6 +181,8 @@ export function ExamList() {
         <Chon nhan="Tất cả kỹ năng" giaTri={loc.kyNang} cacGiaTri={EXAM_KY_NANG} onChon={(v) => setLoc({ ...loc, kyNang: v })} />
         <Chon nhan="Tất cả cấp độ" giaTri={loc.capDo} cacGiaTri={EXAM_CAP_DO} onChon={(v) => setLoc({ ...loc, capDo: v })} />
         <Chon nhan="Tất cả trạng thái" giaTri={loc.trangThai} cacGiaTri={EXAM_TRANG_THAI} onChon={(v) => setLoc({ ...loc, trangThai: v })} />
+        <Chon nhan="Tất cả cơ sở" giaTri={loc.coSo} cacGiaTri={EXAM_CO_SO} onChon={(v) => setLoc({ ...loc, coSo: v })} />
+        <Chon nhan="Tất cả người tạo" giaTri={loc.nguoiTao} cacGiaTri={nguoiTaoList} onChon={(v) => setLoc({ ...loc, nguoiTao: v })} />
 
         {coLoc && (
           <button
@@ -188,7 +199,9 @@ export function ExamList() {
 
         <span className="flex-1" />
         <span style={{ color: INK3 }}>
-          Hiển thị {list.length}/{theoTab.length} đề
+          {list.length > 100
+            ? `Hiện 100 đề đầu trong ${list.length} kết quả`
+            : `Hiển thị ${list.length}/${theoTab.length} đề`}
         </span>
       </div>
 
@@ -204,7 +217,7 @@ export function ExamList() {
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr style={{ background: NAVY, color: "#fff" }}>
-                {["Tên đề bài", "Loại", "Kỹ năng", "Cấp độ", "Câu", "Thời gian", "Người tạo", "Trạng thái", "Ngày tạo"].map(
+                {["Tên đề bài", "Loại", "Cơ sở", "Kỹ năng", "Cấp độ", "Câu", "Thời gian", "Người tạo", "Trạng thái", "Ngày tạo"].map(
                   (h) => (
                     <th key={h} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                       {h}
@@ -224,7 +237,7 @@ export function ExamList() {
 
       {list.length > 100 && (
         <p className="text-[12px]" style={{ color: INK3 }}>
-          Đang hiện 100 đề đầu trong {list.length} kết quả — lọc thêm để thu hẹp.
+          Lọc thêm để thu hẹp kết quả.
         </p>
       )}
     </div>
@@ -249,6 +262,7 @@ function Dong({ e, i, onMo }: { e: Exam; i: number; onMo: () => void }) {
         )}
       </td>
       <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.loai}</td>
+      <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.coSo}</td>
       <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.kyNang}</td>
       <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.capDo}</td>
       <td className="px-[12px] tabular-nums" style={{ color: INK2 }}>{e.soCau}</td>

@@ -106,7 +106,8 @@ export function TestResults({ row }: { row: ClassRow }) {
       </div>
 
       <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
-        <table className="border-collapse text-[12.5px]">
+        {/* w-full để lớp ít bài không bỏ trống nửa màn bên phải */}
+        <table className="w-full border-collapse text-[12.5px]">
           <thead>
             <tr style={{ background: NAVY, color: "#fff" }}>
               <th
@@ -125,7 +126,7 @@ export function TestResults({ row }: { row: ClassRow }) {
                   {t.ten}
                   <br />
                   <span style={{ opacity: 0.75 }}>
-                    buổi {t.buoi} · {t.ngay.slice(0, 5)}
+                    buổi {t.buoi} · {t.ngay.split("/").slice(0, 2).join("/")}
                   </span>
                 </th>
               ))}
@@ -177,7 +178,7 @@ export function TestResults({ row }: { row: ClassRow }) {
                     className="px-[10px] text-center font-semibold tabular-nums"
                     style={{ background: "#f8f9fc", color: tb === null ? INK3 : tone(tb).fg }}
                   >
-                    {tb ?? "—"}
+                    {tb === null ? "—" : tb.toFixed(1)}
                   </td>
                 </tr>
               );
@@ -196,7 +197,7 @@ export function TestResults({ row }: { row: ClassRow }) {
               </td>
               {tests.map((t) => (
                 <td key={t.id} className="px-[6px] text-center font-semibold tabular-nums" style={{ color: NAVY }}>
-                  {t.daThi ? (tbLop(t.id) ?? "—") : "—"}
+                  {t.daThi ? (tbLop(t.id)?.toFixed(1) ?? "—") : "—"}
                 </td>
               ))}
               <td style={{ background: "#e4e9f3" }} />
