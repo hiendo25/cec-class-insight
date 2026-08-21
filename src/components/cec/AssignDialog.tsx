@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CLASSES, type ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { useModal } from "@/lib/useModal";
+import { giaoBai, hoanTacGiao } from "@/data/overrides";
 import { EXAMS as KHO_DE, EXAM_LOAI, EXAM_KY_NANG, EXAM_CAP_DO } from "@/data/exams";
 import { SESSIONS } from "@/data/sessions";
 import {
@@ -115,6 +116,10 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
 
   const [bindSession, setBindSession] = useState(true);
   const [sessionBy, setSessionBy] = useState<Record<number, number>>({});
+  /* Đã giao xong -> giữ id để còn hoàn tác. KH yêu cầu có nút Hoàn tác 10 giây. */
+  const [daGiaoId, setDaGiaoId] = useState<string | null>(null);
+  const [conLai, setConLai] = useState(10);
+
   const [dueMode, setDueMode] = useState<"bySession" | "same">("bySession");
   const [dueSame, setDueSame] = useState("");
 
@@ -209,6 +214,17 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
         `Hạn nộp trước ngày học của ${bad.map((c) => c.code).join(", ")} — học sinh không kịp nộp.`,
       );
   }
+
+  /* Đếm ngược cửa sổ hoàn tác; hết giờ thì đóng modal */
+  useEffect(() => {
+    if (!daGiaoId) return;
+    if (conLai <= 0) {
+      onClose();
+      return;
+    }
+    const t = setTimeout(() => setConLai((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [daGiaoId, conLai, onClose]);
 
   const canSubmit = !!exam && classIds.length > 0 && totalStudents > 0 && blocks.length === 0;
 
@@ -812,6 +828,35 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
           )}
         </div>
 
+        {daGiaoId && (
+          <div
+            className="flex flex-wrap items-center gap-[12px] px-[20px] py-[12px] text-[12.5px]"
+            style={{ background: "#e6f5ec", borderTop: `1px solid #cbe6d6`, color: "#1f6f4a" }}
+          >
+            <b>Đã giao {exam?.name}</b> cho {picked.length} lớp · {totalStudents} học sinh.
+            <span className="flex-1" />
+            <button
+              type="button"
+              onClick={() => {
+                hoanTacGiao(daGiaoId);
+                setDaGiaoId(null);
+              }}
+              className="rounded-[6px] px-[12px] py-[6px] font-semibold"
+              style={{ border: `1px solid #1f6f4a`, background: "#fff", color: "#1f6f4a" }}
+            >
+              Hoàn tác ({conLai}s)
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-[6px] px-[12px] py-[6px] font-semibold text-white"
+              style={{ background: "#1f6f4a" }}
+            >
+              Xong
+            </button>
+          </div>
+        )}
+
         <footer
           className="flex items-center gap-[12px] px-[20px] py-[13px]"
           style={{ borderTop: `1px solid ${LINE}`, background: "#fbfcfe" }}
@@ -841,7 +886,20 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
           <button
             type="button"
             disabled={!canSubmit}
-            onClick={onClose}
+            onClick={() => {
+              if (!exam) return;
+              /* Ghi nhận THẬT — trước đây nút này gọi onClose, y hệt nút Huỷ:
+                 modal đóng, QC tưởng đã giao mà thực tế không giao gì. */
+              const id = giaoBai({
+                examId: exam.id,
+                examTen: exam.name,
+                classIds: picked.map((c) => c.id),
+                soHocSinh: totalStudents,
+                hanNop: dueMode === "same" && dueSame ? dueSame : "theo buổi của từng lớp",
+              });
+              setDaGiaoId(id);
+              setConLai(10);
+            }}
             title={
               canSubmit
                 ? undefined

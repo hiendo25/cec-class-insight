@@ -18,6 +18,19 @@ type Store = {
   monthly: Record<string, ReportStatus>;
   /** đã gửi lời nhắc cho ai — để nút đổi thành "Đã nhắc" thay vì nhắc lại */
   reminded: Record<string, true>;
+  /** bài QC vừa giao trong phiên — trước đây nút "Giao bài" gọi onClose,
+   *  tức bấm xong modal đóng mà KHÔNG giao gì, QC tưởng đã giao */
+  daGiao: BaiDaGiao[];
+};
+
+export type BaiDaGiao = {
+  id: string;
+  examId: string;
+  examTen: string;
+  classIds: number[];
+  soHocSinh: number;
+  hanNop: string;
+  giaoLuc: string;
 };
 
 const KEY = "cec-qc-overrides";
@@ -25,7 +38,7 @@ const KEY = "cec-qc-overrides";
 /** Đọc lại việc QC đã làm ở lần trước — F5 mà mất sạch thì QC tưởng chưa duyệt,
  *  duyệt lại từ đầu. */
 const doc = (): Store => {
-  if (typeof window === "undefined") return { report: {}, monthly: {}, reminded: {} };
+  if (typeof window === "undefined") return { report: {}, monthly: {}, reminded: {}, daGiao: [] };
   try {
     const raw = window.localStorage.getItem(KEY);
     const j = raw ? JSON.parse(raw) : null;
@@ -33,15 +46,16 @@ const doc = (): Store => {
       report: j?.report ?? {},
       monthly: j?.monthly ?? {},
       reminded: j?.reminded ?? {},
+      daGiao: j?.daGiao ?? [],
     };
   } catch {
-    return { report: {}, monthly: {}, reminded: {} };
+    return { report: {}, monthly: {}, reminded: {}, daGiao: [] };
   }
 };
 
 /* Bắt đầu RỖNG để bản dựng trên máy chủ và trên trình duyệt giống nhau;
    nạp localStorage sau khi trang đã gắn xong (xem useOverrides). */
-let state: Store = { report: {}, monthly: {}, reminded: {} };
+let state: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [] };
 let daNap = false;
 
 /** Nạp việc đã lưu — gọi một lần sau khi trang gắn xong */
@@ -49,7 +63,7 @@ const napMotLan = () => {
   if (daNap || typeof window === "undefined") return;
   daNap = true;
   const luu = doc();
-  if (Object.keys(luu.report).length || Object.keys(luu.monthly).length || Object.keys(luu.reminded).length) {
+  if (Object.keys(luu.report).length || Object.keys(luu.monthly).length || Object.keys(luu.reminded).length || luu.daGiao.length) {
     state = luu;
     subs.forEach((f) => f());
   }
@@ -97,7 +111,7 @@ export const useOverrides = () => {
   );
 };
 
-const TRONG: Store = { report: {}, monthly: {}, reminded: {} };
+const TRONG: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [] };
 
 /** Trạng thái thật của một phiếu, sau khi tính lớp ghi đè */
 export const reportStatusOf = (id: string, goc: ReportStatus): ReportStatus =>
@@ -108,3 +122,24 @@ export const monthlyStatusOf = (key: string, goc: ReportStatus): ReportStatus =>
   state.monthly[key] ?? goc;
 
 export const daNhac = (key: string) => !!state.reminded[key];
+
+/** Ghi nhận một lượt giao bài THẬT. Trả về id để hoàn tác. */
+export const giaoBai = (b: Omit<BaiDaGiao, "id" | "giaoLuc">) => {
+  const id = "gb-" + state.daGiao.length + "-" + b.examId;
+  state.daGiao = [
+    ...state.daGiao,
+    { ...b, id, giaoLuc: new Date().toLocaleString("vi-VN") },
+  ];
+  emit();
+  return id;
+};
+
+/** Hoàn tác lượt giao vừa rồi — KH yêu cầu có nút Hoàn tác trong 10 giây */
+export const hoanTacGiao = (id: string) => {
+  state.daGiao = state.daGiao.filter((x) => x.id !== id);
+  emit();
+};
+
+export const baiDaGiao = () => state.daGiao;
+export const soBaiDaGiaoCuaLop = (classId: number) =>
+  state.daGiao.filter((b) => b.classIds.includes(classId)).length;
