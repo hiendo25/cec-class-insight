@@ -10,6 +10,7 @@ import {
   type ReportStatus,
 } from "@/data/reports";
 import { IconCheck, IconChevronLeft, IconClipboard, IconWarn } from "./icons";
+import { MonthlyBatch } from "./MonthlyBatch";
 import { topicFull, topicVi } from "@/data/topics";
 import { useAction } from "./ActionDialog";
 import {
@@ -656,6 +657,9 @@ export function MonthlyReportTab({ row }: { row: ClassRow }) {
   );
   const [month, setMonth] = useState(months[0] ?? "");
   const [open, setOpen] = useState<{ s: Student; m: Monthly } | null>(null);
+  /* Hai chế độ xem: từng em (ma trận cũ) và duyệt hàng loạt cả lớp (WF-10).
+     Cuối tháng QC cần cái sau — lớp 9 em mà mở 9 lần thì mất cả buổi. */
+  const [cheDo, setCheDo] = useState<"tung-em" | "ca-lop">("ca-lop");
 
   if (!months.length)
     return (
@@ -669,8 +673,45 @@ export function MonthlyReportTab({ row }: { row: ClassRow }) {
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-[8px] text-[12.5px]">
+        <span className="flex rounded-[6px] p-[2px]" style={{ background: "#eef0f5" }}>
+          {(["ca-lop", "tung-em"] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCheDo(c)}
+              className="rounded-[5px] px-[11px] py-[5px]"
+              style={{
+                background: cheDo === c ? "#fff" : "transparent",
+                fontWeight: cheDo === c ? 600 : 400,
+                color: cheDo === c ? INK : INK2,
+                boxShadow: cheDo === c ? "0 1px 2px rgba(20,28,56,0.10)" : undefined,
+              }}
+            >
+              {c === "ca-lop" ? "Duyệt cả lớp" : "Xem từng em"}
+            </button>
+          ))}
+        </span>
+        <select
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          style={{ border: `1px solid #d9dde5`, background: "#fff", color: INK }}
+        >
+          {months.map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
+        </select>
+      </div>
+
+      {cheDo === "ca-lop" ? (
+        <MonthlyBatch row={row} month={month} />
+      ) : (
+        <>
       <GenPanel row={row} month={month} onMonth={setMonth} onGen={() => undefined} />
       <List row={row} month={month} onOpen={(s, m) => setOpen({ s, m })} />
+        </>
+      )}
     </div>
   );
 }

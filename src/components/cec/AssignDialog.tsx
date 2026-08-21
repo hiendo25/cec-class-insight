@@ -109,6 +109,9 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
 
   const [bindSession, setBindSession] = useState(true);
   const [sessionBy, setSessionBy] = useState<Record<number, number>>({});
+  /* Màn xác nhận trung gian: hiện MỌI thứ đáng ngờ trước khi bấm giao thật */
+  const [dangXacNhan, setDangXacNhan] = useState(false);
+
   /* Đã giao xong -> giữ id để còn hoàn tác. KH yêu cầu có nút Hoàn tác 10 giây. */
   const [daGiaoId, setDaGiaoId] = useState<string | null>(null);
   const [conLai, setConLai] = useState(10);
@@ -207,6 +210,22 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
         `Hạn nộp trước ngày học của ${bad.map((c) => c.code).join(", ")} — học sinh không kịp nộp.`,
       );
   }
+
+  /* Kiểm tra 4: em Bảo lưu / Đã nghỉ lọt vào danh sách nhận bài.
+     Đo trên dữ liệu thật: bài chỉ giao cho em Đang học, em bảo lưu không nhận bài.
+     Đây là CẢNH BÁO chứ không chặn cứng — QC có thể cố ý giao bù. */
+  const emKhongDangHoc = useMemo(() => {
+    if (mode !== "class") return [];
+    const ra: { id: string; name: string; code: string; state: string; classCode: string }[] = [];
+    for (const c of picked) {
+      for (const st of STUDENTS[c.id] ?? []) {
+        if (st.state === "Đang học") continue;
+        if (!states.includes(st.state)) continue;
+        ra.push({ id: st.id, name: st.name, code: st.code, state: st.state, classCode: c.code });
+      }
+    }
+    return ra;
+  }, [picked, states, mode]);
 
   /* Đếm ngược cửa sổ hoàn tác; hết giờ thì đóng modal */
   useEffect(() => {
@@ -821,6 +840,61 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
           )}
         </div>
 
+        {dangXacNhan && !daGiaoId && (
+          <div
+            className="flex flex-col gap-[10px] px-[20px] py-[13px]"
+            style={{ background: "#fdf7ee", borderTop: `1px solid #f0dcc0` }}
+          >
+            <p className="text-[13px] font-semibold" style={{ color: WARN }}>
+              Kiểm tra trước khi giao
+            </p>
+
+            {emKhongDangHoc.length > 0 && (
+              <div className="text-[12.5px]" style={{ color: INK }}>
+                <p style={{ color: WARN }}>
+                  Có {emKhongDangHoc.length} em không ở trạng thái Đang học trong danh sách nhận:
+                </p>
+                <ul className="mt-[5px] flex flex-col gap-[3px]">
+                  {emKhongDangHoc.slice(0, 5).map((e) => (
+                    <li key={e.id} className="flex flex-wrap items-center gap-[7px]">
+                      <span style={{ color: INK }}>{e.name}</span>
+                      <span className="tabular-nums text-[11.5px]" style={{ color: INK3 }}>{e.code}</span>
+                      <span
+                        className="rounded-[4px] px-[6px] py-[1px] text-[11px]"
+                        style={{ background: "#f0f2f6", color: INK2 }}
+                      >
+                        {e.state}
+                      </span>
+                      <span className="text-[11.5px]" style={{ color: INK3 }}>{e.classCode}</span>
+                    </li>
+                  ))}
+                  {emKhongDangHoc.length > 5 && (
+                    <li className="text-[11.5px]" style={{ color: INK3 }}>
+                      … {emKhongDangHoc.length - 5} em nữa
+                    </li>
+                  )}
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => setStates(["Đang học"])}
+                  className="mt-[7px] rounded-[6px] px-[11px] py-[6px] text-[12px] font-semibold"
+                  style={{ border: `1px solid #d9dde5`, background: "#fff", color: NAVY }}
+                >
+                  Chỉ giao cho em đang học
+                </button>
+              </div>
+            )}
+
+            {notes.length > 0 && (
+              <ul className="flex flex-col gap-[3px] text-[12.5px]" style={{ color: INK2 }}>
+                {notes.map((n) => (
+                  <li key={n}>· {n}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
         {daGiaoId && (
           <div
             className="flex flex-wrap items-center gap-[12px] px-[20px] py-[12px] text-[12.5px]"
@@ -881,6 +955,11 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
             disabled={!canSubmit}
             onClick={() => {
               if (!exam) return;
+              /* Có gì đáng ngờ thì hỏi lại trước, không giao thẳng */
+              if (!dangXacNhan && (emKhongDangHoc.length > 0 || notes.length > 2)) {
+                setDangXacNhan(true);
+                return;
+              }
               /* Ghi nhận THẬT — trước đây nút này gọi onClose, y hệt nút Huỷ:
                  modal đóng, QC tưởng đã giao mà thực tế không giao gì. */
               const id = giaoBai({
@@ -903,7 +982,7 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
             className="rounded-[6px] px-[16px] py-[8px] text-[12.5px] font-semibold text-white"
             style={{ background: canSubmit ? NAVY : "#b9c0cc", cursor: canSubmit ? "pointer" : "not-allowed" }}
           >
-            Giao bài
+            {dangXacNhan ? `Vẫn giao cho ${totalStudents} em` : "Giao bài"}
           </button>
         </footer>
       </div>

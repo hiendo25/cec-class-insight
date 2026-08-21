@@ -10,6 +10,8 @@ import { ResultMatrix } from "./ResultMatrix";
 import { TestResults } from "./TestResults";
 import { GradingQueue } from "./GradingQueue";
 import { Person } from "./Person";
+import { MonthlyBatch } from "./MonthlyBatch";
+import { MONTHLY } from "@/data/reports";
 import { daNhac, markReminded, useOverrides } from "@/data/overrides";
 import {
   IconBell,
@@ -503,6 +505,85 @@ function PhieuBuoi({ st }: { st: "draft" | "pending" | "approved" | null }) {
       style={{ background: m.bg, color: m.fg }}>
       {m.t}
     </span>
+  );
+}
+
+/**
+ * Tab Kết quả — hai chế độ xem.
+ *
+ * "Theo buổi" là ma trận HS x buổi đã có. "Duyệt cả lớp" là màn cuối tháng:
+ * lớp 9 em mà mở 9 lần thì mất cả buổi, nên gom về một chỗ có ba cờ để QC
+ * chỉ phải đọc kỹ thẻ vàng và đỏ.
+ */
+function KetQua(props: {
+  row: ClassRow;
+  openNoteKey?: string | undefined;
+  openMonthKey?: string | undefined;
+  onOpenNote: (key: string | null) => void;
+  onOpenMonth: (key: string | null) => void;
+}) {
+  const { row } = props;
+  const [cheDo, setCheDo] = useState<"buoi" | "thang">("buoi");
+
+  /* Tháng có báo cáo — lấy từ chính dữ liệu, không bịa danh sách */
+  const thangCo = useMemo(() => {
+    const ra = new Set<string>();
+    for (const s of STUDENTS[row.id] ?? [])
+      for (const m of MONTHLY[s.id] ?? []) ra.add(m.month);
+    return [...ra].sort((a, b) => {
+      const [ma, ya] = a.split("/");
+      const [mb, yb] = b.split("/");
+      return Number(yb) * 100 + Number(mb) - (Number(ya) * 100 + Number(ma));
+    });
+  }, [row.id]);
+  const [thang, setThang] = useState(thangCo[0] ?? "");
+
+  return (
+    <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-wrap items-center gap-[8px] text-[12.5px]">
+        <span className="flex rounded-[6px] p-[2px]" style={{ background: "#eef0f5" }}>
+          {(["buoi", "thang"] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCheDo(c)}
+              className="rounded-[5px] px-[11px] py-[5px]"
+              style={{
+                background: cheDo === c ? "#fff" : "transparent",
+                fontWeight: cheDo === c ? 600 : 400,
+                color: cheDo === c ? INK : INK2,
+                boxShadow: cheDo === c ? "0 1px 2px rgba(20,28,56,0.10)" : undefined,
+              }}
+            >
+              {c === "buoi" ? "Điểm theo buổi" : "Báo cáo tháng — duyệt cả lớp"}
+            </button>
+          ))}
+        </span>
+        {cheDo === "thang" && thangCo.length > 0 && (
+          <select
+            value={thang}
+            onChange={(e) => setThang(e.target.value)}
+            className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+            style={{ border: `1px solid #d9dde5`, background: "#fff", color: INK }}
+          >
+            {thangCo.map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+        )}
+      </div>
+
+      {cheDo === "buoi" ? (
+        <ResultMatrix {...props} />
+      ) : thangCo.length === 0 ? (
+        <p className="rounded-[10px] bg-white py-[36px] text-center text-[13px]"
+          style={{ border: `1px solid ${LINE}`, color: INK3 }}>
+          Lớp này chưa có báo cáo tháng nào.
+        </p>
+      ) : (
+        <MonthlyBatch row={row} month={thang} />
+      )}
+    </div>
   );
 }
 
@@ -1021,7 +1102,7 @@ export function ClassWorkspace({
       {tab === "Lịch học" && <TabSessions row={row} onAssign={() => setAssignOpen(true)} />}
       {tab === "Bài tập" && <TabAssignments row={row} onAssign={() => setAssignOpen(true)} />}
       {tab === "Kết quả" && (
-        <ResultMatrix
+        <KetQua
           row={row}
           openNoteKey={openNoteKey}
           openMonthKey={openMonthKey}
