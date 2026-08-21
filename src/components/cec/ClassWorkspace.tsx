@@ -43,9 +43,11 @@ type Stats = {
   absentTotal: number;
 };
 
-/** Học sinh cần chú ý: điểm dưới 5, hoặc còn ≥3 bài chưa nộp, hoặc vắng ≥2 buổi */
+/** Học sinh cần chú ý theo mắt QC: đang nợ bài, hoặc điểm dưới 5, hoặc vắng từ 2 buổi.
+ *  Trước đây đòi nợ TỪ 3 BÀI mới tính, nên nhãn ghi (0) trong khi hai màn khác
+ *  cùng lúc báo "5 em nợ bài" — QC không tin được con số nào. */
 const isAtRisk = (s: Student) =>
-  (s.avg !== null && s.avg < 5) || s.assigned - s.submitted >= 3 || s.absent >= 2;
+  s.assigned - s.submitted > 0 || (s.avg !== null && s.avg < 5) || s.absent >= 2;
 
 function useStats(row: ClassRow): Stats {
   return useMemo(() => {
@@ -949,7 +951,7 @@ export function ClassWorkspace({
       {tab === "Học sinh" && <TabStudents
           stats={stats}
           onOpenStudent={(st) => onOpenStudent(st.id)}
-          onOpenAssign={() => setAssignOpen(true)}
+          onOpenAssign={(st) => setAssignFor(st.id)}
         />}
       {tab === "Lịch học" && <TabSessions row={row} onAssign={() => setAssignOpen(true)} />}
       {tab === "Bài tập" && <TabAssignments row={row} onAssign={() => setAssignOpen(true)} />}

@@ -45,6 +45,8 @@ export function ActionProvider({ children }: { children: ReactNode }) {
       {pending && (
         <div
           className="fixed inset-0 z-[70] flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
           style={{ background: "rgba(20,28,56,0.34)" }}
           onClick={() => setPending(null)}
         >

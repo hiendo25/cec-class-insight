@@ -1161,6 +1161,8 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
       {saveOpen && (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
           style={{ background: "rgba(20,28,56,0.34)" }}
           onClick={() => setSaveOpen(false)}
         >
@@ -1213,6 +1215,8 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
       {delView && (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
           style={{ background: "rgba(20,28,56,0.34)" }}
           onClick={() => setDelView(null)}
         >

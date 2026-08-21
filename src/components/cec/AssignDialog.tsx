@@ -183,6 +183,8 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
   return (
     <div
       className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto py-[36px]"
+          role="dialog"
+          aria-modal="true"
       style={{ background: "rgba(20,28,56,0.42)" }}
       onClick={onClose}
     >
