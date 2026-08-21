@@ -68,6 +68,10 @@ function ClassDetail() {
         row={row}
         openStudentId={search.hs}
         onOpenStudent={(id) => setSearch(id ? { hs: id } : {})}
+        openNoteKey={search.nx}
+        openMonthKey={search.bc}
+        onOpenNote={(k) => setSearch(k ? { nx: k } : {})}
+        onOpenMonth={(k) => setSearch(k ? { bc: k } : {})}
         tab={TAB_SLUG[tab] ?? "Học sinh"}
         onTab={(label) =>
           navigate({

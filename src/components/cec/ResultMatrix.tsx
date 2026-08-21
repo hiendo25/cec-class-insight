@@ -32,7 +32,21 @@ type Col =
   | { kind: "session"; no: number; date: string; label: string }
   | { kind: "month"; month: string };
 
-export function ResultMatrix({ row }: { row: ClassRow }) {
+export function ResultMatrix({
+  row,
+  openNoteKey,
+  openMonthKey,
+  onOpenNote,
+  onOpenMonth,
+}: {
+  row: ClassRow;
+  /** "<studentId>:<số buổi>" lấy từ URL */
+  openNoteKey?: string | undefined;
+  /** "<studentId>:<MM/YYYY>" lấy từ URL */
+  openMonthKey?: string | undefined;
+  onOpenNote: (key: string | null) => void;
+  onOpenMonth: (key: string | null) => void;
+}) {
   const students = STUDENTS[row.id] ?? [];
   const sessions = SESSIONS[row.id] ?? [];
   const assigns = ASSIGNMENTS[row.id] ?? [];
@@ -42,8 +56,28 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
   /** QC phải duyệt phiếu giáo viên điền — trước đây phải bấm từng ô mới biết
    *  ô nào đang chờ, nên bật cờ này để tô sáng đúng những ô cần xử lý. */
   const [onlyPending, setOnlyPending] = useState(false);
-  const [openMonth, setOpenMonth] = useState<{ s: Student; m: Monthly } | null>(null);
-  const [openNote, setOpenNote] = useState<{ s: Student; no: number } | null>(null);
+  /* Hai màn con nằm trên URL để F5 giữ nguyên chỗ đang xem và Back về đúng bảng */
+  const setOpenMonth = (v: { s: Student; m: Monthly } | null) =>
+    onOpenMonth(v ? `${v.s.id}:${v.m.month}` : null);
+  const setOpenNote = (v: { s: Student; no: number } | null) =>
+    onOpenNote(v ? `${v.s.id}:${v.no}` : null);
+
+  const openNote = (() => {
+    if (!openNoteKey) return null;
+    const [sid, no] = openNoteKey.split(":");
+    const s = students.find((x) => x.id === sid);
+    return s && no ? { s, no: Number(no) } : null;
+  })();
+
+  const openMonth = (() => {
+    if (!openMonthKey) return null;
+    const i = openMonthKey.indexOf(":");
+    const sid = openMonthKey.slice(0, i);
+    const month = openMonthKey.slice(i + 1);
+    const s = students.find((x) => x.id === sid);
+    const m = (MONTHLY[sid] ?? []).find((x) => x.month === month);
+    return s && m ? { s, m } : null;
+  })();
 
   /** cột: các buổi theo thứ tự, chèn cột "Báo cáo tháng" ở cuối mỗi tháng */
   const cols = useMemo<Col[]>(() => {
@@ -82,7 +116,7 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
         s={openMonth.s}
         m={openMonth.m}
         row={row}
-        onBack={() => setOpenMonth(null)}
+        onBack={() => onOpenMonth(null)}
       />
     );
   if (openNote)
@@ -91,7 +125,7 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
         student={openNote.s}
         session={openNote.no}
         row={row}
-        onBack={() => setOpenNote(null)}
+        onBack={() => onOpenNote(null)}
       />
     );
 

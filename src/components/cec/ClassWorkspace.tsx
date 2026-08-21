@@ -749,6 +749,10 @@ export function ClassWorkspace({
   onBack,
   openStudentId,
   onOpenStudent,
+  openNoteKey,
+  openMonthKey,
+  onOpenNote,
+  onOpenMonth,
 }: {
   row: ClassRow;
   /** tab hiện tại do URL quyết định — để F5 và nút Back của trình duyệt chạy đúng */
@@ -758,6 +762,11 @@ export function ClassWorkspace({
   /** id học sinh đang mở hồ sơ, lấy từ URL */
   openStudentId?: string | undefined;
   onOpenStudent: (id: string | null) => void;
+  /** nhận xét buổi và báo cáo tháng đang mở, cũng lấy từ URL */
+  openNoteKey?: string | undefined;
+  openMonthKey?: string | undefined;
+  onOpenNote: (key: string | null) => void;
+  onOpenMonth: (key: string | null) => void;
 }) {
   const [assignOpen, setAssignOpen] = useState(false);
   const stats = useStats(row);
@@ -859,7 +868,15 @@ export function ClassWorkspace({
       {tab === "Học sinh" && <TabStudents stats={stats} onOpenStudent={(st) => onOpenStudent(st.id)} />}
       {tab === "Lịch học" && <TabSessions row={row} />}
       {tab === "Bài tập" && <TabAssignments row={row} />}
-      {tab === "Kết quả" && <ResultMatrix row={row} />}
+      {tab === "Kết quả" && (
+        <ResultMatrix
+          row={row}
+          openNoteKey={openNoteKey}
+          openMonthKey={openMonthKey}
+          onOpenNote={onOpenNote}
+          onOpenMonth={onOpenMonth}
+        />
+      )}
       {tab === "Lịch sử" && <TabHistory row={row} />}
 
       {assignOpen && <AssignDialog from={row} onClose={() => setAssignOpen(false)} />}
