@@ -43,6 +43,7 @@ export function TestResults({ row }: { row: ClassRow }) {
       </p>
     );
 
+  const daBoBot = students.length - list.length;
   const daThi = tests.filter((t) => t.daThi);
   const sapThi = tests.filter((t) => !t.daThi);
 
@@ -78,6 +79,9 @@ export function TestResults({ row }: { row: ClassRow }) {
       )}
 
       <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
+        {/* Bộ lọc này BẬT SẴN nên phải nói thẳng là bảng đang loại bao nhiêu em —
+            nếu không QC đọc "Trung bình lớp" cho phụ huynh mà không biết số đó
+            đã bỏ 2 em, và con số trông hoàn toàn hợp lý. */}
         <button
           type="button"
           onClick={() => setChiDangHoc((v) => !v)}
@@ -89,10 +93,15 @@ export function TestResults({ row }: { row: ClassRow }) {
             fontWeight: chiDangHoc ? 600 : 400,
           }}
         >
-          {chiDangHoc ? "Chỉ em đang học" : "Đang xem cả em đã nghỉ"}
+          {chiDangHoc ? "✓ Chỉ em đang học" : "Đang xem cả em đã nghỉ"}
         </button>
         <span style={{ color: INK3 }}>
-          {daThi.length} bài đã thi · {sapThi.length} bài sắp thi · {list.length} học sinh
+          {daThi.length} bài đã thi · {sapThi.length} bài sắp thi
+        </span>
+        <span style={{ color: daBoBot > 0 ? WARN : INK3, fontWeight: daBoBot > 0 ? 600 : 400 }}>
+          {daBoBot > 0
+            ? `Bảng đang tính trên ${list.length}/${students.length} em — đã bỏ ${daBoBot} em bảo lưu hoặc đã nghỉ`
+            : `${list.length} học sinh`}
         </span>
       </div>
 
@@ -181,6 +190,9 @@ export function TestResults({ row }: { row: ClassRow }) {
                 style={{ background: "#eef1f7", width: 200, minWidth: 200, maxWidth: 200, color: NAVY, boxShadow: "1px 0 0 0 rgba(20,28,56,0.10)" }}
               >
                 Trung bình lớp
+                <span className="ml-[6px] text-[11px] font-normal" style={{ color: INK2 }}>
+                  ({list.length} em)
+                </span>
               </td>
               {tests.map((t) => (
                 <td key={t.id} className="px-[6px] text-center font-semibold tabular-nums" style={{ color: NAVY }}>

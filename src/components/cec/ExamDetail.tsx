@@ -46,6 +46,10 @@ export function ExamDetail({ exam }: { exam: Exam }) {
   const navigate = useNavigate();
   const { ask } = useAction();
   const [tab, setTab] = useState<Tab>("Cấu trúc đề");
+  /* Bấm "Thử làm" thì mở luôn bản thử ngay trong màn — trước đây chỉ báo
+     "Đang mở bản thử..." mà không mở gì, tức nút nói dối đúng ở chỗ quan trọng
+     nhất của màn này. */
+  const [thuLam, setThuLam] = useState(false);
   const tt = TT_STYLE[exam.trangThai] ?? TT_STYLE["Nháp"]!;
 
   const chuaXuatBan = exam.trangThai === "Nháp";
@@ -101,7 +105,8 @@ export function ExamDetail({ exam }: { exam: Exam }) {
                 </>
               ),
               confirmLabel: "Bắt đầu thử làm",
-              doneText: `Đang mở bản thử của ${exam.ten}.`,
+              doneText: `Đã mở bản thử của ${exam.ten}.`,
+              run: () => setThuLam(true),
             })
           }
           className="flex shrink-0 items-center gap-[7px] rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
@@ -136,6 +141,8 @@ export function ExamDetail({ exam }: { exam: Exam }) {
           )}
         </div>
       )}
+
+      {thuLam && <ThuLam exam={exam} onDong={() => setThuLam(false)} />}
 
       {/* tab */}
       <nav className="flex items-end gap-[3px]" style={{ borderBottom: `1px solid ${LINE}` }}>
@@ -272,5 +279,80 @@ export function ExamDetail({ exam }: { exam: Exam }) {
         </section>
       )}
     </div>
+  );
+}
+
+/** Bản thử của đề — QC làm thử để kiểm đáp án và máy chấm trước khi giao */
+function ThuLam({ exam, onDong }: { exam: Exam; onDong: () => void }) {
+  const [phan, setPhan] = useState(0);
+  const p = exam.parts[phan]!;
+
+  return (
+    <section className="rounded-[8px] bg-white" style={{ border: `2px solid ${NAVY}` }}>
+      <div
+        className="flex flex-wrap items-center gap-[10px] px-[15px] py-[10px]"
+        style={{ background: "#eef1f7", borderBottom: `1px solid ${LINE}` }}
+      >
+        <span className="text-[13px] font-semibold" style={{ color: NAVY }}>
+          Bản thử — {exam.ten}
+        </span>
+        <span className="text-[12px]" style={{ color: INK2 }}>
+          Bài thử không tính vào kết quả của học sinh nào.
+        </span>
+        <span className="flex-1" />
+        <button
+          type="button"
+          onClick={onDong}
+          className="rounded-[6px] px-[11px] py-[6px] text-[12.5px]"
+          style={{ border: `1px solid ${LINE}`, background: "#fff", color: INK }}
+        >
+          Đóng bản thử
+        </button>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-[7px] px-[15px] pt-[11px] text-[12.5px]">
+        {exam.parts.map((x, i) => (
+          <button
+            key={x.id}
+            type="button"
+            onClick={() => setPhan(i)}
+            className="rounded-[6px] px-[10px] py-[5px]"
+            style={{
+              border: `1px solid ${i === phan ? NAVY : LINE}`,
+              background: i === phan ? "#eef1f7" : "#fff",
+              color: i === phan ? NAVY : INK2,
+              fontWeight: i === phan ? 600 : 400,
+            }}
+          >
+            Phần {x.no} · {x.dangTen}
+          </button>
+        ))}
+      </div>
+
+      <div className="px-[15px] py-[13px]">
+        <p className="mb-[10px] text-[13px]" style={{ color: INK }}>
+          {p.huongDan}
+        </p>
+        <div className="flex flex-col gap-[9px]">
+          {Array.from({ length: Math.min(p.soCau, 5) }, (_, i) => (
+            <div
+              key={i}
+              className="rounded-[6px] px-[12px] py-[9px] text-[13px]"
+              style={{ border: `1px solid ${LINE}`, background: "#fbfcfe", color: INK2 }}
+            >
+              <span className="font-semibold" style={{ color: INK }}>
+                Câu {i + 1}.
+              </span>{" "}
+              Nội dung câu hỏi lấy từ đề gốc — cần API đọc câu hỏi của bản dựng thật.
+            </div>
+          ))}
+          {p.soCau > 5 && (
+            <p className="text-[12px]" style={{ color: INK3 }}>
+              … và {p.soCau - 5} câu nữa trong phần này.
+            </p>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
