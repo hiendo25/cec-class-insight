@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Person } from "./Person";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import { ME } from "@/data/me";
 import { useAction } from "./ActionDialog";
@@ -1307,26 +1308,6 @@ function RowMenu({ row, onOpen }: { row: ClassRow; onOpen?: () => void }) {
         </div>
       )}
     </div>
-  );
-}
-
-/** Tên người kèm avatar chữ cái đầu — màu suy từ tên nên luôn ổn định */
-const AV = ["#2b3f7a", "#1f6f4a", "#8a5a10", "#6b2fa0", "#136d5e", "#a03c3c"];
-function Person({ name }: { name: string }) {
-  const parts = name.trim().split(/\s+/);
-  const initials = (parts[0][0] + (parts.at(-1)?.[0] ?? "")).toUpperCase();
-  const bg = AV[[...name].reduce((a, c) => a + c.charCodeAt(0), 0) % AV.length];
-  return (
-    <span className="inline-flex min-w-0 items-center gap-[7px]">
-      <span
-        className="grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full text-[10px] font-semibold text-white"
-        style={{ background: bg }}
-        aria-hidden="true"
-      >
-        {initials}
-      </span>
-      <span className="truncate">{name}</span>
-    </span>
   );
 }
 

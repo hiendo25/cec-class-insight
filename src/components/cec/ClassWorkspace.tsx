@@ -8,6 +8,7 @@ import { StudentProfile } from "./StudentProfile";
 import { ResultMatrix } from "./ResultMatrix";
 import { TestResults } from "./TestResults";
 import { GradingQueue } from "./GradingQueue";
+import { Person } from "./Person";
 import { daNhac, markReminded, useOverrides } from "@/data/overrides";
 import {
   IconBell,
@@ -439,9 +440,9 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                   {s.time}
                 </td>
                 <td className="px-[12px]" style={{ color: INK2 }}>{s.room}</td>
-                <td className="whitespace-nowrap px-[12px]">{s.teacher}</td>
-                <td className="whitespace-nowrap px-[12px]" style={{ color: s.ta ? INK : INK3 }}>
-                  {s.ta ?? "—"}
+                <td className="max-w-[190px] px-[12px]"><Person name={s.teacher} /></td>
+                <td className="max-w-[190px] px-[12px]" style={{ color: s.ta ? INK : INK3 }}>
+                  {s.ta ? <Person name={s.ta} /> : "—"}
                 </td>
                 {/* Phiếu nhận xét buổi: GV/TA điền, QC DUYỆT. Không có cột này thì QC
                     không biết còn phiếu nào phải đòi — PROD gọi là "Lesson Report". */}
