@@ -135,6 +135,9 @@ export function ExamList() {
     return [...list].sort((x, y) => {
       const a = key(x), b = key(y);
       const r = typeof a === "string" ? a.localeCompare(b as string, "vi") : (a as number) - (b as number);
+      /* Cột Thời gian/Câu có nhiều đề trùng giá trị — xếp phụ theo ngày tạo mới nhất
+         để khối trùng không nằm theo thứ tự ngẫu nhiên mỗi lần sort. */
+      if (r === 0 && c !== "ngayTao") return ngaySo(y.ngayTao) - ngaySo(x.ngayTao);
       return sap.giam ? -r : r;
     });
   }, [list, sap]);
@@ -237,12 +240,25 @@ export function ExamList() {
       </div>
 
       {list.length === 0 ? (
-        <p
-          className="rounded-[8px] bg-white py-[40px] text-center text-[13px]"
+        <div
+          className="flex flex-col items-center gap-[10px] rounded-[8px] bg-white py-[40px] text-center text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: INK3 }}
         >
-          Không có đề nào khớp bộ lọc.
-        </p>
+          <span>
+            <strong style={{ color: INK }}>0 đề</strong> khớp bộ lọc — kho vẫn còn {theoTab.length} đề.
+          </span>
+          <span className="text-[12px]">Bộ lọc đang quá hẹp, không phải lỗi màn hình.</span>
+          <button
+            type="button"
+            onClick={() => {
+              setLoc(TRONG);
+              setQ("");
+            }}
+            className="cec-btn cec-btn-secondary"
+          >
+            Bỏ hết bộ lọc
+          </button>
+        </div>
       ) : (
         <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
           <table className="w-full border-collapse text-[13px]">
@@ -290,7 +306,7 @@ export function ExamList() {
             onClick={() => setSoHien((n) => n + 100)}
             className="cec-btn cec-btn-secondary"
           >
-            Tải thêm 100 đề
+            Tải thêm {Math.min(100, list.length - soHien)} đề
           </button>
           <span>Còn {list.length - soHien} đề chưa hiện — hoặc lọc thêm để thu hẹp.</span>
         </div>
