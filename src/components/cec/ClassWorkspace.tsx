@@ -231,7 +231,7 @@ function TabStudents({
                 "Điểm TB",
                 "Vắng",
                 "Ghi chú của QC",
-                "Phản hồi phụ huynh",
+                "Phản hồi PH",
                 "",
               ].map((h, i, a) => (
                 <th
@@ -263,16 +263,18 @@ function TabStudents({
                     borderBottom: `1px solid #edeff4`,
                   }}
                 >
-                  <td className="px-[12px] py-[10px]">
+                  {/* PROD có avatar ở MỌI chỗ hiện tên người (ảnh P02) — giữ nút bấm,
+                      bọc avatar vào trong để không mất đường mở hồ sơ em. */}
+                  <td className="max-w-[240px] px-[12px] py-[10px]">
                     <button
                       type="button"
                       onClick={() => onOpenStudent(s)}
-                      className="font-medium hover:underline"
+                      className="max-w-full font-medium hover:underline"
                       style={{ color: NAVY }}
                     >
-                      {s.name}
+                      <Person name={s.name} size={24} />
                     </button>
-                    <span className="ml-[7px] text-[11.5px]" style={{ color: INK3 }}>
+                    <span className="ml-[31px] block text-[11.5px] tabular-nums" style={{ color: INK3 }}>
                       {s.code}
                     </span>
                   </td>
@@ -285,16 +287,18 @@ function TabStudents({
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-[12px] text-[12px]" style={{ color: INK2 }}>
-                    {s.kind === "Quay lại" ? (
-                      <span
-                        className="rounded-[4px] px-[7px] py-[2px]"
-                        style={{ border: `1px solid #cfe3d6`, color: OK }}
-                      >
-                        Quay lại
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                    {/* PROD hiện chip cho CẢ HAI loại (ảnh P02) — trước đây em "Mới"
+                        để trống nên không phân biệt được với ô chưa có dữ liệu. */}
+                    <span
+                      className="rounded-[4px] px-[7px] py-[2px]"
+                      style={
+                        s.kind === "Quay lại"
+                          ? { border: `1px solid #cfe3d6`, color: OK }
+                          : { border: `1px solid #dfe3ea`, color: INK2 }
+                      }
+                    >
+                      {s.kind}
+                    </span>
                   </td>
                   <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>
                     {s.joinedAt}
