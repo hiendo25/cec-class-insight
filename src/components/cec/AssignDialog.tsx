@@ -112,9 +112,11 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
     STUDENT_STATES.forEach((s) => (m[s] = 0));
     picked.forEach((c) => {
       const list = STUDENTS[c.id] ?? [];
-      // dữ liệu mẫu chưa có tình trạng học -> coi phần lớn là Đang học
-      list.forEach((_, i) => {
-        const st = i % 11 === 3 ? "Bảo lưu" : i % 13 === 5 ? "Đã nghỉ" : "Đang học";
+      // Tình trạng học lấy từ trường state THẬT của học sinh.
+      // Trước đây suy từ chỉ số i % 11 / i % 13 vì lúc viết chưa có trường này —
+      // nhưng students.ts đã có state từ lâu, và chính file này dòng dưới đã dùng.
+      list.forEach((s) => {
+        const st = s.state;
         m[st] = (m[st] ?? 0) + 1;
       });
     });
@@ -130,10 +132,7 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
    *  Trước đây chip ghi sĩ số lớp (9 em) trong khi chỉ giao cho 7 em đang học. */
   const willReceive = (classId: number) => {
     const list = STUDENTS[classId] ?? [];
-    return list.filter((_, i) => {
-      const st = i % 11 === 3 ? "Bảo lưu" : i % 13 === 5 ? "Đã nghỉ" : "Đang học";
-      return states.includes(st);
-    }).length;
+    return list.filter((s) => states.includes(s.state)).length;
   };
 
   /* ---- lời nhắc, không chặn ---- */

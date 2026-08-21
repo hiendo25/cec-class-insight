@@ -491,7 +491,13 @@ function TabAssignments({ row, onAssign }: { row: ClassRow; onAssign: () => void
       {list.map((a) => {
         const missing = a.total - a.submitted;
         const ungraded = a.submitted - a.graded;
-        const late = students.slice(0, missing).map((s) => s.name);
+        /* Em chưa nộp phải DẪN XUẤT từ chính số bài của em (assigned > submitted),
+           KHÔNG được lấy N em đầu danh sách — tên này dùng để gửi tin nhắn nhắc,
+           lấy nhầm là nhắc trúng em đã nộp còn em nợ thật thì không ai nhắc. */
+        const late = students
+          .filter((s) => s.assigned - s.submitted > 0)
+          .slice(0, missing)
+          .map((s) => s.name);
         return (
           <div key={a.id} className="rounded-[8px] bg-white px-[16px] py-[13px]" style={{ border: `1px solid ${LINE}` }}>
             <div className="flex flex-wrap items-center gap-[12px]">

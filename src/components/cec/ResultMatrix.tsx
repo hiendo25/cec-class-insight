@@ -138,8 +138,10 @@ export function ResultMatrix({
   const score = (s: Student, no: number) => {
     const r = reps.find((x) => x.studentId === s.id && x.session === no);
     if (!r || r.hwScore === null) return null;
-    if (mode === "Điểm cao nhất") return Math.min(10, +(r.hwScore + 0.4).toFixed(1));
-    if (mode === "Lần đầu") return Math.max(0, +(r.hwScore - 0.4).toFixed(1));
+    /* Dữ liệu hiện chỉ lưu MỘT điểm cho mỗi buổi, không lưu từng lần làm.
+       Trước đây hai chế độ này cộng/trừ 0.4 vào điểm gốc — tức BỊA điểm.
+       Giữ nguyên điểm thật; chế độ quy điểm chỉ thật sự dùng được khi BE
+       trả về điểm của từng lần làm. */
     return r.hwScore;
   };
 
@@ -223,25 +225,10 @@ function Matrix({
     <div className="flex flex-col gap-[10px]">
       {/* thanh điều khiển — bám theo PROD */}
       <div className="flex flex-wrap items-center gap-x-[14px] gap-y-[8px] text-[12.5px]">
-        <span style={{ color: INK2 }}>Cách lấy điểm:</span>
-        <span className="flex rounded-[6px] p-[2px]" style={{ background: "#eef0f5" }}>
-          {SCORE_MODES.map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => setMode(m)}
-              className="rounded-[5px] px-[10px] py-[4px] text-[12.5px]"
-              style={{
-                background: mode === m ? "#fff" : "transparent",
-                fontWeight: mode === m ? 600 : 400,
-                color: mode === m ? INK : INK2,
-                boxShadow: mode === m ? "0 1px 2px rgba(20,28,56,0.10)" : undefined,
-              }}
-            >
-              {m}
-            </button>
-          ))}
-        </span>
+        {/* Bỏ bộ chọn "Cách lấy điểm": dữ liệu chỉ lưu MỘT điểm mỗi buổi nên ba chế độ
+            cho ra cùng một số — bấm mà số không đổi là nút lừa. Audit PROD cũng chấm
+            đây là tuỳ chọn của báo cáo, không thuộc màn theo dõi (_EXPECTED_QC:404). */}
+        <span style={{ color: INK3 }}>Điểm bài tập online theo từng buổi</span>
 
         {pendingCount > 0 && (
           <button
