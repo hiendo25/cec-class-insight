@@ -39,6 +39,9 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
   const reps = REPORTS[row.id] ?? [];
 
   const [mode, setMode] = useState<ScoreMode>("Lần gần nhất");
+  /** QC phải duyệt phiếu giáo viên điền — trước đây phải bấm từng ô mới biết
+   *  ô nào đang chờ, nên bật cờ này để tô sáng đúng những ô cần xử lý. */
+  const [onlyPending, setOnlyPending] = useState(false);
   const [openMonth, setOpenMonth] = useState<{ s: Student; m: Monthly } | null>(null);
   const [openNote, setOpenNote] = useState<{ s: Student; no: number } | null>(null);
 
@@ -106,7 +109,11 @@ export function ResultMatrix({ row }: { row: ClassRow }) {
 
   const NAME_W = 200;
 
-  return <Matrix {...{ row, students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W }} />;
+  return (
+    <Matrix
+      {...{ row, students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W, onlyPending, setOnlyPending }}
+    />
+  );
 }
 
 /** Bảng ma trận — tách riêng để dùng hook cuộn mà không vướng nhánh return sớm ở trên */
@@ -122,11 +129,15 @@ type MatrixProps = {
   setOpenMonth: (v: { s: Student; m: Monthly }) => void;
   setOpenNote: (v: { s: Student; no: number }) => void;
   NAME_W: number;
+  onlyPending: boolean;
+  setOnlyPending: (v: boolean) => void;
 };
 
 function Matrix({
   students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W,
+  onlyPending, setOnlyPending,
 }: MatrixProps) {
+  const pendingCount = reps.filter((r) => r.status !== "approved").length;
   const boxRef = useRef<HTMLDivElement>(null);
   const [hidden, setHidden] = useState({ left: 0, right: 0 });
 
@@ -184,6 +195,22 @@ function Matrix({
           ))}
         </span>
 
+        {pendingCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setOnlyPending(!onlyPending)}
+            className="rounded-[6px] px-[11px] py-[5px] text-[12.5px]"
+            style={{
+              border: `1px solid ${onlyPending ? NAVY : "#d9dde5"}`,
+              background: onlyPending ? "#eef1f7" : "#fff",
+              color: onlyPending ? NAVY : INK,
+              fontWeight: onlyPending ? 600 : 400,
+            }}
+          >
+            {pendingCount} phiếu chờ bạn duyệt
+          </button>
+        )}
+
         <span className="flex-1" />
 
         <span className="flex items-center gap-[6px]" style={{ color: INK2 }}>
@@ -195,7 +222,7 @@ function Matrix({
         <span className="flex items-center gap-[6px]" style={{ color: INK2 }}>
           <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdecea" }} /> dưới 5
         </span>
-        <span style={{ color: INK2 }}>NX = chưa có điểm · 📋 = báo cáo tháng</span>
+        <span style={{ color: INK2 }}>NX = chưa có điểm · 📋 = báo cáo tháng · ô viền chấm = phiếu chờ duyệt</span>
       </div>
 
       {(hidden.left > 0 || hidden.right > 0) && (
@@ -346,17 +373,22 @@ function Matrix({
 
                     const v = score(s, c.no);
                     const t = v === null ? null : tone(v);
+                    const cho = rep.status !== "approved";
                     return (
                       <td key={`s-${c.no}`} className="px-[5px] py-[5px] text-center" style={{ background: bg }}>
                         <button
                           type="button"
                           onClick={() => setOpenNote({ s, no: c.no })}
-                          title="Xem nhận xét buổi"
+                          title={cho ? "Phiếu chờ bạn duyệt — bấm để xem" : "Xem nhận xét buổi"}
                           className="inline-flex min-w-[46px] items-center justify-center gap-[4px] rounded-[5px] px-[6px] py-[3px] tabular-nums"
                           style={{
                             background: t?.bg ?? "transparent",
                             color: t?.fg ?? INK3,
                             fontWeight: v === null ? 400 : 600,
+                            /* phiếu chờ duyệt: viền chấm để QC thấy ngay ô nào phải xử lý */
+                            outline: cho ? `1.5px dashed ${NAVY}` : undefined,
+                            outlineOffset: cho ? "1px" : undefined,
+                            opacity: onlyPending && !cho ? 0.24 : 1,
                           }}
                         >
                           {v === null ? "NX" : v.toFixed(1)}

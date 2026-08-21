@@ -747,23 +747,33 @@ export function ClassWorkspace({
   tab,
   onTab,
   onBack,
+  openStudentId,
+  onOpenStudent,
 }: {
   row: ClassRow;
   /** tab hiện tại do URL quyết định — để F5 và nút Back của trình duyệt chạy đúng */
   tab: Tab;
   onTab: (t: Tab) => void;
   onBack: () => void;
+  /** id học sinh đang mở hồ sơ, lấy từ URL */
+  openStudentId?: string | undefined;
+  onOpenStudent: (id: string | null) => void;
 }) {
   const [assignOpen, setAssignOpen] = useState(false);
-  const [openStudent, setOpenStudent] = useState<Student | null>(null);
   const stats = useStats(row);
+
+  /* Hồ sơ học sinh nằm trên URL (?hs=...) chứ không phải state nội bộ,
+     để F5 giữ nguyên chỗ đang xem và nút Back quay về đúng bảng học sinh. */
+  const openStudent = openStudentId
+    ? (stats.students.find((x) => x.id === openStudentId) ?? null)
+    : null;
 
   if (openStudent)
     return (
       <StudentProfile
         student={openStudent}
         row={row}
-        onBack={() => setOpenStudent(null)}
+        onBack={() => onOpenStudent(null)}
       />
     );
 
@@ -846,7 +856,7 @@ export function ClassWorkspace({
       </nav>
 
 
-      {tab === "Học sinh" && <TabStudents stats={stats} onOpenStudent={setOpenStudent} />}
+      {tab === "Học sinh" && <TabStudents stats={stats} onOpenStudent={(st) => onOpenStudent(st.id)} />}
       {tab === "Lịch học" && <TabSessions row={row} />}
       {tab === "Bài tập" && <TabAssignments row={row} />}
       {tab === "Kết quả" && <ResultMatrix row={row} />}
