@@ -6,6 +6,7 @@ import { AssignDialog } from "./AssignDialog";
 import { useAction } from "./ActionDialog";
 import { StudentProfile } from "./StudentProfile";
 import { ResultMatrix } from "./ResultMatrix";
+import { TestResults } from "./TestResults";
 import {
   IconBell,
   IconCalendarCheck,
@@ -27,7 +28,7 @@ const WARN = "#b8791c";
 
 /** 5 tab đúng như CEC PROD — không tự đẻ thêm tab.
  *  Báo cáo tháng và nhận xét buổi nằm TRONG tab Kết quả, giống PROD. */
-const TABS = ["Học sinh", "Lịch học", "Bài tập", "Kết quả", "Lịch sử"] as const;
+const TABS = ["Học sinh", "Lịch học", "Bài tập", "Kết quả", "Điểm kiểm tra", "Lịch sử"] as const;
 export type Tab = (typeof TABS)[number];
 
 /* ---------- chỉ số của lớp ---------- */
@@ -977,6 +978,7 @@ export function ClassWorkspace({
           onOpenMonth={onOpenMonth}
         />
       )}
+      {tab === "Điểm kiểm tra" && <TestResults row={row} />}
       {tab === "Lịch sử" && <TabHistory row={row} />}
 
       {assignOpen && (

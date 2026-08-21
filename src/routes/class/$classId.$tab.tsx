@@ -9,6 +9,7 @@ export const TAB_SLUG: Record<string, Tab> = {
   "lich-hoc": "Lịch học",
   "bai-tap": "Bài tập",
   "ket-qua": "Kết quả",
+  "diem-kiem-tra": "Điểm kiểm tra",
   "lich-su": "Lịch sử",
 };
 export const slugOf = (label: Tab) =>
