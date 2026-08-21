@@ -31,3 +31,9 @@ dist-ssr
 *.sln
 *.sw?
 _dbg.mjs
+
+# script tam khi sua du lieu
+_fix*.mjs
+_gen*.mjs
+_patch.py
+_chk.mjs
