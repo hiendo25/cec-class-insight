@@ -14,6 +14,9 @@ export type ActionAsk = {
   /** câu báo sau khi làm xong */
   doneText: string;
   danger?: boolean;
+  /** việc THẬT chạy khi bấm xác nhận — không có thì hộp chỉ báo suông,
+   *  mà nút báo "đã duyệt" trong khi trạng thái không đổi còn tệ hơn nút chết */
+  run?: () => void;
 };
 
 type Ctx = { ask: (a: ActionAsk) => void };
@@ -63,6 +66,7 @@ export function ActionProvider({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={() => {
+                  pending.run?.();
                   setDone(pending.doneText);
                   setPending(null);
                   window.setTimeout(() => setDone(null), 3200);

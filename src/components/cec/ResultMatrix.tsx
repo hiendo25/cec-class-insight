@@ -9,6 +9,7 @@ import {
   type StudentReport,
 } from "@/data/reports";
 import { MonthlyDetail, SessionNote } from "./MonthlyReport";
+import { monthlyStatusOf, reportStatusOf, useOverrides } from "@/data/overrides";
 
 const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
@@ -52,6 +53,7 @@ export function ResultMatrix({
   const assigns = ASSIGNMENTS[row.id] ?? [];
   const reps = REPORTS[row.id] ?? [];
 
+  useOverrides();
   const [mode, setMode] = useState<ScoreMode>("Lần gần nhất");
   /** QC phải duyệt phiếu giáo viên điền — trước đây phải bấm từng ô mới biết
    *  ô nào đang chờ, nên bật cờ này để tô sáng đúng những ô cần xử lý. */
@@ -177,7 +179,7 @@ function Matrix({
   const pendingCount = (() => {
     const buoi = new Set(cols.filter((c) => c.kind === "session").map((c) => (c as { no: number }).no));
     const hs = new Set(students.map((x) => x.id));
-    return reps.filter((r) => r.status !== "approved" && buoi.has(r.session) && hs.has(r.studentId)).length;
+    return reps.filter((r) => reportStatusOf(r.id, r.status) !== "approved" && buoi.has(r.session) && hs.has(r.studentId)).length;
   })();
   const boxRef = useRef<HTMLDivElement>(null);
   const [hidden, setHidden] = useState({ left: 0, right: 0 });
@@ -374,7 +376,7 @@ function Matrix({
                               title={`Báo cáo tháng ${c.month} — ${m.status === "approved" ? "đã duyệt" : m.status === "pending" ? "chờ QC duyệt" : "nháp"}`}
                               className="text-[14px]"
                               style={{
-                                color: m.status === "approved" ? OK : m.status === "pending" ? NAVY : WARN,
+                                color: monthlyStatusOf(`${s.id}:${m.month}`, m.status) === "approved" ? OK : monthlyStatusOf(`${s.id}:${m.month}`, m.status) === "pending" ? NAVY : WARN,
                               }}
                             >
                               📋
@@ -402,7 +404,7 @@ function Matrix({
                             type="button"
                             onClick={() => setOpenNote({ s, no: c.no })}
                             title={
-                              (rep.status !== "approved" ? "Phiếu chờ bạn duyệt — " : "") +
+                              (reportStatusOf(rep.id, rep.status) !== "approved" ? "Phiếu chờ bạn duyệt — " : "") +
                               (rep.absenceReason ?? (rep.attendance === "absent" ? "Vắng không phép" : "Vắng có phép"))
                             }
                             className="inline-block min-w-[46px] rounded-[5px] px-[6px] py-[3px] text-[11.5px]"
@@ -410,9 +412,9 @@ function Matrix({
                               background: "#eceef3",
                               color: INK2,
                               fontStyle: "italic",
-                              outline: rep.status !== "approved" ? `1.5px dashed ${NAVY}` : undefined,
-                              outlineOffset: rep.status !== "approved" ? "1px" : undefined,
-                              opacity: onlyPending && rep.status === "approved" ? 0.24 : 1,
+                              outline: reportStatusOf(rep.id, rep.status) !== "approved" ? `1.5px dashed ${NAVY}` : undefined,
+                              outlineOffset: reportStatusOf(rep.id, rep.status) !== "approved" ? "1px" : undefined,
+                              opacity: onlyPending && reportStatusOf(rep.id, rep.status) === "approved" ? 0.24 : 1,
                             }}
                           >
                             {rep.attendance === "absent" ? "vắng" : "phép"}
@@ -422,7 +424,7 @@ function Matrix({
 
                     const v = score(s, c.no);
                     const t = v === null ? null : tone(v);
-                    const cho = rep.status !== "approved";
+                    const cho = reportStatusOf(rep.id, rep.status) !== "approved";
                     return (
                       <td key={`s-${c.no}`} className="px-[5px] py-[5px] text-center" style={{ background: bg }}>
                         <button

@@ -115,33 +115,66 @@ function Trend({ items }: { items: HistoryItem[] }) {
     );
 
   const W = 560;
-  const H = 120;
+  const H = 132;
   const PAD = 18;
-  const xs = (i: number) => PAD + (i * (W - PAD * 2)) / (pts.length - 1);
-  const ys = (v: number) => H - PAD - (v / 10) * (H - PAD * 2);
+  const L = 22;   // chừa chỗ cho nhãn điểm bên trái
+  const B = 26;   // chừa chỗ cho nhãn ngày bên dưới
+  const xs = (i: number) => L + (i * (W - L - 10)) / (pts.length - 1);
+  const ys = (v: number) => H - B - (v / 10) * (H - B - PAD);
   const line = pts.map((p, i) => `${i ? "L" : "M"}${xs(i)},${ys(to10(p))}`).join(" ");
   const area = `${line} L${xs(pts.length - 1)},${H - PAD} L${xs(0)},${H - PAD} Z`;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-[120px] w-full" role="img" aria-label="Xu hướng điểm">
+    <svg viewBox={`0 0 ${W} ${H}`} className="h-[132px] w-full" role="img" aria-label="Xu hướng điểm">
       {[0, 5, 10].map((g) => (
-        <line key={g} x1={PAD} x2={W - PAD} y1={ys(g)} y2={ys(g)} stroke={LINE} strokeWidth={1} />
+        <g key={g}>
+          <line x1={L} x2={W - 10} y1={ys(g)} y2={ys(g)} stroke={LINE} strokeWidth={1} />
+          <text x={L - 5} y={ys(g) + 3.5} textAnchor="end" style={{ fontSize: 9.5, fill: INK3 }}>
+            {g}
+          </text>
+        </g>
       ))}
       <path d={area} fill="rgba(30,45,92,0.08)" />
+
+      {/* nhãn ngày: đầu · giữa · cuối, đủ định vị mà không chen chữ */}
+      {[0, Math.floor((pts.length - 1) / 2), pts.length - 1]
+        .filter((i, k, a) => a.indexOf(i) === k)
+        .map((i, k, a) => (
+          <text
+            key={`d-${i}`}
+            x={xs(i)}
+            y={H - 8}
+            textAnchor={k === 0 ? "start" : k === a.length - 1 ? "end" : "middle"}
+            style={{ fontSize: 9.5, fill: INK3 }}
+          >
+            {pts[i]!.assignedAt.slice(0, 5)}
+          </text>
+        ))}
       <path d={line} fill="none" stroke={NAVY} strokeWidth={2} strokeLinejoin="round" />
       {pts.map((p, i) => {
         const v = to10(p);
         const last = i === pts.length - 1;
         return (
-          <circle
-            key={p.id}
-            cx={xs(i)}
-            cy={ys(v)}
-            r={last ? 5 : 3.5}
-            fill={last ? scoreTone(v).fg : "#ffffff"}
-            stroke={last ? scoreTone(v).fg : NAVY}
-            strokeWidth={2}
-          />
+          <g key={p.id}>
+            <circle
+              cx={xs(i)}
+              cy={ys(v)}
+              r={last ? 5 : 3.5}
+              fill={last ? scoreTone(v).fg : "#ffffff"}
+              stroke={last ? scoreTone(v).fg : NAVY}
+              strokeWidth={2}
+            />
+            {last && (
+              <text
+                x={xs(i) - 6}
+                y={ys(v) - 9}
+                textAnchor="end"
+                style={{ fontSize: 11, fontWeight: 600, fill: scoreTone(v).fg }}
+              >
+                {v.toFixed(1)}
+              </text>
+            )}
+          </g>
         );
       })}
     </svg>

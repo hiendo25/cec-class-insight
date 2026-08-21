@@ -821,7 +821,9 @@ export function ClassWorkspace({
   assignStudentId?: string | undefined;
 }) {
   const [assignOpenLocal, setAssignOpen] = useState(false);
-  const assignOpen = assignOpenLocal || !!openAssign;
+  /* giao riêng cho một em: giữ id để modal mở đúng chế độ "Chọn học sinh" */
+  const [assignFor, setAssignFor] = useState<string | null>(null);
+  const assignOpen = assignOpenLocal || !!openAssign || !!assignFor;
   const stats = useStats(row);
   const { ask } = useAction();
 
@@ -833,12 +835,19 @@ export function ClassWorkspace({
 
   if (openStudent)
     return (
-      <StudentProfile
-        student={openStudent}
-        row={row}
-        onBack={() => onOpenStudent(null)}
-        onAssign={() => setAssignOpen(true)}
-      />
+      <>
+        <StudentProfile
+          student={openStudent}
+          row={row}
+          onBack={() => onOpenStudent(null)}
+          onAssign={(sid) => setAssignFor(sid)}
+        />
+        {/* Modal phải vẽ NGAY TRONG nhánh này — hàm return sớm ở đây nên modal
+            đặt dưới cuối component sẽ không bao giờ hiện khi đang xem hồ sơ HS. */}
+        {assignFor && (
+          <AssignDialog from={row} studentId={assignFor} onClose={() => setAssignFor(null)} />
+        )}
+      </>
     );
 
   return (
@@ -958,9 +967,10 @@ export function ClassWorkspace({
       {assignOpen && (
         <AssignDialog
           from={row}
-          studentId={assignStudentId}
+          studentId={assignFor ?? assignStudentId}
           onClose={() => {
             setAssignOpen(false);
+            setAssignFor(null);
             onCloseAssign?.();
           }}
         />

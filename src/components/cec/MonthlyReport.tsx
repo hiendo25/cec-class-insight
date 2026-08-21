@@ -11,6 +11,14 @@ import {
 import { IconCheck, IconChevronLeft, IconClipboard, IconWarn } from "./icons";
 import { topicFull, topicVi } from "@/data/topics";
 import { useAction } from "./ActionDialog";
+import {
+  markReminded,
+  monthlyStatusOf,
+  reportStatusOf,
+  setMonthlyStatus,
+  setReportStatus,
+  useOverrides,
+} from "@/data/overrides";
 
 const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
@@ -353,6 +361,9 @@ export function MonthlyDetail({
 }) {
   const d = useMemo(() => draft(s, m), [s, m]);
   const { ask } = useAction();
+  useOverrides();
+  const mKeyId = `${s.id}:${m.month}`;
+  const status = monthlyStatusOf(mKeyId, m.status);
   const p = PROFILES[s.id];
   const reps = (REPORTS[row.id] ?? []).filter(
     (r) => r.studentId === s.id && r.date.split("/").slice(1).join("/") === m.month,
@@ -377,7 +388,7 @@ export function MonthlyDetail({
         </div>
         <Badge status={m.status} />
         <span className="flex-1" />
-        {m.status === "approved" ? (
+        {status === "approved" ? (
           <span className="flex items-center gap-2">
             <span className="text-[12.5px]" style={{ color: OK }}>
               Đã duyệt — sẵn sàng gửi phụ huynh
@@ -403,7 +414,7 @@ export function MonthlyDetail({
               Xuất file gửi phụ huynh
             </button>
           </span>
-        ) : m.status === "pending" ? (
+        ) : status === "pending" ? (
           /* Đang chờ duyệt mà QC chính là người duyệt — cho duyệt ngay tại đây */
           <span className="flex items-center gap-2">
             <button
@@ -420,6 +431,7 @@ export function MonthlyDetail({
                   confirmLabel: "Trả lại",
                   doneText: `Đã trả báo cáo của ${s.name} về cho người soạn.`,
                   danger: true,
+                  run: () => setMonthlyStatus(mKeyId, "draft"),
                 })
               }
               className="rounded-md px-3 py-[7px] text-[13px]"
@@ -440,6 +452,7 @@ export function MonthlyDetail({
                   ),
                   confirmLabel: "Duyệt",
                   doneText: `Đã duyệt báo cáo của ${s.name}.`,
+                  run: () => setMonthlyStatus(mKeyId, "approved"),
                 })
               }
               className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
@@ -462,6 +475,7 @@ export function MonthlyDetail({
                 ),
                 confirmLabel: "Gửi duyệt",
                 doneText: `Đã gửi báo cáo của ${s.name} chờ duyệt.`,
+                run: () => setMonthlyStatus(mKeyId, "pending"),
               })
             }
             className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
@@ -768,6 +782,7 @@ export function SessionNote({
   onBack: () => void;
 }) {
   const { ask } = useAction();
+  useOverrides();
   const rep = (REPORTS[row.id] ?? []).find(
     (r) => r.studentId === student.id && r.session === session,
   );
@@ -784,6 +799,7 @@ export function SessionNote({
       </div>
     );
 
+  const status = reportStatusOf(rep.id, rep.status);
   const a = ATT_LABEL[rep.attendance]!;
   const vang = rep.attendance === "absent" || rep.attendance === "excused";
   const skills = rep.skills ?? {};
@@ -802,12 +818,12 @@ export function SessionNote({
             {student.code} · Lớp {row.code} · Buổi {rep.session} · {rep.date}
           </p>
         </div>
-        <Badge status={rep.status} />
+        <Badge status={status} />
         <span className="flex-1" />
         <span className="text-[12.5px]" style={{ color: INK2 }}>
           Người điền: <strong style={{ color: INK }}>{rep.by}</strong>
         </span>
-        {rep.status !== "approved" && (
+        {status !== "approved" && (
           <span className="flex shrink-0 items-center gap-2">
             <button
               type="button"
@@ -823,6 +839,7 @@ export function SessionNote({
                   confirmLabel: "Trả lại",
                   doneText: `Đã trả phiếu buổi ${rep.session} về cho ${rep.by}.`,
                   danger: true,
+                  run: () => setReportStatus(rep.id, "draft"),
                 })
               }
               className="rounded-md px-3 py-[7px] text-[13px]"
@@ -843,6 +860,7 @@ export function SessionNote({
                   ),
                   confirmLabel: "Duyệt phiếu",
                   doneText: `Đã duyệt phiếu buổi ${rep.session} của ${student.name}.`,
+                  run: () => setReportStatus(rep.id, "approved"),
                 })
               }
               className="rounded-md px-4 py-[7px] text-[13px] font-semibold text-white"
