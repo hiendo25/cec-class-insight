@@ -543,13 +543,18 @@ export function AssignDialog({ from, onClose }: Props) {
               {bindSession && (
                 <div className="mt-[8px] flex flex-col gap-[7px]">
                   {picked.map((c) => {
-                    const list = (SESSIONS[c.id] ?? []).filter((s) => !s.past);
+                    /* Cho chọn cả buổi ĐÃ DẠY mà chưa giao bài — đó chính là
+                       buổi QC đang nợ, không được bỏ ra khỏi danh sách. */
+                    const all = SESSIONS[c.id] ?? [];
+                    const noBai = all.filter((s) => s.past && !s.homework);
+                    const sapToi = all.filter((s) => !s.past);
+                    const list = [...noBai, ...sapToi];
                     const cur = sessionBy[c.id] ?? list[0]?.no;
                     return (
                       <div key={c.id} className="flex items-center gap-[10px] text-[12.5px]">
                         <span className="w-[132px] shrink-0">{c.code}</span>
                         {list.length === 0 ? (
-                          <span style={{ color: WARN }}>Chưa có buổi nào sắp tới</span>
+                          <span style={{ color: WARN }}>Lớp chưa xếp buổi nào phía trước</span>
                         ) : (
                           <select
                             value={cur}
@@ -562,6 +567,7 @@ export function AssignDialog({ from, onClose }: Props) {
                             {list.map((s) => (
                               <option key={s.no} value={s.no}>
                                 Buổi {s.no} · {s.day} {s.date} · {s.time}
+                                {s.past ? " — đã dạy, đang nợ bài" : ""}
                               </option>
                             ))}
                           </select>
