@@ -14,11 +14,20 @@ export const noAccent = (s: string) =>
  * Giờ "ha" khớp "Hà", "Hân", "Hải" (đầu từ) nhưng không khớp "Phạm", "Phan".
  *
  * Nhiều từ khoá cách nhau bởi dấu cách thì phải khớp hết — gõ "ha hai" ra "Hà Hải".
+ *
+ * GÕ CÓ DẤU thì khớp CÓ DẤU: gõ "Hà" chỉ ra Hà, không ra Hân — vì người gõ dấu
+ * là đang biết rõ tên. Gõ không dấu "ha" thì ra cả Hà, Hân, Hải cho dễ tìm.
  */
+const coDau = (s: string) => /[̀-ͯ]/.test(s.normalize("NFD"));
+
 export const matchWords = (haystack: string, query: string) => {
-  const words = noAccent(haystack).split(/\s+/).filter(Boolean);
-  const keys = noAccent(query).split(/\s+/).filter(Boolean);
-  if (!keys.length) return true;
+  const q = query.trim();
+  if (!q) return true;
+
+  /* người gõ có dấu -> so nguyên văn, chỉ hạ chữ hoa */
+  const chuan = (s: string) => (coDau(q) ? s.toLowerCase() : noAccent(s));
+  const words = chuan(haystack).split(/\s+/).filter(Boolean);
+  const keys = chuan(q).split(/\s+/).filter(Boolean);
   return keys.every((k) => words.some((w) => w.startsWith(k)));
 };
 
