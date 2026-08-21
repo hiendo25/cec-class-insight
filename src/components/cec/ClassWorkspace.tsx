@@ -158,7 +158,11 @@ function TabStudents({
     "Tất cả": stats.students.length,
   };
 
-  const list = (onlyRisk ? stats.needAttention : stats.students).filter(inGroup);
+  /* Đếm theo ĐÚNG nhóm đang xem — trước đây nhãn đếm cả em đã nghỉ trong khi
+     bảng chỉ hiện em đang học, nên nhãn ghi (1) mà bảng có 4 dòng gạch đỏ. */
+  const inGroupList = stats.students.filter(inGroup);
+  const riskInGroup = inGroupList.filter(isAtRisk);
+  const list = onlyRisk ? riskInGroup : inGroupList;
 
   if (stats.students.length === 0)
     return (
@@ -199,7 +203,7 @@ function TabStudents({
           }}
         >
           <IconWarn size={14} />
-          Chỉ xem em cần chú ý ({stats.needAttention.length})
+          Chỉ xem em cần chú ý ({riskInGroup.length})
         </button>
         <span style={{ color: INK3 }}>
           Hiển thị {list.length}/{stats.students.length} học sinh
@@ -806,6 +810,8 @@ export function ClassWorkspace({
   openMonthKey,
   onOpenNote,
   onOpenMonth,
+  openAssign,
+  onCloseAssign,
 }: {
   row: ClassRow;
   /** tab hiện tại do URL quyết định — để F5 và nút Back của trình duyệt chạy đúng */
@@ -820,8 +826,12 @@ export function ClassWorkspace({
   openMonthKey?: string | undefined;
   onOpenNote: (key: string | null) => void;
   onOpenMonth: (key: string | null) => void;
+  /** mở sẵn modal giao bài — dùng khi bấm "Giao bài" từ màn xuyên lớp */
+  openAssign?: boolean;
+  onCloseAssign?: () => void;
 }) {
-  const [assignOpen, setAssignOpen] = useState(false);
+  const [assignOpenLocal, setAssignOpen] = useState(false);
+  const assignOpen = assignOpenLocal || !!openAssign;
   const stats = useStats(row);
   const { ask } = useAction();
 
@@ -954,7 +964,15 @@ export function ClassWorkspace({
       )}
       {tab === "Lịch sử" && <TabHistory row={row} />}
 
-      {assignOpen && <AssignDialog from={row} onClose={() => setAssignOpen(false)} />}
+      {assignOpen && (
+        <AssignDialog
+          from={row}
+          onClose={() => {
+            setAssignOpen(false);
+            onCloseAssign?.();
+          }}
+        />
+      )}
     </div>
   );
 }

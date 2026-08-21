@@ -243,9 +243,10 @@ export function ClassProgress() {
                           navigate({
                             to: "/class/$classId/$tab",
                             params: { classId: String(r.id), tab: "bai-tap" },
+                            search: { giao: true },
                           })
                         }
-                        title="Mở tab Bài tập của lớp để giao"
+                        title={`Giao bài cho lớp ${r.code}`}
                         className="flex items-center gap-[5px] rounded-[6px] px-[9px] py-[5px] text-[12px]"
                         style={{ border: `1px solid ${LINE}`, color: NAVY }}
                       >

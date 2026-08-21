@@ -262,7 +262,13 @@ function draft(s: Student, m: Monthly) {
     manh.push(`Tiến bộ ở ${len.map((k) => `${k.name} (+${k.delta})`).join(", ")} so với tháng trước.`);
   if (vung.length)
     manh.push(`Nắm vững ${vung.map((v) => topicFull(v.topic)).join(", ")} — tỉ lệ sai dưới 15%.`);
-  if (m.attendRate === 100) manh.push("Đi học đầy đủ cả tháng, không nghỉ buổi nào.");
+  /* Chỉ nói "đi học đầy đủ" khi thật sự không vắng buổi nào — trước đây chỉ xét
+     attendRate (đi trễ vẫn tính có mặt) nên câu này mâu thuẫn với chính băng
+     cảnh báo cùng màn. */
+  if (m.absent === 0 && m.excused === 0 && m.late === 0)
+    manh.push(`Đi học đầy đủ và đúng giờ cả ${m.reportCount} buổi trong tháng.`);
+  else if (m.absent === 0 && m.excused === 0)
+    manh.push(`Đi học đủ ${m.reportCount} buổi, có ${m.late} buổi tới muộn.`);
   if (!owed && m.hwTotal) manh.push(`Nộp đủ ${m.hwTotal} bài tập được giao.`);
 
   const caithien: string[] = [];
@@ -271,6 +277,10 @@ function draft(s: Student, m: Monthly) {
   if (xuong.length)
     caithien.push(`Điểm thực hành giảm ở ${xuong.map((k) => `${k.name} (${k.delta})`).join(", ")}.`);
   if (owed) caithien.push(`Còn ${owed} bài chưa nộp trong tháng.`);
+  if (m.absent > 0)
+    caithien.push(`Vắng ${m.absent} buổi không phép — phần bài của buổi đó con bị hổng.`);
+  if (m.excused > 0 && m.absent === 0)
+    caithien.push(`Nghỉ có phép ${m.excused} buổi, cần học bù phần đã lỡ.`);
   if (m.hwLate) caithien.push(`${m.hwLate} bài nộp trễ hạn.`);
 
   const giaiphap: string[] = [];
@@ -391,7 +401,11 @@ export function MonthlyDetail({
         <Card
           label="Điểm bài tập TB"
           value={m.avgHw === null ? "—" : String(m.avgHw)}
-          sub={`riêng ${mLabel(m.month).toLowerCase()} · ${m.hwDone}/${m.hwTotal} bài`}
+          sub={
+            m.avgHw === null
+              ? `${mLabel(m.month).toLowerCase()} chưa có bài nào được chấm`
+              : `riêng ${mLabel(m.month).toLowerCase()} · ${m.hwDone}/${m.hwTotal} bài`
+          }
         />
         <Card
           label="Chủ điểm yếu nhất"

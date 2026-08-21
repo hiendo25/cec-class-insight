@@ -1453,7 +1453,7 @@ function renderCell(
           onClick={ctl.toggle}
           className="inline-flex max-w-full items-center gap-[5px] text-[12.5px] font-medium"
           style={{ color: urgent ? DANGER : WARN }}
-          title={r.issues.map((i) => i.title).join(" · ")}
+          title={`Còn ${r.issues.length} việc: ` + r.issues.map((i) => i.title).join(" · ")}
         >
           <IconWarn size={14} />
           <span className="truncate">{short}</span>
@@ -1466,6 +1466,11 @@ function renderCell(
               }}
             >
               +{rest}
+            </span>
+          )}
+          {rest > 0 && (
+            <span className="shrink-0 truncate text-[11.5px]" style={{ color: INK2, maxWidth: 92 }}>
+              · {sorted[1]?.title}
             </span>
           )}
           <span
