@@ -228,10 +228,17 @@ function TabStudents({
                 "Ghi chú của QC",
                 "Phản hồi phụ huynh",
                 "",
-              ].map((h) => (
+              ].map((h, i, a) => (
                 <th
                   key={h}
-                  className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold"
+                  className={
+                    /* cột thao tác cuối bảng: đóng băng bên phải để ở laptop hẹp
+                       nút Giao bài không bị cắt mất */
+                    i === a.length - 1
+                      ? "sticky right-0 whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold"
+                      : "whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold"
+                  }
+                  style={i === a.length - 1 ? { background: NAVY } : undefined}
                 >
                   {h}
                 </th>
@@ -319,7 +326,13 @@ function TabStudents({
                   >
                     <span className="line-clamp-2">{s.parentFeedback || "—"}</span>
                   </td>
-                  <td className="whitespace-nowrap px-[12px] py-[8px]">
+                  <td
+                    className="sticky right-0 whitespace-nowrap px-[12px] py-[8px]"
+                    style={{
+                      background: i % 2 ? "#f5f8fc" : "#fff",
+                      boxShadow: "-1px 0 0 0 rgba(20,28,56,0.10)",
+                    }}
+                  >
                     <button
                       type="button"
                       onClick={() => onOpenAssign(s)}

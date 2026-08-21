@@ -579,8 +579,9 @@ export function MonthlyDetail({
           style={{ background: "#fdf8ef", border: "1px solid #f0dfc0", color: "#7a5410" }}
         >
           <strong>Đang tính trên {m.reportCount}/{m.sessionTotal} buổi của tháng.</strong>{" "}
-          Còn {m.sessionTotal - m.reportCount} phiếu nhận xét buổi chưa được duyệt nên AI chưa
-          đưa vào. Duyệt nốt rồi tạo lại báo cáo thì số sẽ đầy đủ.
+          Còn {m.sessionTotal - m.reportCount} phiếu nhận xét buổi chưa vào báo cáo — gồm phiếu
+          đang chờ bạn duyệt và phiếu giáo viên chưa nộp. Bạn duyệt được phiếu đã nộp; phiếu
+          giáo viên chưa nộp thì phải đòi giáo viên nộp trước.
         </p>
       )}
 

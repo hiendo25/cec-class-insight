@@ -22,6 +22,8 @@ type Row = {
   st: Student;
   classId: number;
   classCode: string;
+  /** trạng thái lớp — lớp đã kết thúc/huỷ thì không được nhắc nợ bài */
+  classStatus: string;
   owed: number;
   /** bài em mở rồi bỏ giữa chừng — khác hẳn chưa mở */
   unfinished: number;
@@ -44,6 +46,9 @@ export function OwedStudents() {
   const { ask } = useAction();
   const [mineOnly, setMineOnly] = useState(true);
   const [owedOnly, setOwedOnly] = useState(true);
+  /* Lớp đã kết thúc / đã huỷ mặc định KHÔNG hiện: nhắn tin đòi bài phụ huynh
+     của lớp con đã học xong là chuyện không được phép xảy ra. */
+  const [keCaDongLop, setKeCaDongLop] = useState(false);
   const [q, setQ] = useState("");
 
   const rows = useMemo<Row[]>(() => {
@@ -66,6 +71,7 @@ export function OwedStudents() {
           st,
           classId: cls.id,
           classCode: cls.code,
+          classStatus: cls.status,
           owed: st.assigned - st.submitted,
           unfinished: p?.inProgress.length ?? 0,
           gap,
@@ -80,8 +86,11 @@ export function OwedStudents() {
     ? rows.filter((r) => CLASSES.find((c) => c.id === r.classId)?.qc === ME.name)
     : rows;
 
+  const dangChay = (r: Row) => r.classStatus === "Đang diễn ra";
+
   const list = useMemo(() => {
     return mineRows
+      .filter((r) => keCaDongLop || dangChay(r))
       .filter((r) => (owedOnly ? r.owed > 0 : true))
       .filter(
         (r) =>
@@ -90,10 +99,12 @@ export function OwedStudents() {
           matchCode(r.st.code, q) ||
           matchCode(r.classCode, q),
       );
-  }, [mineRows, owedOnly, q]);
+  }, [mineRows, owedOnly, q, keCaDongLop]);
 
-  const tongNo = mineRows.filter((r) => r.owed > 0).length;
-  const tongBai = mineRows.reduce((a, r) => a + Math.max(0, r.owed), 0);
+  const dungDem = mineRows.filter((r) => keCaDongLop || dangChay(r));
+  const tongNo = dungDem.filter((r) => r.owed > 0).length;
+  const tongBai = dungDem.reduce((a, r) => a + Math.max(0, r.owed), 0);
+  const soDongLop = mineRows.filter((r) => !dangChay(r) && r.owed > 0).length;
 
   return (
     <div className="mt-4 flex flex-col gap-[12px]">
@@ -151,9 +162,27 @@ export function OwedStudents() {
           {owedOnly ? "Chỉ em đang nợ bài" : "Đang xem tất cả học sinh"}
         </button>
 
+        {soDongLop > 0 && (
+          <button
+            type="button"
+            onClick={() => setKeCaDongLop((v) => !v)}
+            className="rounded-[6px] px-[11px] py-[7px]"
+            style={{
+              border: `1px solid ${keCaDongLop ? DANGER : LINE}`,
+              background: keCaDongLop ? "#fdecea" : "#fff",
+              color: keCaDongLop ? DANGER : INK,
+              fontWeight: keCaDongLop ? 600 : 400,
+            }}
+          >
+            {keCaDongLop
+              ? `Đang hiện cả ${soDongLop} em ở lớp đã đóng`
+              : `Ẩn ${soDongLop} em ở lớp đã kết thúc / huỷ`}
+          </button>
+        )}
+
         <span className="flex-1" />
         <span style={{ color: INK3 }}>
-          Hiển thị {list.length}/{mineRows.length} em
+          Hiển thị {list.length}/{dungDem.length} em
         </span>
       </div>
 
@@ -206,6 +235,14 @@ export function OwedStudents() {
                   </td>
                   <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>
                     {r.classCode}
+                    {!dangChay(r) && (
+                      <span
+                        className="ml-[7px] rounded-[4px] px-[6px] py-[1px] text-[11px]"
+                        style={{ background: "#fdecea", color: DANGER }}
+                      >
+                        {r.classStatus}
+                      </span>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-[12px] tabular-nums">
                     {r.owed > 0 ? (
@@ -239,6 +276,12 @@ export function OwedStudents() {
                               <>
                                 Gửi lời nhắc tới em <strong>{r.st.name}</strong> ({r.st.code}) lớp{" "}
                                 <strong>{r.classCode}</strong> — hiện còn <strong>{r.owed} bài</strong> chưa nộp.
+                                {!dangChay(r) && (
+                                  <span className="mt-2 block" style={{ color: DANGER }}>
+                                    Lưu ý: lớp này <strong>{r.classStatus.toLowerCase()}</strong>. Nhắc nợ bài
+                                    lúc này có thể làm phụ huynh khó hiểu — cân nhắc trước khi gửi.
+                                  </span>
+                                )}
                               </>
                             ),
                             confirmLabel: "Gửi lời nhắc",

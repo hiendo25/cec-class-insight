@@ -255,7 +255,7 @@ function Matrix({
               fontWeight: onlyPending ? 600 : 400,
             }}
           >
-            {pendingCount} phiếu chờ bạn duyệt
+            {onlyPending ? `Đang lọc: ${pendingCount} phiếu chờ duyệt — bấm để xem tất cả` : `${pendingCount} phiếu chờ bạn duyệt`}
           </button>
         )}
 
