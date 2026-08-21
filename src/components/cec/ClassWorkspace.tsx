@@ -3,6 +3,7 @@ import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
 import { AssignDialog } from "./AssignDialog";
+import { useAction } from "./ActionDialog";
 import { StudentProfile } from "./StudentProfile";
 import { ResultMatrix } from "./ResultMatrix";
 import {
@@ -138,9 +139,12 @@ const STATE_STYLE: Record<string, { background: string; color: string }> = {
 function TabStudents({
   stats,
   onOpenStudent,
+  onOpenAssign,
 }: {
   stats: Stats;
   onOpenStudent: (s: Student) => void;
+  /** giao bài riêng cho một em — mở modal, chế độ chọn học sinh */
+  onOpenAssign: (s: Student) => void;
 }) {
   const [onlyRisk, setOnlyRisk] = useState(false);
   const [group, setGroup] = useState<Group>("Đang học");
@@ -312,6 +316,7 @@ function TabStudents({
                   <td className="whitespace-nowrap px-[12px] py-[8px]">
                     <button
                       type="button"
+                      onClick={() => onOpenAssign(s)}
                       className="rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
                       style={{ border: `1px solid ${LINE}`, color: NAVY }}
                     >
@@ -353,7 +358,7 @@ function Dot({ on }: { on: boolean | null }) {
   );
 }
 
-function TabSessions({ row }: { row: ClassRow }) {
+function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void }) {
   const list = SESSIONS[row.id] ?? [];
   if (list.length === 0)
     return (
@@ -419,6 +424,7 @@ function TabSessions({ row }: { row: ClassRow }) {
                   {s.past && !s.homework && (
                     <button
                       type="button"
+                      onClick={onAssign}
                       className="rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
                       style={{ border: `1px solid ${LINE}`, color: NAVY }}
                     >
@@ -438,6 +444,7 @@ function TabSessions({ row }: { row: ClassRow }) {
 /* ---------- tab Bài tập ---------- */
 
 function TabAssignments({ row }: { row: ClassRow }) {
+  const { ask } = useAction();
   const list = ASSIGNMENTS[row.id] ?? [];
   const students = STUDENTS[row.id] ?? [];
 
@@ -497,6 +504,19 @@ function TabAssignments({ row }: { row: ClassRow }) {
                   </span>
                   <button
                     type="button"
+                    onClick={() =>
+                      ask({
+                        title: `Nhắc ${missing} em nộp bài`,
+                        body: (
+                          <>
+                            Gửi lời nhắc cho <strong>{missing} em</strong> chưa nộp bài{" "}
+                            <strong>{a.title}</strong>: {late.join(" · ")}
+                          </>
+                        ),
+                        confirmLabel: `Gửi cho ${missing} em`,
+                        doneText: `Đã gửi lời nhắc tới ${missing} em.`,
+                      })
+                    }
                     className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
                     style={{ border: `1px solid ${LINE}`, color: NAVY }}
                   >
@@ -519,6 +539,19 @@ function TabAssignments({ row }: { row: ClassRow }) {
                   </span>
                   <button
                     type="button"
+                    onClick={() =>
+                      ask({
+                        title: "Mở màn chấm bài",
+                        body: (
+                          <>
+                            Bài <strong>{a.title}</strong> còn <strong>{ungraded} bài</strong> chờ chấm.
+                            Màn chấm bài đang được dựng — sẽ mở thẳng danh sách bài của các em.
+                          </>
+                        ),
+                        confirmLabel: "Đã hiểu",
+                        doneText: "Màn chấm bài sẽ có ở đợt sau.",
+                      })
+                    }
                     className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold text-white"
                     style={{ background: NAVY }}
                   >
@@ -790,6 +823,7 @@ export function ClassWorkspace({
 }) {
   const [assignOpen, setAssignOpen] = useState(false);
   const stats = useStats(row);
+  const { ask } = useAction();
 
   /* Hồ sơ học sinh nằm trên URL (?hs=...) chứ không phải state nội bộ,
      để F5 giữ nguyên chỗ đang xem và nút Back quay về đúng bảng học sinh. */
@@ -841,6 +875,23 @@ export function ClassWorkspace({
         <div className="flex shrink-0 items-center gap-[8px]">
           <button
             type="button"
+            onClick={() =>
+              ask({
+                title: "Nhắc học sinh nộp bài",
+                body:
+                  stats.overdue > 0 ? (
+                    <>
+                      Lớp <strong>{row.code}</strong> còn <strong>{stats.overdue} bài</strong> chưa nộp.
+                      Gửi lời nhắc cho các em còn nợ?
+                    </>
+                  ) : (
+                    <>Lớp {row.code} hiện không em nào nợ bài.</>
+                  ),
+                confirmLabel: stats.overdue > 0 ? "Gửi lời nhắc" : "Đã hiểu",
+                doneText:
+                  stats.overdue > 0 ? "Đã gửi lời nhắc tới các em còn nợ bài." : "Không có ai cần nhắc.",
+              })
+            }
             className="flex items-center gap-[7px] rounded-[6px] bg-white px-[11px] py-[8px] text-[12.5px]"
             style={{ border: `1px solid #d9dde5`, color: INK }}
           >
@@ -885,8 +936,12 @@ export function ClassWorkspace({
       </nav>
 
 
-      {tab === "Học sinh" && <TabStudents stats={stats} onOpenStudent={(st) => onOpenStudent(st.id)} />}
-      {tab === "Lịch học" && <TabSessions row={row} />}
+      {tab === "Học sinh" && <TabStudents
+          stats={stats}
+          onOpenStudent={(st) => onOpenStudent(st.id)}
+          onOpenAssign={() => setAssignOpen(true)}
+        />}
+      {tab === "Lịch học" && <TabSessions row={row} onAssign={() => setAssignOpen(true)} />}
       {tab === "Bài tập" && <TabAssignments row={row} />}
       {tab === "Kết quả" && (
         <ResultMatrix

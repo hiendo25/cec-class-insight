@@ -171,7 +171,14 @@ function Matrix({
   students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W,
   onlyPending, setOnlyPending,
 }: MatrixProps) {
-  const pendingCount = reps.filter((r) => r.status !== "approved").length;
+  /* Chỉ đếm phiếu THỰC SỰ có ô trên bảng: ma trận chỉ vẽ buổi có trong lịch
+     và học sinh còn trong danh sách, nên đếm cả kho sẽ ra số lớn hơn số ô QC
+     nhìn thấy — bấm mãi không hết việc. */
+  const pendingCount = (() => {
+    const buoi = new Set(cols.filter((c) => c.kind === "session").map((c) => (c as { no: number }).no));
+    const hs = new Set(students.map((x) => x.id));
+    return reps.filter((r) => r.status !== "approved" && buoi.has(r.session) && hs.has(r.studentId)).length;
+  })();
   const boxRef = useRef<HTMLDivElement>(null);
   const [hidden, setHidden] = useState({ left: 0, right: 0 });
 
@@ -391,17 +398,25 @@ function Matrix({
                     if (rep.attendance === "absent" || rep.attendance === "excused")
                       return (
                         <td key={`s-${c.no}`} className="px-[6px] text-center" style={{ background: bg }}>
-                          <span
-                            title={rep.absenceReason ?? (rep.attendance === "absent" ? "Vắng không phép" : "Vắng có phép")}
+                          <button
+                            type="button"
+                            onClick={() => setOpenNote({ s, no: c.no })}
+                            title={
+                              (rep.status !== "approved" ? "Phiếu chờ bạn duyệt — " : "") +
+                              (rep.absenceReason ?? (rep.attendance === "absent" ? "Vắng không phép" : "Vắng có phép"))
+                            }
                             className="inline-block min-w-[46px] rounded-[5px] px-[6px] py-[3px] text-[11.5px]"
                             style={{
                               background: "#eceef3",
                               color: INK2,
                               fontStyle: "italic",
+                              outline: rep.status !== "approved" ? `1.5px dashed ${NAVY}` : undefined,
+                              outlineOffset: rep.status !== "approved" ? "1px" : undefined,
+                              opacity: onlyPending && rep.status === "approved" ? 0.24 : 1,
                             }}
                           >
                             {rep.attendance === "absent" ? "vắng" : "phép"}
-                          </span>
+                          </button>
                         </td>
                       );
 

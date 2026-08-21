@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Sidebar } from "./Sidebar";
+import { ActionProvider } from "./ActionDialog";
 
 const INK2 = "#6b7280";
 const INK3 = "#6a7386";
@@ -26,6 +27,7 @@ export function Shell({
   children: ReactNode;
 }) {
   return (
+    <ActionProvider>
     <div className="flex min-h-screen" style={{ background: "#f7f8fa", color: "#1f2430" }}>
       <Sidebar />
 
@@ -68,5 +70,6 @@ export function Shell({
         {children}
       </main>
     </div>
+    </ActionProvider>
   );
 }

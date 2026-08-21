@@ -5,6 +5,7 @@ import { STUDENTS, type Student } from "@/data/students";
 import { PROFILES } from "@/data/studentProfile";
 import { ME } from "@/data/me";
 import { IconBell, IconCheck, IconClipboard, IconSearch } from "./icons";
+import { useAction } from "./ActionDialog";
 
 const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
@@ -40,6 +41,7 @@ const dnum = (d: string) => d.split("/").reverse().join("");
  */
 export function OwedStudents() {
   const navigate = useNavigate();
+  const { ask } = useAction();
   const [mineOnly, setMineOnly] = useState(true);
   const [owedOnly, setOwedOnly] = useState(true);
   const [q, setQ] = useState("");
@@ -230,6 +232,19 @@ export function OwedStudents() {
                     <span className="flex gap-[7px]">
                       <button
                         type="button"
+                        onClick={() =>
+                          ask({
+                            title: `Nhắc ${r.st.name} nộp bài`,
+                            body: (
+                              <>
+                                Gửi lời nhắc tới em <strong>{r.st.name}</strong> ({r.st.code}) lớp{" "}
+                                <strong>{r.classCode}</strong> — hiện còn <strong>{r.owed} bài</strong> chưa nộp.
+                              </>
+                            ),
+                            confirmLabel: "Gửi lời nhắc",
+                            doneText: `Đã gửi lời nhắc tới ${r.st.name}.`,
+                          })
+                        }
                         className="flex items-center gap-[5px] rounded-[6px] px-[9px] py-[5px] text-[12px]"
                         style={{ border: `1px solid ${LINE}`, color: INK }}
                       >
@@ -237,6 +252,13 @@ export function OwedStudents() {
                       </button>
                       <button
                         type="button"
+                        onClick={() =>
+                          navigate({
+                            to: "/class/$classId/$tab",
+                            params: { classId: String(r.classId), tab: "bai-tap" },
+                          })
+                        }
+                        title="Mở tab Bài tập của lớp để giao"
                         className="flex items-center gap-[5px] rounded-[6px] px-[9px] py-[5px] text-[12px]"
                         style={{ border: `1px solid ${LINE}`, color: NAVY }}
                       >

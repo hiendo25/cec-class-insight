@@ -239,6 +239,13 @@ export function ClassProgress() {
                     <td className="whitespace-nowrap px-[12px] py-[7px]">
                       <button
                         type="button"
+                        onClick={() =>
+                          navigate({
+                            to: "/class/$classId/$tab",
+                            params: { classId: String(r.id), tab: "bai-tap" },
+                          })
+                        }
+                        title="Mở tab Bài tập của lớp để giao"
                         className="flex items-center gap-[5px] rounded-[6px] px-[9px] py-[5px] text-[12px]"
                         style={{ border: `1px solid ${LINE}`, color: NAVY }}
                       >

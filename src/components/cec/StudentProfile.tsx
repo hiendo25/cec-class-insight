@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { ClassRow } from "@/data/classes";
 import type { Student } from "@/data/students";
 import { topicVi } from "@/data/topics";
+import { useAction } from "./ActionDialog";
 import {
   PROFILES,
   type DailyPoint,
@@ -458,6 +459,7 @@ export function StudentProfile({
   onBack: () => void;
 }) {
   const profile: Profile = PROFILES[student.id] ?? { history: [], errors: [], daily: [], inProgress: [] };
+  const { ask } = useAction();
   const history = useMemo(
     () => [...profile.history].sort((a, b) => (dnum(a.assignedAt) > dnum(b.assignedAt) ? -1 : 1)),
     [profile.history],
@@ -570,6 +572,21 @@ export function StudentProfile({
         <div className="flex shrink-0 gap-2">
           <button
             type="button"
+            onClick={() =>
+              ask({
+                title: `Nhắc ${student.name} nộp bài`,
+                body:
+                  owed > 0 ? (
+                    <>
+                      Em <strong>{student.name}</strong> ({student.code}) còn <strong>{owed} bài</strong> chưa nộp.
+                    </>
+                  ) : (
+                    <>Em {student.name} đã nộp đủ bài.</>
+                  ),
+                confirmLabel: owed > 0 ? "Gửi lời nhắc" : "Đã hiểu",
+                doneText: owed > 0 ? `Đã gửi lời nhắc tới ${student.name}.` : "Không cần nhắc.",
+              })
+            }
             className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px]"
             style={{ border: `1px solid ${LINE}`, color: INK, background: "#fff" }}
           >
