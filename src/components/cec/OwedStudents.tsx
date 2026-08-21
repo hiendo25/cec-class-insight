@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { TODAY } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
 import { CLASSES } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
@@ -31,7 +32,6 @@ type Row = {
   gap: number | null;
 };
 
-const TODAY = new Date(2026, 7, 21);
 const dnum = (d: string) => d.split("/").reverse().join("");
 
 /**

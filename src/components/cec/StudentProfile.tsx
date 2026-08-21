@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { TODAY } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { SESSIONS } from "@/data/sessions";
 import type { Student } from "@/data/students";
@@ -47,7 +48,6 @@ function scoreTone(v: number) {
 const dnum = (d: string) => d.split("/").reverse().join("");
 
 /** mốc thời gian của dữ liệu mẫu */
-const TODAY = new Date(2026, 7, 20);
 
 /* ---------------- các mảnh nhỏ ---------------- */
 

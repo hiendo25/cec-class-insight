@@ -446,10 +446,10 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                 </td>
                 {/* Phiếu nhận xét buổi: GV/TA điền, QC DUYỆT. Không có cột này thì QC
                     không biết còn phiếu nào phải đòi — PROD gọi là "Lesson Report". */}
-                <td className="px-[12px]"><Dot on={s.report} /></td>
+                <td className="px-[12px]"><PhieuBuoi st={s.report} /></td>
                 <td className="px-[12px]"><Dot on={s.homework} /></td>
                 <td className="whitespace-nowrap px-[12px] py-[8px]">
-                  {s.past && !s.report && (
+                  {s.past && s.report === "draft" && (
                     <button
                       type="button"
                       disabled={daNhac(`phieu-${row.id}-${s.no}`)}
@@ -489,6 +489,23 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
         </table>
       </div>
     </div>
+  );
+}
+
+/** Phiếu nhận xét buổi — ba trạng thái, không phải hai.
+ *  QC cần phân biệt "GV chưa gửi" (đi đòi) với "đang chờ tôi duyệt" (tự làm). */
+function PhieuBuoi({ st }: { st: "draft" | "pending" | "approved" | null }) {
+  if (st === null) return <span style={{ color: INK3 }}>—</span>;
+  const m = {
+    draft: { t: "chưa gửi", bg: "#fdecea", fg: DANGER },
+    pending: { t: "chờ tôi duyệt", bg: "#fdf3e7", fg: WARN },
+    approved: { t: "đã duyệt", bg: "#e6f5ec", fg: OK },
+  }[st];
+  return (
+    <span className="whitespace-nowrap rounded-[5px] px-[8px] py-[3px] text-[11.5px] font-medium"
+      style={{ background: m.bg, color: m.fg }}>
+      {m.t}
+    </span>
   );
 }
 
