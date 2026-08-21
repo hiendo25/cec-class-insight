@@ -427,6 +427,8 @@ function HistoryRow({ h }: { h: HistoryItem }) {
       <button
         type="button"
         onClick={() => multi && setOpen((o) => !o)}
+        title={multi ? "Bấm để xem từng lần thử" : "Em làm bài này một lần, không có gì để mở thêm"}
+        aria-expanded={multi ? open : undefined}
         className="flex w-full items-center gap-3 px-3 py-2.5 text-left"
         style={{ cursor: multi ? "pointer" : "default" }}
       >
@@ -781,7 +783,10 @@ export function StudentProfile({
             Lịch sử làm bài
           </h2>
           <span className="text-[12px]" style={{ color: INK3 }}>
-            {history.length} bài · bấm dòng có nhiều lần để xem từng lần thử
+            {history.length} bài
+            {history.filter((h) => h.attempts.length > 1).length > 0
+              ? ` · ${history.filter((h) => h.attempts.length > 1).length} bài em làm lại, bấm dòng có nhãn “lần” để xem từng lần`
+              : " · em làm mỗi bài đúng một lần"}
           </span>
         </div>
         {history.length === 0 ? (
