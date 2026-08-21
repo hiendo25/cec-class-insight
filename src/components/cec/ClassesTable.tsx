@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import { ME } from "@/data/me";
+import { useAction } from "./ActionDialog";
 import {
   IconCheck,
   IconChevronDown,
@@ -318,34 +319,7 @@ function ColumnFilter({
 /* ---------- main ---------- */
 
 export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => void }) {
-  /* Bảng rộng hơn màn hình ở laptop 1280 — phải BÁO BẰNG CHỮ là còn cột bên phải,
-     vì thanh cuộn có máy bật overlay là coi như vô hình. Cùng cách đã dùng ở tab Kết quả. */
-  const boxRef = useRef<HTMLDivElement>(null);
-  const [hiddenRight, setHiddenRight] = useState(0);
-
-  useEffect(() => {
-    const el = boxRef.current;
-    if (!el) return;
-    const scan = () => {
-      const ths = [...el.querySelectorAll("thead tr:first-child th")] as HTMLElement[];
-      const box = el.getBoundingClientRect();
-      setHiddenRight(ths.filter((th) => th.getBoundingClientRect().right > box.right + 1).length);
-    };
-    scan();
-    el.addEventListener("scroll", scan, { passive: true });
-    window.addEventListener("resize", scan);
-    const t = window.setTimeout(scan, 300);
-    return () => {
-      el.removeEventListener("scroll", scan);
-      window.removeEventListener("resize", scan);
-      window.clearTimeout(t);
-    };
-  });
-
-  const nudge = (dir: 1 | -1) => {
-    const el = boxRef.current;
-    if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: "smooth" });
-  };
+  const { ask } = useAction();
 
   const initial = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
 
@@ -701,9 +675,6 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
             </div>
           )}
         </div>
-        <button type="button" className="cec-btn cec-btn-primary">
-          Tạo lớp mới
-        </button>
       </div>
 
       {activeChips.length > 0 && (
@@ -795,10 +766,32 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
           <Tick checked onChange={() => setSelected([])} />
           <span className="font-semibold">Đã chọn {selected.length} lớp</span>
           <span className="flex-1" />
-          <button type="button" className="cec-btn cec-btn-secondary">
+          <button
+            type="button"
+            onClick={() =>
+              ask({
+                title: `Giao bài cho ${selected.length} lớp`,
+                body: <>Giao cùng một đề cho {selected.length} lớp đang chọn.</>,
+                confirmLabel: "Chọn đề",
+                doneText: "Mở màn chọn đề để giao cho nhiều lớp.",
+              })
+            }
+            className="cec-btn cec-btn-secondary"
+          >
             Giao bài
           </button>
-          <button type="button" className="cec-btn cec-btn-secondary">
+          <button
+            type="button"
+            onClick={() =>
+              ask({
+                title: `Xem báo cáo ${selected.length} lớp`,
+                body: <>Xuất báo cáo tiến độ của {selected.length} lớp đang chọn.</>,
+                confirmLabel: "Xuất báo cáo",
+                doneText: `Đã xuất báo cáo ${selected.length} lớp.`,
+              })
+            }
+            className="cec-btn cec-btn-secondary"
+          >
             Xem báo cáo
           </button>
           <button
@@ -839,33 +832,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
           </div>
         ) : (
           <>
-            {hiddenRight > 0 && (
-              <div
-                className="mb-[8px] flex flex-wrap items-center gap-[10px] text-[12.5px]"
-              >
-                <button
-                  type="button"
-                  onClick={() => nudge(-1)}
-                  className="rounded-[6px] px-[10px] py-[5px]"
-                  style={{ border: `1px solid ${LINE}`, background: "#fff", color: INK }}
-                >
-                  ‹ Cột trước
-                </button>
-                <button
-                  type="button"
-                  onClick={() => nudge(1)}
-                  className="rounded-[6px] px-[10px] py-[5px]"
-                  style={{ border: `1px solid ${LINE}`, background: "#fff", color: INK }}
-                >
-                  Cột sau ›
-                </button>
-                <span style={{ color: WARN, fontWeight: 600 }}>
-                  Đang khuất {hiddenRight} cột bên phải — cuộn ngang để xem
-                </span>
-              </div>
-            )}
-
-            <div ref={boxRef} className="cec-scroll overflow-x-auto">
+            <div className="cec-scroll overflow-x-auto">
               <table
                 className="border-collapse text-[13px]"
                 style={{ minWidth: "100%", color: INK }}
@@ -1060,7 +1027,19 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                                     >
                                       <span style={{ color: INK3 }}>·</span>
                                       <span className="min-w-[260px]">{it.title}</span>
-                                      <button type="button" className="cec-btn cec-btn-secondary" style={{ color: NAVY }}>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          ask({
+                                            title: `${it.action} — lớp ${r.code}`,
+                                            body: <>{it.title}</>,
+                                            confirmLabel: it.action,
+                                            doneText: `Đã ${it.action.toLowerCase()} cho lớp ${r.code}.`,
+                                          })
+                                        }
+                                        className="cec-btn cec-btn-secondary"
+                                        style={{ color: NAVY }}
+                                      >
                                         {it.action} ›
                                       </button>
                                     </div>

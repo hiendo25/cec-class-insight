@@ -447,7 +447,7 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
 
 /* ---------- tab Bài tập ---------- */
 
-function TabAssignments({ row }: { row: ClassRow }) {
+function TabAssignments({ row, onAssign }: { row: ClassRow; onAssign: () => void }) {
   const { ask } = useAction();
   const list = ASSIGNMENTS[row.id] ?? [];
   const students = STUDENTS[row.id] ?? [];
@@ -461,6 +461,7 @@ function TabAssignments({ row }: { row: ClassRow }) {
         <span className="text-[13px]" style={{ color: INK2 }}>Lớp chưa được giao bài nào.</span>
         <button
           type="button"
+          onClick={onAssign}
           className="rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
           style={{ background: NAVY }}
         >
@@ -681,25 +682,12 @@ function PersonChip({ name }: { name: string }) {
         {ini}
       </span>
       <span className="max-w-[132px] truncate">{name}</span>
-      <button type="button" style={{ color: INK3 }} aria-label={`Gỡ ${name}`}>
-        ×
-      </button>
     </span>
   );
 }
 
-function AddChip() {
-  return (
-    <button
-      type="button"
-      className="grid h-[25px] w-[25px] place-items-center rounded-full bg-white text-[15px]"
-      style={{ border: `1px dashed #c9cfda`, color: INK2 }}
-      aria-label="Thêm người phụ trách"
-    >
-      +
-    </button>
-  );
-}
+/* Đã bỏ nút thêm/gỡ nhân sự: gán giáo viên không thuộc việc QC, và đặt nút ×
+   ngay cạnh tên người thì bấm nhầm là gỡ giáo viên khỏi lớp thật. */
 
 /** Viết tắt vai trò — người mới vào không đoán được EC là gì, nên có chú giải */
 const ROLE_HINT: Record<string, string> = {
@@ -726,7 +714,6 @@ function Role({ label, people }: { label: string; people: (string | null)[] }) {
           chưa gán
         </span>
       )}
-      <AddChip />
     </span>
   );
 }
@@ -850,6 +837,7 @@ export function ClassWorkspace({
         student={openStudent}
         row={row}
         onBack={() => onOpenStudent(null)}
+        onAssign={() => setAssignOpen(true)}
       />
     );
 
@@ -955,7 +943,7 @@ export function ClassWorkspace({
           onOpenAssign={() => setAssignOpen(true)}
         />}
       {tab === "Lịch học" && <TabSessions row={row} onAssign={() => setAssignOpen(true)} />}
-      {tab === "Bài tập" && <TabAssignments row={row} />}
+      {tab === "Bài tập" && <TabAssignments row={row} onAssign={() => setAssignOpen(true)} />}
       {tab === "Kết quả" && (
         <ResultMatrix
           row={row}

@@ -10,6 +10,7 @@ import {
 } from "@/data/reports";
 import { IconCheck, IconChevronLeft, IconClipboard, IconWarn } from "./icons";
 import { topicFull, topicVi } from "@/data/topics";
+import { useAction } from "./ActionDialog";
 
 const NAVY = "#1e2d5c";
 const LINE = "#e6e8ee";
@@ -351,6 +352,7 @@ export function MonthlyDetail({
   onBack: () => void;
 }) {
   const d = useMemo(() => draft(s, m), [s, m]);
+  const { ask } = useAction();
   const p = PROFILES[s.id];
   const reps = (REPORTS[row.id] ?? []).filter(
     (r) => r.studentId === s.id && r.date.split("/").slice(1).join("/") === m.month,
@@ -382,6 +384,19 @@ export function MonthlyDetail({
             </span>
             <button
               type="button"
+              onClick={() =>
+                ask({
+                  title: "Xuất file gửi phụ huynh",
+                  body: (
+                    <>
+                      Xuất báo cáo {mLabel(m.month).toLowerCase()} của em <strong>{s.name}</strong>{" "}
+                      ({s.code}) theo mẫu CEC để gửi phụ huynh.
+                    </>
+                  ),
+                  confirmLabel: "Xuất file",
+                  doneText: `Đã xuất báo cáo ${mLabel(m.month).toLowerCase()} của ${s.name}.`,
+                })
+              }
               className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
               style={{ background: NAVY }}
             >
@@ -393,6 +408,20 @@ export function MonthlyDetail({
           <span className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() =>
+                ask({
+                  title: "Trả lại người soạn",
+                  body: (
+                    <>
+                      Trả báo cáo {mLabel(m.month).toLowerCase()} của em <strong>{s.name}</strong> về
+                      để sửa lại. Nội dung hiện tại được giữ nguyên.
+                    </>
+                  ),
+                  confirmLabel: "Trả lại",
+                  doneText: `Đã trả báo cáo của ${s.name} về cho người soạn.`,
+                  danger: true,
+                })
+              }
               className="rounded-md px-3 py-[7px] text-[13px]"
               style={{ border: `1px solid ${LINE}`, color: INK, background: "#fff" }}
             >
@@ -400,6 +429,19 @@ export function MonthlyDetail({
             </button>
             <button
               type="button"
+              onClick={() =>
+                ask({
+                  title: "Duyệt báo cáo tháng",
+                  body: (
+                    <>
+                      Duyệt báo cáo {mLabel(m.month).toLowerCase()} của em <strong>{s.name}</strong>.
+                      Duyệt xong mới xuất file gửi phụ huynh được.
+                    </>
+                  ),
+                  confirmLabel: "Duyệt",
+                  doneText: `Đã duyệt báo cáo của ${s.name}.`,
+                })
+              }
               className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
               style={{ background: NAVY }}
             >
@@ -409,6 +451,19 @@ export function MonthlyDetail({
         ) : (
           <button
             type="button"
+            onClick={() =>
+              ask({
+                title: "Gửi báo cáo cho QC duyệt",
+                body: (
+                  <>
+                    Gửi báo cáo {mLabel(m.month).toLowerCase()} của em <strong>{s.name}</strong> để
+                    QC duyệt trước khi gửi phụ huynh.
+                  </>
+                ),
+                confirmLabel: "Gửi duyệt",
+                doneText: `Đã gửi báo cáo của ${s.name} chờ duyệt.`,
+              })
+            }
             className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
             style={{ background: NAVY }}
           >
@@ -712,6 +767,7 @@ export function SessionNote({
   row: ClassRow;
   onBack: () => void;
 }) {
+  const { ask } = useAction();
   const rep = (REPORTS[row.id] ?? []).find(
     (r) => r.studentId === student.id && r.session === session,
   );
@@ -755,6 +811,20 @@ export function SessionNote({
           <span className="flex shrink-0 items-center gap-2">
             <button
               type="button"
+              onClick={() =>
+                ask({
+                  title: "Trả phiếu lại cho giáo viên",
+                  body: (
+                    <>
+                      Trả phiếu buổi {rep.session} của em <strong>{student.name}</strong> về cho{" "}
+                      <strong>{rep.by}</strong> sửa lại.
+                    </>
+                  ),
+                  confirmLabel: "Trả lại",
+                  doneText: `Đã trả phiếu buổi ${rep.session} về cho ${rep.by}.`,
+                  danger: true,
+                })
+              }
               className="rounded-md px-3 py-[7px] text-[13px]"
               style={{ border: `1px solid ${LINE}`, color: INK, background: "#fff" }}
             >
@@ -762,6 +832,19 @@ export function SessionNote({
             </button>
             <button
               type="button"
+              onClick={() =>
+                ask({
+                  title: "Duyệt phiếu nhận xét buổi",
+                  body: (
+                    <>
+                      Duyệt phiếu buổi {rep.session} ({rep.date}) của em{" "}
+                      <strong>{student.name}</strong>. Phiếu đã duyệt mới được tính vào báo cáo tháng.
+                    </>
+                  ),
+                  confirmLabel: "Duyệt phiếu",
+                  doneText: `Đã duyệt phiếu buổi ${rep.session} của ${student.name}.`,
+                })
+              }
               className="rounded-md px-4 py-[7px] text-[13px] font-semibold text-white"
               style={{ background: NAVY }}
             >
@@ -803,7 +886,24 @@ export function SessionNote({
               <span className="text-[12.5px]" style={{ color: INK2, fontVariantNumeric: "tabular-nums" }}>
                 Điểm bài tập online: <strong style={{ color: INK }}>{rep.hwScore ?? "—"}</strong>
               </span>
-              <button type="button" className="text-[12.5px] font-medium" style={{ color: NAVY }}>
+              <button
+                type="button"
+                onClick={() =>
+                  ask({
+                    title: "Xem chi tiết bài làm",
+                    body: (
+                      <>
+                        Mở bài em <strong>{student.name}</strong> làm ở buổi {rep.session} để xem
+                        từng câu đúng sai. Màn này cần API trả lời từng câu — đang chờ dev mở.
+                      </>
+                    ),
+                    confirmLabel: "Đã hiểu",
+                    doneText: "Màn xem từng câu sẽ có khi API sẵn sàng.",
+                  })
+                }
+                className="text-[12.5px] font-medium"
+                style={{ color: NAVY }}
+              >
                 Xem chi tiết bài làm ›
               </button>
             </div>

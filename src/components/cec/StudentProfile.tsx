@@ -336,7 +336,7 @@ function Rhythm({ daily }: { daily: DailyPoint[] }) {
 }
 
 /** bài em đã mở nhưng bỏ giữa chừng — PROD đang gộp chung với "chưa làm" */
-function Unfinished({ items }: { items: InProgress[] }) {
+function Unfinished({ items, onRemind }: { items: InProgress[]; onRemind?: (title: string) => void }) {
   if (!items.length) return null;
   return (
     <section className="rounded-xl px-5 py-4" style={{ background: "#fdf8ef", border: "1px solid #f0dfc0" }}>
@@ -368,7 +368,12 @@ function Unfinished({ items }: { items: InProgress[] }) {
             <span className="text-[12px] font-medium" style={{ color: WARN, fontVariantNumeric: "tabular-nums" }}>
               mới trả lời {q.answered}/{q.total} câu
             </span>
-            <button type="button" className="text-[13px] font-medium" style={{ color: NAVY }}>
+            <button
+              type="button"
+              onClick={() => onRemind?.(q.title)}
+              className="text-[13px] font-medium"
+              style={{ color: NAVY }}
+            >
               Nhắc em làm nốt ›
             </button>
           </div>
@@ -453,10 +458,13 @@ export function StudentProfile({
   student,
   row,
   onBack,
+  onAssign,
 }: {
   student: Student;
   row: ClassRow;
   onBack: () => void;
+  /** giao bài riêng cho chính em đang mở hồ sơ */
+  onAssign?: (studentId: string) => void;
 }) {
   const profile: Profile = PROFILES[student.id] ?? { history: [], errors: [], daily: [], inProgress: [] };
   const { ask } = useAction();
@@ -594,6 +602,7 @@ export function StudentProfile({
           </button>
           <button
             type="button"
+            onClick={() => onAssign?.(student.id)}
             className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium text-white"
             style={{ background: NAVY }}
           >
@@ -657,7 +666,21 @@ export function StudentProfile({
                 <span className="flex-1 text-[13px]" style={{ color: INK }}>
                   {t.text}
                 </span>
-                <button type="button" className="shrink-0 text-[13px] font-medium" style={{ color: NAVY }}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    t.action === "Giao bài luyện thêm"
+                      ? onAssign?.(student.id)
+                      : ask({
+                          title: `${t.action} — ${student.name}`,
+                          body: <>{t.text}</>,
+                          confirmLabel: t.action,
+                          doneText: `Đã ${t.action.toLowerCase()} với ${student.name}.`,
+                        })
+                  }
+                  className="shrink-0 text-[13px] font-medium"
+                  style={{ color: NAVY }}
+                >
                   {t.action} ›
                 </button>
               </li>
@@ -666,7 +689,22 @@ export function StudentProfile({
         )}
       </section>
 
-      <Unfinished items={profile.inProgress} />
+      <Unfinished
+        items={profile.inProgress}
+        onRemind={(title) =>
+          ask({
+            title: `Nhắc ${student.name} làm nốt bài`,
+            body: (
+              <>
+                Nhắc em <strong>{student.name}</strong> hoàn thành bài <strong>{title}</strong> —
+                em đã mở nhưng bỏ dở giữa chừng.
+              </>
+            ),
+            confirmLabel: "Gửi lời nhắc",
+            doneText: `Đã nhắc ${student.name} làm nốt bài.`,
+          })
+        }
+      />
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         {/* nhịp độ làm bài */}
