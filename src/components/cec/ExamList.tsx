@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   EXAMS,
@@ -26,6 +26,20 @@ const TT_STYLE: Record<string, { bg: string; fg: string; ngan: string }> = {
   "Nháp": { bg: "#f0f2f6", fg: INK2, ngan: "Nháp" },
   "Đã xuất bản": { bg: "#e6f5ec", fg: OK, ngan: "Đã xuất bản" },
   "Đã xuất bản · đang sửa bản mới": { bg: "#fdf3e7", fg: WARN, ngan: "Đã xuất bản · đang sửa v2" },
+};
+
+/* Chỉ mở sort cho cột QC thật sự cần xếp — số câu, thời gian, ngày tạo, tên. */
+type SortCot = "ten" | "soCau" | "thoiGian" | "ngayTao";
+const SORT_CUA: Record<string, SortCot | undefined> = {
+  "Tên đề bài": "ten",
+  "Câu": "soCau",
+  "Thời gian": "thoiGian",
+  "Ngày tạo": "ngayTao",
+};
+/** dd/mm/yyyy -> số so sánh được; sai định dạng thì trả 0 chứ không NaN làm hỏng sort */
+const ngaySo = (d: string) => {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(d.trim());
+  return m ? +m[3]! * 10000 + +m[2]! * 100 + +m[1]! : 0;
 };
 
 type Loc = { loai: string; kyNang: string; capDo: string; trangThai: string; coSo: string; nguoiTao: string };
@@ -78,6 +92,8 @@ export function ExamList() {
   const [tab, setTab] = useState<"Tất cả" | "Của tôi" | "Đã xuất bản">("Tất cả");
   const [loc, setLoc] = useState<Loc>(TRONG);
   const [q, setQ] = useState("");
+  const [sap, setSap] = useState<{ cot: SortCot; giam: boolean }>({ cot: "ngayTao", giam: true });
+  const [soHien, setSoHien] = useState(100);
 
   /* Người tạo lấy từ chính kho đề — PROD dùng dropdown động có ô tìm kiếm */
   const nguoiTaoList = useMemo(
@@ -111,6 +127,19 @@ export function ExamList() {
       ),
     [theoTab, loc, q],
   );
+
+  const daSap = useMemo(() => {
+    const c = sap.cot;
+    const key = (e: Exam) =>
+      c === "ten" ? e.ten : c === "ngayTao" ? ngaySo(e.ngayTao) : c === "soCau" ? e.soCau : e.thoiGian;
+    return [...list].sort((x, y) => {
+      const a = key(x), b = key(y);
+      const r = typeof a === "string" ? a.localeCompare(b as string, "vi") : (a as number) - (b as number);
+      return sap.giam ? -r : r;
+    });
+  }, [list, sap]);
+
+  useEffect(() => setSoHien(100), [tab, loc, q, sap]);
 
   const coLoc = Object.values(loc).some(Boolean) || !!q.trim();
   const dem = {
@@ -199,9 +228,11 @@ export function ExamList() {
 
         <span className="flex-1" />
         <span style={{ color: INK3 }}>
-          {list.length > 100
-            ? `Hiện 100 đề đầu trong ${list.length} kết quả`
-            : `Hiển thị ${list.length}/${theoTab.length} đề`}
+          {list.length > soHien
+            ? `Hiện ${soHien} trong ${list.length} đề${coLoc ? " khớp bộ lọc" : ""}`
+            : coLoc
+              ? `${list.length} đề khớp bộ lọc (kho ${theoTab.length} đề)`
+              : `${list.length} đề`}
         </span>
       </div>
 
@@ -218,16 +249,33 @@ export function ExamList() {
             <thead>
               <tr style={{ background: NAVY, color: "#fff" }}>
                 {["Tên đề bài", "Loại", "Cơ sở", "Kỹ năng", "Cấp độ", "Câu", "Thời gian", "Người tạo", "Trạng thái", "Ngày tạo"].map(
-                  (h) => (
-                    <th key={h} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
-                      {h}
-                    </th>
-                  ),
+                  (h) => {
+                    const c = SORT_CUA[h];
+                    const on = c && sap.cot === c;
+                    return (
+                      <th key={h} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
+                        {c ? (
+                          <button
+                            type="button"
+                            onClick={() => setSap((v) => (v.cot === c ? { cot: c, giam: !v.giam } : { cot: c, giam: true }))}
+                            className="flex items-center gap-[5px] font-semibold hover:underline"
+                            style={{ color: "#fff" }}
+                            title={`Sắp xếp theo ${h}`}
+                          >
+                            {h}
+                            <span style={{ opacity: on ? 1 : 0.4, fontSize: 10 }}>{on ? (sap.giam ? "▼" : "▲") : "↕"}</span>
+                          </button>
+                        ) : (
+                          h
+                        )}
+                      </th>
+                    );
+                  },
                 )}
               </tr>
             </thead>
             <tbody>
-              {list.slice(0, 100).map((e, i) => (
+              {daSap.slice(0, soHien).map((e, i) => (
                 <Dong key={e.id} e={e} i={i} onMo={() => navigate({ to: "/exam/$examId", params: { examId: e.id } })} />
               ))}
             </tbody>
@@ -235,10 +283,17 @@ export function ExamList() {
         </div>
       )}
 
-      {list.length > 100 && (
-        <p className="text-[12px]" style={{ color: INK3 }}>
-          Lọc thêm để thu hẹp kết quả.
-        </p>
+      {list.length > soHien && (
+        <div className="flex items-center gap-[10px] text-[12px]" style={{ color: INK3 }}>
+          <button
+            type="button"
+            onClick={() => setSoHien((n) => n + 100)}
+            className="cec-btn cec-btn-secondary"
+          >
+            Tải thêm 100 đề
+          </button>
+          <span>Còn {list.length - soHien} đề chưa hiện — hoặc lọc thêm để thu hẹp.</span>
+        </div>
       )}
     </div>
   );
@@ -247,7 +302,11 @@ export function ExamList() {
 function Dong({ e, i, onMo }: { e: Exam; i: number; onMo: () => void }) {
   const tt = TT_STYLE[e.trangThai] ?? TT_STYLE["Nháp"]!;
   return (
-    <tr style={{ background: i % 2 ? "#f5f8fc" : "#fff", borderBottom: "1px solid #edeff4" }}>
+    <tr
+      onClick={onMo}
+      className="cursor-pointer"
+      style={{ background: i % 2 ? "#f5f8fc" : "#fff", borderBottom: "1px solid #edeff4" }}
+    >
       <td className="px-[12px] py-[9px]">
         <button type="button" onClick={onMo} className="text-left font-medium hover:underline" style={{ color: NAVY }}>
           {e.ten}

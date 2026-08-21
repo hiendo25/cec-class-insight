@@ -121,7 +121,7 @@ export function TestResults({ row }: { row: ClassRow }) {
                   key={t.id}
                   className="whitespace-nowrap px-[9px] py-[9px] text-center text-[11.5px] font-medium"
                   style={{ minWidth: 104, opacity: t.daThi ? 1 : 0.66 }}
-                  title={`${t.testType} · ${t.category}`}
+                  title={`${t.ten} · buổi ${t.buoi} · ${t.ngay} · ${t.testType} · ${t.category}`}
                 >
                   {t.ten}
                   <br />
