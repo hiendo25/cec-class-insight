@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
 import type { Exam } from "@/data/exams";
 import { topicFull } from "@/data/topics";
@@ -6,14 +7,6 @@ import { useAction } from "./ActionDialog";
 import { TT_STYLE } from "./ExamList";
 import { IconCheck, IconChevronLeft, IconClipboard, IconWarn } from "./icons";
 
-const NAVY = "#1e2d5c";
-const LINE = "#e6e8ee";
-const INK = "#1f2430";
-const INK2 = "#6b7280";
-const INK3 = "#6a7386";
-const DANGER = "#d4342c";
-const OK = "#1f6f4a";
-const WARN = "#b8791c";
 
 const TABS = ["Cấu trúc đề", "Cấu hình chấm điểm", "Lịch sử phiên bản"] as const;
 type Tab = (typeof TABS)[number];

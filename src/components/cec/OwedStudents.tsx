@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { TODAY, TH_BG, TH_FG, TH_LINE } from "@/data/const";
+import { TODAY, TH_BG, TH_FG, TH_LINE, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
 import { CLASSES } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
@@ -8,14 +8,6 @@ import { ME } from "@/data/me";
 import { IconBell, IconCheck, IconClipboard, IconSearch } from "./icons";
 import { useAction } from "./ActionDialog";
 
-const NAVY = "#1e2d5c";
-const LINE = "#e6e8ee";
-const INK = "#1f2430";
-const INK2 = "#6b7280";
-const INK3 = "#6a7386";
-const DANGER = "#d4342c";
-const OK = "#1f6f4a";
-const WARN = "#b8791c";
 
 import { matchCode, matchWords, noAccent } from "@/lib/search";
 

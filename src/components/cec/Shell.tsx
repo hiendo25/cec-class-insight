@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
+import { INK2, INK3 } from "@/data/const";
 import { Link } from "@tanstack/react-router";
 import { Sidebar } from "./Sidebar";
 import { ActionProvider } from "./ActionDialog";
 
-const INK2 = "#6b7280";
-const INK3 = "#6a7386";
 
 export type Crumb = { label: string; to?: string };
 

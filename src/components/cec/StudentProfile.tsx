@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { TODAY } from "@/data/const";
+import { TODAY, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { SESSIONS } from "@/data/sessions";
 import type { Student } from "@/data/students";
@@ -23,14 +23,6 @@ import {
   IconWarn,
 } from "./icons";
 
-const NAVY = "#1e2d5c";
-const LINE = "#e6e8ee";
-const INK = "#1f2430";
-const INK2 = "#6b7280";
-const INK3 = "#6a7386";
-const DANGER = "#d4342c";
-const OK = "#1f6f4a";
-const WARN = "#b8791c";
 
 const AV = ["#2b3f7a", "#1f6f4a", "#8a5a10", "#6b2fa0", "#136d5e", "#a03c3c"];
 

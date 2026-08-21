@@ -1,10 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { NAVY, INK, INK2, OK } from "@/data/const";
 import { useModal } from "@/lib/useModal";
 
-const NAVY = "#1e2d5c";
-const INK = "#1f2430";
-const INK2 = "#6b7280";
-const OK = "#1f6f4a";
 
 export type ActionAsk = {
   title: string;

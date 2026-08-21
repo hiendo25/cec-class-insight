@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { NAVY } from "@/data/const";
 import type { ReactElement } from "react";
 import {
   IconBook,
@@ -58,7 +59,7 @@ export function Sidebar() {
   return (
     <aside
       className="flex w-[255px] shrink-0 flex-col text-white"
-      style={{ background: "#1e2d5c" }}
+      style={{ background: NAVY }}
     >
       {/* logo: PROD đặt 84×64, lề trái 20, cách trên 8 */}
       <div className="flex items-center" style={{ padding: "8px 20px 14px" }}>

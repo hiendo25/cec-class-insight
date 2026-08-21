@@ -1,16 +1,10 @@
 import { useMemo, useState } from "react";
+import { NAVY, LINE, INK, INK2, INK3, OK, WARN } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { choDuyetCuaLop, mayChamCuaLop, type BaiNop } from "@/data/submissions";
 import { daDuyetBai, diemDaDuyet, useOverrides } from "@/data/overrides";
 import { IconCheck, IconChevronDown } from "./icons";
 
-const NAVY = "#1e2d5c";
-const LINE = "#e6e8ee";
-const INK = "#1f2430";
-const INK2 = "#6b7280";
-const INK3 = "#6a7386";
-const OK = "#1f6f4a";
-const WARN = "#b8791c";
 
 const tone = (v: number) =>
   v >= 8 ? { bg: "#e6f5ec", fg: OK } : v >= 6.5 ? { bg: "#eaf1fb", fg: "#2b3f7a" }
