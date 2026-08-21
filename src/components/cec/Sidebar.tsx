@@ -4,6 +4,7 @@ import type { ReactElement } from "react";
 import {
   IconBook,
   IconChart,
+  IconCheck,
   IconClipboard,
   IconGear,
   IconHome,
@@ -27,6 +28,18 @@ type Item = {
 
 const GROUPS: { title: string; items: Item[] }[] = [
   {
+    title: "Hôm nay",
+    items: [{ label: "Hôm nay của tôi", Icon: IconChart, to: "/" }],
+  },
+  {
+    title: "Việc cần xử lý",
+    items: [
+      { label: "Duyệt phiếu buổi", Icon: IconClipboard, to: "/queue/phieu" },
+      { label: "Xác nhận bài AI chấm", Icon: IconCheck, to: "/queue/bai" },
+      { label: "Học sinh nợ bài", Icon: IconUsers, to: "/assignment/student" },
+    ],
+  },
+  {
     title: "Vận hành",
     items: [
       { label: "Lớp học", Icon: IconBook, to: "/class" },
@@ -40,7 +53,6 @@ const GROUPS: { title: string; items: Item[] }[] = [
   {
     title: "Bài tập",
     items: [
-      { label: "Học sinh nợ bài", Icon: IconClipboard, to: "/assignment/student" },
       { label: "Tiến độ theo lớp", Icon: IconTask, to: "/assignment/class" },
       { label: "Bài đã giao", Icon: IconTask },
     ],

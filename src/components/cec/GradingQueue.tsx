@@ -160,8 +160,9 @@ export function GradingQueue({ row }: { row: ClassRow }) {
   );
 }
 
-/** Một bài chờ xác nhận — bài làm bên trái, đề xuất của AI bên phải */
-function BaiDuyet({
+/** Một bài chờ xác nhận — bài làm bên trái, đề xuất của AI bên phải.
+ *  Export để hàng đợi XUYÊN LỚP dùng lại, không viết lại logic duyệt. */
+export function BaiDuyet({
   bai, viTri, tong, onTruoc, onSau,
 }: {
   bai: BaiNop;

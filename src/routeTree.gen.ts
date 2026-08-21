@@ -15,6 +15,8 @@ import { Route as AssignmentStudentRouteImport } from './routes/assignment/stude
 import { Route as ClassIndexRouteImport } from './routes/class/index'
 import { Route as ExamIndexRouteImport } from './routes/exam/index'
 import { Route as ExamExamIdRouteImport } from './routes/exam/$examId'
+import { Route as QueueBaiRouteImport } from './routes/queue/bai'
+import { Route as QueuePhieuRouteImport } from './routes/queue/phieu'
 import { Route as ClassClassIdTabRouteImport } from './routes/class/$classId.$tab'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +49,16 @@ const ExamExamIdRoute = ExamExamIdRouteImport.update({
   path: '/exam/$examId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QueueBaiRoute = QueueBaiRouteImport.update({
+  id: '/queue/bai',
+  path: '/queue/bai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QueuePhieuRoute = QueuePhieuRouteImport.update({
+  id: '/queue/phieu',
+  path: '/queue/phieu',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClassClassIdTabRoute = ClassClassIdTabRouteImport.update({
   id: '/class/$classId/$tab',
   path: '/class/$classId/$tab',
@@ -58,6 +70,8 @@ export interface FileRoutesByFullPath {
   '/assignment/class': typeof AssignmentClassRoute
   '/assignment/student': typeof AssignmentStudentRoute
   '/exam/$examId': typeof ExamExamIdRoute
+  '/queue/bai': typeof QueueBaiRoute
+  '/queue/phieu': typeof QueuePhieuRoute
   '/class/': typeof ClassIndexRoute
   '/exam/': typeof ExamIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
@@ -67,6 +81,8 @@ export interface FileRoutesByTo {
   '/assignment/class': typeof AssignmentClassRoute
   '/assignment/student': typeof AssignmentStudentRoute
   '/exam/$examId': typeof ExamExamIdRoute
+  '/queue/bai': typeof QueueBaiRoute
+  '/queue/phieu': typeof QueuePhieuRoute
   '/class': typeof ClassIndexRoute
   '/exam': typeof ExamIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
@@ -77,6 +93,8 @@ export interface FileRoutesById {
   '/assignment/class': typeof AssignmentClassRoute
   '/assignment/student': typeof AssignmentStudentRoute
   '/exam/$examId': typeof ExamExamIdRoute
+  '/queue/bai': typeof QueueBaiRoute
+  '/queue/phieu': typeof QueuePhieuRoute
   '/class/': typeof ClassIndexRoute
   '/exam/': typeof ExamIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
@@ -88,6 +106,8 @@ export interface FileRouteTypes {
     | '/assignment/class'
     | '/assignment/student'
     | '/exam/$examId'
+    | '/queue/bai'
+    | '/queue/phieu'
     | '/class/'
     | '/exam/'
     | '/class/$classId/$tab'
@@ -97,6 +117,8 @@ export interface FileRouteTypes {
     | '/assignment/class'
     | '/assignment/student'
     | '/exam/$examId'
+    | '/queue/bai'
+    | '/queue/phieu'
     | '/class'
     | '/exam'
     | '/class/$classId/$tab'
@@ -106,6 +128,8 @@ export interface FileRouteTypes {
     | '/assignment/class'
     | '/assignment/student'
     | '/exam/$examId'
+    | '/queue/bai'
+    | '/queue/phieu'
     | '/class/'
     | '/exam/'
     | '/class/$classId/$tab'
@@ -116,6 +140,8 @@ export interface RootRouteChildren {
   AssignmentClassRoute: typeof AssignmentClassRoute
   AssignmentStudentRoute: typeof AssignmentStudentRoute
   ExamExamIdRoute: typeof ExamExamIdRoute
+  QueueBaiRoute: typeof QueueBaiRoute
+  QueuePhieuRoute: typeof QueuePhieuRoute
   ClassIndexRoute: typeof ClassIndexRoute
   ExamIndexRoute: typeof ExamIndexRoute
   ClassClassIdTabRoute: typeof ClassClassIdTabRoute
@@ -165,6 +191,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExamExamIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/queue/bai': {
+      id: '/queue/bai'
+      path: '/queue/bai'
+      fullPath: '/queue/bai'
+      preLoaderRoute: typeof QueueBaiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/queue/phieu': {
+      id: '/queue/phieu'
+      path: '/queue/phieu'
+      fullPath: '/queue/phieu'
+      preLoaderRoute: typeof QueuePhieuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/class/$classId/$tab': {
       id: '/class/$classId/$tab'
       path: '/class/$classId/$tab'
@@ -180,6 +220,8 @@ const rootRouteChildren: RootRouteChildren = {
   AssignmentClassRoute: AssignmentClassRoute,
   AssignmentStudentRoute: AssignmentStudentRoute,
   ExamExamIdRoute: ExamExamIdRoute,
+  QueueBaiRoute: QueueBaiRoute,
+  QueuePhieuRoute: QueuePhieuRoute,
   ClassIndexRoute: ClassIndexRoute,
   ExamIndexRoute: ExamIndexRoute,
   ClassClassIdTabRoute: ClassClassIdTabRoute,
