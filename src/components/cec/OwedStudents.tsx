@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { TODAY } from "@/data/const";
+import { TODAY, TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
 import { CLASSES } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
@@ -197,7 +197,7 @@ export function OwedStudents() {
         <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
           <table className="w-full border-collapse text-[13px]">
             <thead>
-              <tr style={{ background: NAVY, color: "#fff" }}>
+              <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
                 {["Học sinh", "Lớp", "Nợ bài", "Bỏ dở", "Lần cuối làm bài", "Điểm TB", ""].map((h) => (
                   <th key={h} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                     {h}

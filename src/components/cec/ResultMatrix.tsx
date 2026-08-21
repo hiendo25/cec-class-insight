@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
@@ -305,7 +306,7 @@ function Matrix({
       >
         <table className="border-collapse text-[12.5px]">
           <thead>
-            <tr style={{ background: NAVY, color: "#fff" }}>
+            <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               <th
                 className="sticky left-0 z-[3] whitespace-nowrap px-[12px] py-[9px] text-left text-[12.5px] font-semibold"
                 style={{ background: NAVY, width: NAME_W, minWidth: NAME_W, maxWidth: NAME_W }}

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { SESSIONS, ASSIGNMENTS } from "@/data/sessions";
@@ -219,7 +220,7 @@ function TabStudents({
       <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
         <table className="w-full border-collapse text-[13px]">
           <thead>
-            <tr style={{ background: NAVY, color: "#fff" }}>
+            <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               {[
                 "Học sinh",
                 "Tình trạng",
@@ -242,7 +243,7 @@ function TabStudents({
                       ? "sticky right-0 whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold"
                       : "whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold"
                   }
-                  style={i === a.length - 1 ? { background: NAVY } : undefined}
+                  style={i === a.length - 1 ? { background: TH_BG } : undefined}
                 >
                   {h}
                 </th>
@@ -413,7 +414,7 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
       <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
         <table className="w-full border-collapse text-[13px]">
           <thead>
-            <tr style={{ background: NAVY, color: "#fff" }}>
+            <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               {["Buổi", "Ngày", "Giờ", "Phòng", "Giáo viên", "Trợ giảng", "Phiếu buổi", "Đã giao bài", ""].map((h, i) => (
                 <th key={i} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                   {h}

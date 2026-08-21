@@ -32,6 +32,13 @@ export const OK = "#1f6f4a";
 export const WARN = "#b8791c";
 export const DANGER = "#d4342c";
 
+/* ---- Header bảng ----
+   PROD dùng nền SÁNG chữ đậm (ảnh P01/P02/P03), app mình từng dùng navy đặc
+   chữ trắng ở 10 bảng — đây chính là cảm giác "UI hoàn toàn mới" khách phê. */
+export const TH_BG = "#f3f5f9";
+export const TH_FG = "#3b4557";
+export const TH_LINE = "#dfe3ea";
+
 /** Màu theo thang điểm 10 — dùng CHUNG mọi màn.
  *  Trước đây hai thang đá nhau: chỗ ngưỡng 7/5, chỗ 8/6.5/5. */
 export const tone = (v: number) =>

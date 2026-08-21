@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import { Person } from "./Person";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import { ME } from "@/data/me";
@@ -846,7 +847,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                   ))}
                 </colgroup>
                 <thead>
-                  <tr style={{ background: NAVY, color: "#fff" }}>
+                  <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
                     <th
                       className="px-[10px] text-left"
                       style={{
@@ -854,7 +855,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                         position: "sticky",
                         left: 0,
                         zIndex: 6,
-                        background: NAVY,
+                        background: TH_BG,
                       }}
                     >
                       <Tick
@@ -884,7 +885,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                                 minWidth: stickyWidth[c.key],
                                 maxWidth: stickyWidth[c.key],
                                 zIndex: 6,
-                                background: NAVY,
+                                background: TH_BG,
                               }
                             : {}),
                         }}

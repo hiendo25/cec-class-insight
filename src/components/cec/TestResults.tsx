@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS } from "@/data/students";
@@ -109,10 +110,10 @@ export function TestResults({ row }: { row: ClassRow }) {
         {/* w-full để lớp ít bài không bỏ trống nửa màn bên phải */}
         <table className="w-full border-collapse text-[12.5px]">
           <thead>
-            <tr style={{ background: NAVY, color: "#fff" }}>
+            <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               <th
                 className="sticky left-0 z-[3] whitespace-nowrap px-[12px] py-[9px] text-left text-[12.5px] font-semibold"
-                style={{ background: NAVY, width: 200, minWidth: 200, maxWidth: 200 }}
+                style={{ background: TH_BG, width: 200, minWidth: 200, maxWidth: 200 }}
               >
                 Học sinh
               </th>
@@ -130,7 +131,7 @@ export function TestResults({ row }: { row: ClassRow }) {
                   </span>
                 </th>
               ))}
-              <th className="whitespace-nowrap px-[10px] py-[9px] text-center text-[11.5px] font-semibold" style={{ background: "#16234a", minWidth: 74 }}>
+              <th className="whitespace-nowrap px-[10px] py-[9px] text-center text-[11.5px] font-semibold" style={{ background: TH_BG, minWidth: 74 }}>
                 TB
               </th>
             </tr>

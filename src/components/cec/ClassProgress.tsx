@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
 import { CLASSES } from "@/data/classes";
 import { STUDENTS } from "@/data/students";
@@ -154,7 +155,7 @@ export function ClassProgress() {
         <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
           <table className="w-full border-collapse text-[13px]">
             <thead>
-              <tr style={{ background: NAVY, color: "#fff" }}>
+              <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
                 {["Lớp", "Giáo viên", "Đang học", "Việc cần xử lý", "Tình hình nộp", "Chờ chấm", ""].map((h) => (
                   <th key={h} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                     {h}

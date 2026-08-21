@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
 import { PROFILES } from "@/data/studentProfile";
@@ -753,7 +754,7 @@ export function StudentReportTab({ row }: { row: ClassRow }) {
       <div className="overflow-x-auto rounded-lg bg-white" style={{ border: `1px solid ${LINE}` }}>
         <table className="w-full border-collapse text-[13px]">
           <thead>
-            <tr style={{ background: NAVY, color: "#fff" }}>
+            <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               {["Học sinh", "Điểm danh", "Bài tập", "Điểm BT", "Điểm thực hành TB", "Nhận xét", "Trạng thái", "Người điền"].map((h) => (
                 <th key={h} className="whitespace-nowrap px-3 py-[9px] text-left text-[12px] font-semibold">
                   {h}

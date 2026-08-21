@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { TH_BG, TH_FG, TH_LINE } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
 import {
   EXAMS,
@@ -263,7 +264,7 @@ export function ExamList() {
         <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
           <table className="w-full border-collapse text-[13px]">
             <thead>
-              <tr style={{ background: NAVY, color: "#fff" }}>
+              <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
                 {["Tên đề bài", "Loại", "Cơ sở", "Kỹ năng", "Cấp độ", "Câu", "Thời gian", "Người tạo", "Trạng thái", "Ngày tạo"].map(
                   (h) => {
                     const c = SORT_CUA[h];
