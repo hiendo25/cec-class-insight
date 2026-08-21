@@ -8,6 +8,7 @@ import { StudentProfile } from "./StudentProfile";
 import { ResultMatrix } from "./ResultMatrix";
 import { TestResults } from "./TestResults";
 import { GradingQueue } from "./GradingQueue";
+import { daNhac, markReminded, useOverrides } from "@/data/overrides";
 import {
   IconBell,
   IconCalendarCheck,
@@ -380,6 +381,8 @@ function Dot({ on }: { on: boolean | null }) {
 }
 
 function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void }) {
+  useOverrides();
+  const { ask } = useAction();
   const list = SESSIONS[row.id] ?? [];
   if (list.length === 0)
     return (
@@ -410,7 +413,7 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
         <table className="w-full border-collapse text-[13px]">
           <thead>
             <tr style={{ background: NAVY, color: "#fff" }}>
-              {["Buổi", "Ngày", "Giờ", "Phòng", "Giáo viên", "Trợ giảng", "Đã giao bài", ""].map((h, i) => (
+              {["Buổi", "Ngày", "Giờ", "Phòng", "Giáo viên", "Trợ giảng", "Phiếu buổi", "Đã giao bài", ""].map((h, i) => (
                 <th key={i} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                   {h}
                 </th>
@@ -440,8 +443,34 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                 <td className="whitespace-nowrap px-[12px]" style={{ color: s.ta ? INK : INK3 }}>
                   {s.ta ?? "—"}
                 </td>
+                {/* Phiếu nhận xét buổi: GV/TA điền, QC DUYỆT. Không có cột này thì QC
+                    không biết còn phiếu nào phải đòi — PROD gọi là "Lesson Report". */}
+                <td className="px-[12px]"><Dot on={s.report} /></td>
                 <td className="px-[12px]"><Dot on={s.homework} /></td>
                 <td className="whitespace-nowrap px-[12px] py-[8px]">
+                  {s.past && !s.report && (
+                    <button
+                      type="button"
+                      disabled={daNhac(`phieu-${row.id}-${s.no}`)}
+                      onClick={() =>
+                        ask({
+                          title: `Đòi phiếu nhận xét buổi ${s.no}`,
+                          body: `Gửi lời nhắc tới ${s.teacher}${s.ta ? ` và ${s.ta}` : ""} về phiếu nhận xét buổi ${s.no} ngày ${s.date}.`,
+                          confirmLabel: "Gửi lời nhắc",
+                          doneText: `Đã nhắc ${s.teacher} nộp phiếu buổi ${s.no}.`,
+                          run: () => markReminded(`phieu-${row.id}-${s.no}`),
+                        })
+                      }
+                      className="mr-[6px] rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      style={{
+                        border: `1px solid ${LINE}`,
+                        color: daNhac(`phieu-${row.id}-${s.no}`) ? INK3 : WARN,
+                        cursor: daNhac(`phieu-${row.id}-${s.no}`) ? "default" : "pointer",
+                      }}
+                    >
+                      {daNhac(`phieu-${row.id}-${s.no}`) ? "Đã nhắc" : "Đòi phiếu"}
+                    </button>
+                  )}
                   {s.past && !s.homework && (
                     <button
                       type="button"
