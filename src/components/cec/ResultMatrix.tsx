@@ -309,7 +309,7 @@ function Matrix({
             <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               <th
                 className="sticky left-0 z-[3] whitespace-nowrap px-[12px] py-[9px] text-left text-[12.5px] font-semibold"
-                style={{ background: NAVY, width: NAME_W, minWidth: NAME_W, maxWidth: NAME_W }}
+                style={{ background: TH_BG, width: NAME_W, minWidth: NAME_W, maxWidth: NAME_W }}
               >
                 Học sinh
               </th>
@@ -318,7 +318,7 @@ function Matrix({
                   <th
                     key={`m-${c.month}`}
                     className="whitespace-nowrap px-[8px] py-[9px] text-center text-[11.5px] font-semibold"
-                    style={{ background: "#16234a", minWidth: 92 }}
+                    style={{ background: "#e7ebf3", minWidth: 92 }}
                   >
                     Báo cáo
                     <br />
