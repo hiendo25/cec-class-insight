@@ -47,6 +47,11 @@ export function GradingQueue({ row }: { row: ClassRow }) {
 
   const daXong = cho.length - conLai.length;
 
+  /* Đo trên trang học sinh: đề tắt "tự công bố kết quả" thì QC duyệt xong
+     HS VẪN chưa thấy điểm — phải công bố thêm một bước. Không nói ra thì
+     QC tưởng đã xong việc còn HS trắng điểm. */
+  const daDuyetChuaCongBo = cho.filter((b) => daDuyetBai(b.id) && !b.tuCongBo);
+
   return (
     <div className="flex flex-col gap-[14px]">
       {/* tóm tắt hai nhóm */}
@@ -62,6 +67,18 @@ export function GradingQueue({ row }: { row: ClassRow }) {
           <span style={{ color: OK }}>· phiên này đã xác nhận {daXong} bài</span>
         )}
       </div>
+
+      {daDuyetChuaCongBo.length > 0 && (
+        <div
+          className="flex flex-wrap items-center gap-[10px] rounded-[8px] px-[14px] py-[11px] text-[12.5px]"
+          style={{ background: "#fdf3e7", border: "1px solid #f0dcc0", color: WARN }}
+        >
+          <strong>{daDuyetChuaCongBo.length} bài đã xác nhận nhưng học sinh CHƯA thấy điểm.</strong>
+          <span style={{ color: INK2 }}>
+            Đề của các bài này tắt &ldquo;tự công bố kết quả&rdquo; — cần công bố thêm một bước nữa.
+          </span>
+        </div>
+      )}
 
       {/* ---- nhóm 1: chờ xác nhận ---- */}
       {bai ? (
@@ -308,8 +325,10 @@ function BaiDuyet({
         className="flex flex-wrap items-center gap-[10px] px-[14px] py-[11px]"
         style={{ borderTop: `1px solid ${LINE}`, background: "#fbfcfe" }}
       >
-        <span className="text-[12px]" style={{ color: INK3 }}>
-          Điểm chỉ chính thức sau khi bạn xác nhận.
+        <span className="text-[12px]" style={{ color: bai.tuCongBo ? INK3 : WARN }}>
+          {bai.tuCongBo
+            ? "Xác nhận xong, học sinh thấy điểm ngay."
+            : "Đề này TẮT tự công bố — xác nhận xong học sinh vẫn chưa thấy điểm."}
         </span>
         <span className="flex-1" />
         <button
