@@ -21,6 +21,8 @@ type Store = {
   /** bài QC vừa giao trong phiên — trước đây nút "Giao bài" gọi onClose,
    *  tức bấm xong modal đóng mà KHÔNG giao gì, QC tưởng đã giao */
   daGiao: BaiDaGiao[];
+  /** bài QC đã xác nhận: id bài nộp -> điểm chốt + điểm AI gốc + nhận xét */
+  duyet: Record<string, { diem: number; diemAI: number | null; nhanXet: string }>;
 };
 
 export type BaiDaGiao = {
@@ -38,7 +40,7 @@ const KEY = "cec-qc-overrides";
 /** Đọc lại việc QC đã làm ở lần trước — F5 mà mất sạch thì QC tưởng chưa duyệt,
  *  duyệt lại từ đầu. */
 const doc = (): Store => {
-  if (typeof window === "undefined") return { report: {}, monthly: {}, reminded: {}, daGiao: [] };
+  if (typeof window === "undefined") return { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {} };
   try {
     const raw = window.localStorage.getItem(KEY);
     const j = raw ? JSON.parse(raw) : null;
@@ -47,15 +49,16 @@ const doc = (): Store => {
       monthly: j?.monthly ?? {},
       reminded: j?.reminded ?? {},
       daGiao: j?.daGiao ?? [],
+      duyet: j?.duyet ?? {},
     };
   } catch {
-    return { report: {}, monthly: {}, reminded: {}, daGiao: [] };
+    return { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {} };
   }
 };
 
 /* Bắt đầu RỖNG để bản dựng trên máy chủ và trên trình duyệt giống nhau;
    nạp localStorage sau khi trang đã gắn xong (xem useOverrides). */
-let state: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [] };
+let state: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {} };
 let daNap = false;
 
 /** Nạp việc đã lưu — gọi một lần sau khi trang gắn xong */
@@ -63,7 +66,7 @@ const napMotLan = () => {
   if (daNap || typeof window === "undefined") return;
   daNap = true;
   const luu = doc();
-  if (Object.keys(luu.report).length || Object.keys(luu.monthly).length || Object.keys(luu.reminded).length || luu.daGiao.length) {
+  if (Object.keys(luu.report).length || Object.keys(luu.monthly).length || Object.keys(luu.reminded).length || luu.daGiao.length || Object.keys(luu.duyet).length) {
     state = luu;
     subs.forEach((f) => f());
   }
@@ -111,7 +114,7 @@ export const useOverrides = () => {
   );
 };
 
-const TRONG: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [] };
+const TRONG: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {} };
 
 /** Trạng thái thật của một phiếu, sau khi tính lớp ghi đè */
 export const reportStatusOf = (id: string, goc: ReportStatus): ReportStatus =>
@@ -139,6 +142,14 @@ export const hoanTacGiao = (id: string) => {
   state.daGiao = state.daGiao.filter((x) => x.id !== id);
   emit();
 };
+
+/** QC xác nhận một bài AI chấm. Giữ luôn điểm AI gốc để còn đối chiếu. */
+export const diemDaDuyet = (id: string, diem: number, diemAI: number | null, nhanXet: string) => {
+  state.duyet[id] = { diem, diemAI, nhanXet };
+  emit();
+};
+export const daDuyetBai = (id: string) => !!state.duyet[id];
+export const ketQuaDuyet = (id: string) => state.duyet[id];
 
 export const baiDaGiao = () => state.daGiao;
 export const soBaiDaGiaoCuaLop = (classId: number) =>

@@ -8,6 +8,7 @@ export const TAB_SLUG: Record<string, Tab> = {
   "hoc-sinh": "Học sinh",
   "lich-hoc": "Lịch học",
   "bai-tap": "Bài tập",
+  "duyet-bai": "Duyệt bài",
   "ket-qua": "Kết quả",
   "diem-kiem-tra": "Điểm kiểm tra",
   "lich-su": "Lịch sử",
