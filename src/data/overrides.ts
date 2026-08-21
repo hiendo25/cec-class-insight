@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import type { ReportStatus } from "./reports";
 
 /**
@@ -20,11 +20,49 @@ type Store = {
   reminded: Record<string, true>;
 };
 
+const KEY = "cec-qc-overrides";
+
+/** Đọc lại việc QC đã làm ở lần trước — F5 mà mất sạch thì QC tưởng chưa duyệt,
+ *  duyệt lại từ đầu. */
+const doc = (): Store => {
+  if (typeof window === "undefined") return { report: {}, monthly: {}, reminded: {} };
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    const j = raw ? JSON.parse(raw) : null;
+    return {
+      report: j?.report ?? {},
+      monthly: j?.monthly ?? {},
+      reminded: j?.reminded ?? {},
+    };
+  } catch {
+    return { report: {}, monthly: {}, reminded: {} };
+  }
+};
+
+/* Bắt đầu RỖNG để bản dựng trên máy chủ và trên trình duyệt giống nhau;
+   nạp localStorage sau khi trang đã gắn xong (xem useOverrides). */
 let state: Store = { report: {}, monthly: {}, reminded: {} };
+let daNap = false;
+
+/** Nạp việc đã lưu — gọi một lần sau khi trang gắn xong */
+const napMotLan = () => {
+  if (daNap || typeof window === "undefined") return;
+  daNap = true;
+  const luu = doc();
+  if (Object.keys(luu.report).length || Object.keys(luu.monthly).length || Object.keys(luu.reminded).length) {
+    state = luu;
+    subs.forEach((f) => f());
+  }
+};
 const subs = new Set<() => void>();
 
 const emit = () => {
   state = { ...state };
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(state));
+  } catch {
+    /* hết dung lượng hoặc trình duyệt chặn — vẫn chạy được trong phiên */
+  }
   subs.forEach((f) => f());
 };
 
@@ -49,12 +87,17 @@ const subscribe = (f: () => void) => {
 };
 
 /** Đọc lớp ghi đè; component nào dùng sẽ tự vẽ lại khi có thay đổi */
-export const useOverrides = () =>
-  useSyncExternalStore(
+export const useOverrides = () => {
+  useEffect(napMotLan, []);
+  return useSyncExternalStore(
     subscribe,
     () => state,
-    () => state,
+    /* bản dựng trên máy chủ luôn là trạng thái rỗng */
+    () => TRONG,
   );
+};
+
+const TRONG: Store = { report: {}, monthly: {}, reminded: {} };
 
 /** Trạng thái thật của một phiếu, sau khi tính lớp ghi đè */
 export const reportStatusOf = (id: string, goc: ReportStatus): ReportStatus =>

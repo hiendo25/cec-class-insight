@@ -88,6 +88,51 @@ function Card({ label, value, sub, tone }: { label: string; value: string; sub: 
   );
 }
 
+/** Dựng báo cáo tháng dạng văn bản theo mẫu CEC rồi tải về.
+ *  Trước đây nút "Xuất file" chỉ báo "đã xuất" mà không có file nào — QC gửi
+ *  phụ huynh bằng gì? */
+function xuatFile(s: Student, m: Monthly, row: ClassRow, noiDung: string[]) {
+  const dong = [
+    "BÁO CÁO HỌC TẬP THÁNG",
+    "CEC Academic Progress Report",
+    "",
+    `Học sinh:   ${s.name} (${s.code})`,
+    `Lớp:        ${row.code}${row.teacher ? ` — GV ${row.teacher}` : ""}`,
+    `Kỳ:         ${mLabel(m.month)}`,
+    "",
+    "1. CHUYÊN CẦN",
+    `   Đi học: ${m.present}/${m.reportCount} buổi (${m.attendRate}%)` +
+      `${m.late ? ` · đi trễ ${m.late}` : ""}${m.absent ? ` · vắng ${m.absent}` : ""}` +
+      `${m.excused ? ` · nghỉ phép ${m.excused}` : ""}`,
+    `   Bài tập: nộp ${m.hwDone}/${m.hwTotal}` +
+      `${m.hwLate ? ` · nộp trễ ${m.hwLate}` : ""}`,
+    `   Điểm bài tập trung bình: ${m.avgHw ?? "chưa có bài chấm"}`,
+    "",
+    "2. ĐIỂM THỰC HÀNH TRÊN LỚP",
+    ...m.skills.map(
+      (k) =>
+        `   ${k.name.padEnd(10)} ${k.now ?? "—"}` +
+        (k.prev !== null ? `   (tháng trước ${k.prev}, ${k.delta! > 0 ? "+" : ""}${k.delta})` : ""),
+    ),
+    "",
+    "3. NHẬN XÉT",
+    ...noiDung.filter(Boolean).map((x) => `   ${x}`),
+    "",
+    `Nguồn dữ liệu: ${m.reportCount} phiếu nhận xét buổi đã duyệt.`,
+    `CEC — ${row.campus}`,
+  ];
+
+  const blob = new Blob([dong.join("\r\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `BaoCaoThang_${s.code}_${m.month.replace("/", "-")}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 /* ---------------- Modal 1: chọn kỳ để gen ---------------- */
 
 function GenPanel({
@@ -185,6 +230,7 @@ function List({
   month: string;
   onOpen: (s: Student, m: Monthly) => void;
 }) {
+  useOverrides();
   const students = STUDENTS[row.id] ?? [];
   const rows = students
     .map((s) => ({ s, m: (MONTHLY[s.id] ?? []).find((x) => x.month === month) }))
@@ -231,7 +277,7 @@ function List({
                 {s.code}
               </span>
             </span>
-            <Badge status={m.status} />
+            <Badge status={monthlyStatusOf(`${s.id}:${m.month}`, m.status)} />
 
             <span className="flex-1" />
 
@@ -386,7 +432,7 @@ export function MonthlyDetail({
             {s.code} · Lớp {row.code} · {mLabel(m.month)}
           </p>
         </div>
-        <Badge status={m.status} />
+        <Badge status={status} />
         <span className="flex-1" />
         {status === "approved" ? (
           <span className="flex items-center gap-2">
@@ -405,7 +451,13 @@ export function MonthlyDetail({
                     </>
                   ),
                   confirmLabel: "Xuất file",
-                  doneText: `Đã xuất báo cáo ${mLabel(m.month).toLowerCase()} của ${s.name}.`,
+                  doneText: `Đã tải báo cáo ${mLabel(m.month).toLowerCase()} của ${s.name}.`,
+                  run: () =>
+                    xuatFile(s, m, row, [
+                      ...d.manh.map((x) => `[Điểm tích cực] ${x}`),
+                      ...d.caithien.map((x) => `[Cần cải thiện] ${x}`),
+                      ...d.giaiphap.map((x) => `[Giải pháp] ${x}`),
+                    ]),
                 })
               }
               className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
@@ -823,7 +875,12 @@ export function SessionNote({
         <span className="text-[12.5px]" style={{ color: INK2 }}>
           Người điền: <strong style={{ color: INK }}>{rep.by}</strong>
         </span>
-        {status !== "approved" && (
+        {status === "draft" && (
+          <span className="shrink-0 text-[12.5px]" style={{ color: WARN }}>
+            Giáo viên chưa nộp phiếu — chưa duyệt được
+          </span>
+        )}
+        {status === "pending" && (
           <span className="flex shrink-0 items-center gap-2">
             <button
               type="button"

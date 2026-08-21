@@ -179,7 +179,12 @@ function Matrix({
   const pendingCount = (() => {
     const buoi = new Set(cols.filter((c) => c.kind === "session").map((c) => (c as { no: number }).no));
     const hs = new Set(students.map((x) => x.id));
-    return reps.filter((r) => reportStatusOf(r.id, r.status) !== "approved" && buoi.has(r.session) && hs.has(r.studentId)).length;
+    /* CHỈ đếm phiếu giáo viên đã nộp và đang chờ QC duyệt.
+       Phiếu "Nháp" là giáo viên chưa nộp — QC không duyệt được, đếm vào đây
+       là thổi phồng việc lên hơn gấp đôi (15 thành 32). */
+    return reps.filter(
+      (r) => reportStatusOf(r.id, r.status) === "pending" && buoi.has(r.session) && hs.has(r.studentId),
+    ).length;
   })();
   const boxRef = useRef<HTMLDivElement>(null);
   const [hidden, setHidden] = useState({ left: 0, right: 0 });
@@ -265,7 +270,7 @@ function Matrix({
         <span className="flex items-center gap-[6px]" style={{ color: INK2 }}>
           <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdecea" }} /> dưới 5
         </span>
-        <span style={{ color: INK2 }}>NX = chưa có điểm · 📋 = báo cáo tháng · ô viền chấm = phiếu chờ duyệt</span>
+        <span style={{ color: INK2 }}>NX = chưa có điểm · 📋 = báo cáo tháng · ô viền chấm = phiếu chờ bạn duyệt · ô mờ = giáo viên chưa nộp</span>
       </div>
 
       {(hidden.left > 0 || hidden.right > 0) && (
@@ -404,7 +409,7 @@ function Matrix({
                             type="button"
                             onClick={() => setOpenNote({ s, no: c.no })}
                             title={
-                              (reportStatusOf(rep.id, rep.status) !== "approved" ? "Phiếu chờ bạn duyệt — " : "") +
+                              (reportStatusOf(rep.id, rep.status) === "pending" ? "Phiếu chờ bạn duyệt — " : "") +
                               (rep.absenceReason ?? (rep.attendance === "absent" ? "Vắng không phép" : "Vắng có phép"))
                             }
                             className="inline-block min-w-[46px] rounded-[5px] px-[6px] py-[3px] text-[11.5px]"
@@ -412,9 +417,10 @@ function Matrix({
                               background: "#eceef3",
                               color: INK2,
                               fontStyle: "italic",
-                              outline: reportStatusOf(rep.id, rep.status) !== "approved" ? `1.5px dashed ${NAVY}` : undefined,
-                              outlineOffset: reportStatusOf(rep.id, rep.status) !== "approved" ? "1px" : undefined,
-                              opacity: onlyPending && reportStatusOf(rep.id, rep.status) === "approved" ? 0.24 : 1,
+                              outline: reportStatusOf(rep.id, rep.status) === "pending" ? `1.5px dashed ${NAVY}` : undefined,
+                              outlineOffset: reportStatusOf(rep.id, rep.status) === "pending" ? "1px" : undefined,
+                              opacity:
+                                onlyPending && reportStatusOf(rep.id, rep.status) !== "pending" ? 0.24 : 1,
                             }}
                           >
                             {rep.attendance === "absent" ? "vắng" : "phép"}
@@ -424,22 +430,31 @@ function Matrix({
 
                     const v = score(s, c.no);
                     const t = v === null ? null : tone(v);
-                    const cho = reportStatusOf(rep.id, rep.status) !== "approved";
+                    const st = reportStatusOf(rep.id, rep.status);
+                    const cho = st === "pending";       // QC duyệt được
+                    const nhap = st === "draft";        // giáo viên chưa nộp
                     return (
                       <td key={`s-${c.no}`} className="px-[5px] py-[5px] text-center" style={{ background: bg }}>
                         <button
                           type="button"
                           onClick={() => setOpenNote({ s, no: c.no })}
-                          title={cho ? "Phiếu chờ bạn duyệt — bấm để xem" : "Xem nhận xét buổi"}
+                          title={
+                            cho
+                              ? "Phiếu chờ bạn duyệt — bấm để xem"
+                              : nhap
+                                ? "Giáo viên chưa nộp phiếu"
+                                : "Xem nhận xét buổi"
+                          }
                           className="inline-flex min-w-[46px] items-center justify-center gap-[4px] rounded-[5px] px-[6px] py-[3px] tabular-nums"
                           style={{
                             background: t?.bg ?? "transparent",
                             color: t?.fg ?? INK3,
                             fontWeight: v === null ? 400 : 600,
-                            /* phiếu chờ duyệt: viền chấm để QC thấy ngay ô nào phải xử lý */
+                            /* viền chấm CHỈ cho phiếu QC duyệt được; phiếu giáo viên
+                               chưa nộp thì để mờ, không phải việc của QC */
                             outline: cho ? `1.5px dashed ${NAVY}` : undefined,
                             outlineOffset: cho ? "1px" : undefined,
-                            opacity: onlyPending && !cho ? 0.24 : 1,
+                            opacity: onlyPending && !cho ? 0.24 : nhap ? 0.55 : 1,
                           }}
                         >
                           {v === null ? "NX" : v.toFixed(1)}
