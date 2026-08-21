@@ -646,7 +646,9 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
               className="absolute right-0 top-[36px] z-40 w-[230px] rounded-[6px] bg-white py-[4px] shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
               style={{ border: `1px solid ${LINE}` }}
             >
-              <div className="cec-scroll max-h-[300px] overflow-y-auto">
+              {/* 12 cột x ~34px = ~410px nên 300px cắt cụt mất 3 mục cuối,
+                  QC tưởng chỉ có bấy nhiêu cột để bật/tắt. */}
+              <div className="cec-scroll max-h-[min(440px,60vh)] overflow-y-auto">
                 {COLS.filter((c) => c.key !== "actions" && c.key !== "idx").map((c) => {
                   const on = !hiddenCols.includes(c.key);
                   return (

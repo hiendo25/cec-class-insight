@@ -481,36 +481,56 @@ function TabAssignments({ row }: { row: ClassRow }) {
               )}
             </div>
 
-            {(missing > 0 || ungraded > 0) && (
-              <div className="mt-[10px] flex flex-wrap items-center gap-[10px] pt-[10px]" style={{ borderTop: "1px solid #f1f3f7" }}>
-                {missing > 0 && (
-                  <>
-                    <span className="shrink-0 text-[12.5px]" style={{ color: DANGER }}>{missing} em chưa nộp</span>
-                    <span className="min-w-0 flex-1 truncate text-[12px]" style={{ color: INK2 }}>{late.join(" · ")}</span>
-                    <button
-                      type="button"
-                      className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
-                      style={{ border: `1px solid ${LINE}`, color: NAVY }}
-                    >
-                      Nhắc {missing} em
-                    </button>
-                  </>
-                )}
-                {ungraded > 0 && (
-                  <>
-                    {missing === 0 && <span className="flex-1" />}
-                    <span className="shrink-0 text-[12.5px]" style={{ color: WARN }}>{ungraded} bài chờ chấm</span>
-                    <button
-                      type="button"
-                      className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold text-white"
-                      style={{ background: NAVY }}
-                    >
-                      Chấm bài
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
+            {/* Hàng việc cần xử lý — LUÔN có mặt để mọi thẻ cùng chiều cao.
+                Trước đây chỉ hiện khi có việc nên thẻ so le, mắt phải quét lại từ đầu. */}
+            <div
+              className="mt-[10px] flex flex-wrap items-center gap-[10px] pt-[10px]"
+              style={{ borderTop: "1px solid #f1f3f7", minHeight: 34 }}
+            >
+              {missing > 0 ? (
+                <>
+                  <span className="shrink-0 text-[12.5px]" style={{ color: DANGER }}>
+                    {missing} em chưa nộp
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-[12px]" style={{ color: INK2 }}>
+                    {late.join(" · ")}
+                  </span>
+                  <button
+                    type="button"
+                    className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                    style={{ border: `1px solid ${LINE}`, color: NAVY }}
+                  >
+                    Nhắc {missing} em
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="shrink-0 text-[12.5px]" style={{ color: OK }}>
+                    Cả lớp đã nộp đủ
+                  </span>
+                  <span className="flex-1" />
+                </>
+              )}
+
+              {ungraded > 0 ? (
+                <>
+                  <span className="shrink-0 text-[12.5px]" style={{ color: WARN }}>
+                    {ungraded} bài chờ chấm
+                  </span>
+                  <button
+                    type="button"
+                    className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold text-white"
+                    style={{ background: NAVY }}
+                  >
+                    Chấm bài
+                  </button>
+                </>
+              ) : (
+                <span className="shrink-0 text-[12.5px]" style={{ color: INK3 }}>
+                  đã chấm xong
+                </span>
+              )}
+            </div>
           </div>
         );
       })}
