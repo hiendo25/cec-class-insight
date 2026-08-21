@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AssignmentClassRouteImport } from './routes/assignment/class'
 import { Route as AssignmentStudentRouteImport } from './routes/assignment/student'
 import { Route as ClassIndexRouteImport } from './routes/class/index'
+import { Route as ExamIndexRouteImport } from './routes/exam/index'
+import { Route as ExamExamIdRouteImport } from './routes/exam/$examId'
 import { Route as ClassClassIdTabRouteImport } from './routes/class/$classId.$tab'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +37,16 @@ const ClassIndexRoute = ClassIndexRouteImport.update({
   path: '/class/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExamIndexRoute = ExamIndexRouteImport.update({
+  id: '/exam/',
+  path: '/exam/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamExamIdRoute = ExamExamIdRouteImport.update({
+  id: '/exam/$examId',
+  path: '/exam/$examId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClassClassIdTabRoute = ClassClassIdTabRouteImport.update({
   id: '/class/$classId/$tab',
   path: '/class/$classId/$tab',
@@ -45,14 +57,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assignment/class': typeof AssignmentClassRoute
   '/assignment/student': typeof AssignmentStudentRoute
+  '/exam/$examId': typeof ExamExamIdRoute
   '/class/': typeof ClassIndexRoute
+  '/exam/': typeof ExamIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assignment/class': typeof AssignmentClassRoute
   '/assignment/student': typeof AssignmentStudentRoute
+  '/exam/$examId': typeof ExamExamIdRoute
   '/class': typeof ClassIndexRoute
+  '/exam': typeof ExamIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRoutesById {
@@ -60,7 +76,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/assignment/class': typeof AssignmentClassRoute
   '/assignment/student': typeof AssignmentStudentRoute
+  '/exam/$examId': typeof ExamExamIdRoute
   '/class/': typeof ClassIndexRoute
+  '/exam/': typeof ExamIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRouteTypes {
@@ -69,21 +87,27 @@ export interface FileRouteTypes {
     | '/'
     | '/assignment/class'
     | '/assignment/student'
+    | '/exam/$examId'
     | '/class/'
+    | '/exam/'
     | '/class/$classId/$tab'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/assignment/class'
     | '/assignment/student'
+    | '/exam/$examId'
     | '/class'
+    | '/exam'
     | '/class/$classId/$tab'
   id:
     | '__root__'
     | '/'
     | '/assignment/class'
     | '/assignment/student'
+    | '/exam/$examId'
     | '/class/'
+    | '/exam/'
     | '/class/$classId/$tab'
   fileRoutesById: FileRoutesById
 }
@@ -91,7 +115,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssignmentClassRoute: typeof AssignmentClassRoute
   AssignmentStudentRoute: typeof AssignmentStudentRoute
+  ExamExamIdRoute: typeof ExamExamIdRoute
   ClassIndexRoute: typeof ClassIndexRoute
+  ExamIndexRoute: typeof ExamIndexRoute
   ClassClassIdTabRoute: typeof ClassClassIdTabRoute
 }
 
@@ -125,6 +151,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClassIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/exam/': {
+      id: '/exam/'
+      path: '/exam'
+      fullPath: '/exam/'
+      preLoaderRoute: typeof ExamIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exam/$examId': {
+      id: '/exam/$examId'
+      path: '/exam/$examId'
+      fullPath: '/exam/$examId'
+      preLoaderRoute: typeof ExamExamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/class/$classId/$tab': {
       id: '/class/$classId/$tab'
       path: '/class/$classId/$tab'
@@ -139,7 +179,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssignmentClassRoute: AssignmentClassRoute,
   AssignmentStudentRoute: AssignmentStudentRoute,
+  ExamExamIdRoute: ExamExamIdRoute,
   ClassIndexRoute: ClassIndexRoute,
+  ExamIndexRoute: ExamIndexRoute,
   ClassClassIdTabRoute: ClassClassIdTabRoute,
 }
 export const routeTree = rootRouteImport

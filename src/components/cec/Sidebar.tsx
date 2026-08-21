@@ -33,6 +33,10 @@ const GROUPS: { title: string; items: Item[] }[] = [
     ],
   },
   {
+    title: "Ngân hàng nội dung",
+    items: [{ label: "Đề bài", Icon: IconBook, to: "/exam" }],
+  },
+  {
     title: "Bài tập",
     items: [
       { label: "Học sinh nợ bài", Icon: IconClipboard, to: "/assignment/student" },
