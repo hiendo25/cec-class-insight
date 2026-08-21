@@ -49,8 +49,10 @@ const warnLabel = (r: ClassRow) =>
       ? "Có việc cần xử lý"
       : "Ổn";
 
+/** Sĩ số PHẢI có mẫu số — quy ước chung: mọi con số đều kèm tổng thể.
+ *  capacity null thì hiện trơ, KHÔNG bịa mẫu số. */
 const sizeLabel = (r: ClassRow) =>
-  r.enrolled === null ? "—" : `${r.enrolled}`;
+  r.enrolled === null ? "—" : r.capacity === null ? `${r.enrolled}` : `${r.enrolled}/${r.capacity}`;
 
 /** Tách "T2 · T4 · 18:00" hoặc "T4 17:45-19:15 / T7 17:30-19:00" thành từng buổi */
 const splitSchedule = (s: string): string[] =>
@@ -115,17 +117,17 @@ type Col = {
 const COLS: Col[] = [
   { key: "code", label: "Lớp học", width: 138, filter: "code" },
   { key: "type", label: "Loại lớp", width: 108, filter: "type" },
-  { key: "campus", label: "Cơ sở", width: 138, filter: "campus", optional: true, defaultOff: true },
+  { key: "campus", label: "Cơ sở", width: 138, filter: "campus", optional: true },
   { key: "teacher", label: "Giáo viên", width: 130, filter: "teacher" },
   { key: "qc", label: "QC", width: 130, filter: "qc" },
-  { key: "ec", label: "EC", width: 130, filter: "ec", optional: true, defaultOff: true },
+  { key: "ec", label: "EC", width: 130, filter: "ec", optional: true },
   { key: "size", label: "Sĩ số", width: 88, filter: "size" },  /* tính cả em bảo lưu/nghỉ */
   { key: "schedule", label: "Lịch học", width: 132, filter: "schedule" },
   { key: "warn", label: "Cảnh báo", width: 168, filter: "warn" },
   { key: "start", label: "Ngày bắt đầu", width: 116 },
   { key: "end", label: "Ngày kết thúc", width: 116 },
   { key: "status", label: "Trạng thái", width: 118, filter: "status" },
-  { key: "note", label: "Ghi chú", width: 160, optional: true, defaultOff: true },
+  { key: "note", label: "Ghi chú", width: 160, optional: true },
   { key: "actions", label: "", width: 52, align: "center" },
 ];
 
@@ -1350,8 +1352,18 @@ function renderCell(
       return r.qc ? <Person name={r.qc} /> : muted("Chưa gán");
     case "ec":
       return r.ec ? <Person name={r.ec} /> : muted("Chưa gán");
-    case "size":
-      return r.enrolled === null ? muted("—") : r.enrolled;
+    case "size": {
+      if (r.enrolled === null) return muted("—");
+      if (r.capacity === null) return <span className="tabular-nums">{r.enrolled}</span>;
+      /* gần đầy thì tô cam để QC biết lớp sắp hết chỗ */
+      const day = r.enrolled >= r.capacity;
+      return (
+        <span className="tabular-nums" style={{ color: day ? WARN : undefined }}>
+          {r.enrolled}
+          <span style={{ color: INK3 }}>/{r.capacity}</span>
+        </span>
+      );
+    }
     case "schedule": {
       if (!r.schedule) return <span style={{ color: WARN }}>Chưa xếp lịch</span>;
       const slots = splitSchedule(r.schedule);
