@@ -39,17 +39,24 @@ const EXAMS = [
 
 const STUDENT_STATES = ["Đang học", "Bảo lưu", "Đã chuyển lớp", "Đã nghỉ"] as const;
 
-type Props = { from: ClassRow; onClose: () => void };
+type Props = {
+  from: ClassRow;
+  onClose: () => void;
+  /** Giao riêng cho một em: mở sẵn chế độ "Chọn học sinh" và chọn sẵn em đó.
+   *  Trước đây bấm "Giao bài" ở màn HS nợ bài lại mở chế độ "Cả lớp" —
+   *  QC định giao 1 em mà lỡ tay giao cho cả 7 em. */
+  studentId?: string | undefined;
+};
 
-export function AssignDialog({ from, onClose }: Props) {
+export function AssignDialog({ from, onClose, studentId }: Props) {
   const [classIds, setClassIds] = useState<number[]>([from.id]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickQuery, setPickQuery] = useState("");
   const [mineOnly, setMineOnly] = useState(true);
 
-  const [mode, setMode] = useState<"class" | "students">("class");
+  const [mode, setMode] = useState<"class" | "students">(studentId ? "students" : "class");
   const [states, setStates] = useState<string[]>(["Đang học"]);
-  const [pickedStudents, setPickedStudents] = useState<string[]>([]);
+  const [pickedStudents, setPickedStudents] = useState<string[]>(studentId ? [studentId] : []);
 
   const [examOpen, setExamOpen] = useState(false);
   const [examQuery, setExamQuery] = useState("");

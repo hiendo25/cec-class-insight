@@ -256,7 +256,7 @@ export function OwedStudents() {
                           navigate({
                             to: "/class/$classId/$tab",
                             params: { classId: String(r.classId), tab: "bai-tap" },
-                            search: { giao: true },
+                            search: { giaoHs: r.st.id },
                           })
                         }
                         title={`Giao bài cho lớp ${r.classCode}`}

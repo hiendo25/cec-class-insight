@@ -812,6 +812,7 @@ export function ClassWorkspace({
   onOpenMonth,
   openAssign,
   onCloseAssign,
+  assignStudentId,
 }: {
   row: ClassRow;
   /** tab hiện tại do URL quyết định — để F5 và nút Back của trình duyệt chạy đúng */
@@ -829,6 +830,8 @@ export function ClassWorkspace({
   /** mở sẵn modal giao bài — dùng khi bấm "Giao bài" từ màn xuyên lớp */
   openAssign?: boolean;
   onCloseAssign?: () => void;
+  /** giao riêng cho một em: mở modal ở chế độ "Chọn học sinh", chọn sẵn em này */
+  assignStudentId?: string | undefined;
 }) {
   const [assignOpenLocal, setAssignOpen] = useState(false);
   const assignOpen = assignOpenLocal || !!openAssign;
@@ -967,6 +970,7 @@ export function ClassWorkspace({
       {assignOpen && (
         <AssignDialog
           from={row}
+          studentId={assignStudentId}
           onClose={() => {
             setAssignOpen(false);
             onCloseAssign?.();

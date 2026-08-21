@@ -25,6 +25,8 @@ export type ClassSearch = {
   bc?: string;
   /** true = mở sẵn modal giao bài, dùng khi bấm Giao bài từ màn xuyên lớp */
   giao?: boolean;
+  /** id học sinh cần giao — mở modal ở chế độ "Chọn học sinh" với em này sẵn */
+  giaoHs?: string;
 };
 
 export const Route = createFileRoute("/class/$classId/$tab")({
@@ -33,6 +35,7 @@ export const Route = createFileRoute("/class/$classId/$tab")({
     ...(typeof raw["nx"] === "string" ? { nx: raw["nx"] as string } : {}),
     ...(typeof raw["bc"] === "string" ? { bc: raw["bc"] as string } : {}),
     ...(raw["giao"] === true || raw["giao"] === "true" || raw["giao"] === "1" ? { giao: true } : {}),
+    ...(typeof raw["giaoHs"] === "string" ? { giaoHs: raw["giaoHs"] as string } : {}),
   }),
   loader: ({ params }) => {
     const row = CLASSES.find((c) => String(c.id) === params.classId);
@@ -71,7 +74,8 @@ function ClassDetail() {
         row={row}
         openStudentId={search.hs}
         onOpenStudent={(id) => setSearch(id ? { hs: id } : {})}
-        openAssign={search.giao === true}
+        openAssign={search.giao === true || !!search.giaoHs}
+        assignStudentId={search.giaoHs}
         onCloseAssign={() => setSearch({})}
         openNoteKey={search.nx}
         openMonthKey={search.bc}

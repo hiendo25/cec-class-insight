@@ -375,13 +375,46 @@ export function MonthlyDetail({
         </div>
         <Badge status={m.status} />
         <span className="flex-1" />
-        <button
-          type="button"
-          className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
-          style={{ background: NAVY }}
-        >
-          Gửi QC duyệt
-        </button>
+        {m.status === "approved" ? (
+          <span className="flex items-center gap-2">
+            <span className="text-[12.5px]" style={{ color: OK }}>
+              Đã duyệt — sẵn sàng gửi phụ huynh
+            </span>
+            <button
+              type="button"
+              className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
+              style={{ background: NAVY }}
+            >
+              Xuất file gửi phụ huynh
+            </button>
+          </span>
+        ) : m.status === "pending" ? (
+          /* Đang chờ duyệt mà QC chính là người duyệt — cho duyệt ngay tại đây */
+          <span className="flex items-center gap-2">
+            <button
+              type="button"
+              className="rounded-md px-3 py-[7px] text-[13px]"
+              style={{ border: `1px solid ${LINE}`, color: INK, background: "#fff" }}
+            >
+              Trả lại người soạn
+            </button>
+            <button
+              type="button"
+              className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
+              style={{ background: NAVY }}
+            >
+              Duyệt báo cáo
+            </button>
+          </span>
+        ) : (
+          <button
+            type="button"
+            className="rounded-md px-4 py-[8px] text-[13px] font-semibold text-white"
+            style={{ background: NAVY }}
+          >
+            Gửi QC duyệt
+          </button>
+        )}
       </div>
 
       {/* 4 thẻ tổng hợp */}
@@ -389,7 +422,11 @@ export function MonthlyDetail({
         <Card
           label="Điểm danh"
           value={`${m.attendRate}%`}
-          sub={`${m.present}/${m.reportCount} buổi đã duyệt · trễ ${m.late} · vắng ${m.absent}${m.excused ? ` · phép ${m.excused}` : ""}`}
+          sub={
+            m.sessionTotal > m.reportCount
+              ? `${m.present}/${m.reportCount} buổi đã duyệt (tháng có ${m.sessionTotal} buổi) · vắng ${m.absent}`
+              : `${m.present}/${m.reportCount} buổi · trễ ${m.late} · vắng ${m.absent}${m.excused ? ` · phép ${m.excused}` : ""}`
+          }
           tone={m.attendRate < 80 ? DANGER : OK}
         />
         <Card
