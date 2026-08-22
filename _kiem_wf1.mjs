@@ -33,10 +33,12 @@ const phieuCho = Object.entries(SESSIONS)
 const baiCho = BAI_NOP.filter((b) => b.tuLuan && mine.has(b.classId));
 
 const t = src("Today.tsx");
-kiem("1", "4 khối", (t.match(/so=\{[1-4]\}/g) ?? []).length === 4, `đếm được ${(t.match(/so=\{[1-4]\}/g) ?? []).length}`);
+/* Prop `so={1..4}` đã bỏ khi sửa UI theo nghiên cứu app quốc tế — số không còn
+   là thứ to nhất. Giờ đếm theo `mauKhoi` (mỗi khối một màu riêng). */
+kiem("1", "4 khối", (t.match(/mauKhoi=\{/g) ?? []).length === 4, `đếm được ${(t.match(/mauKhoi=\{/g) ?? []).length}`);
 kiem("2a", "khối ① = 21 phiếu", phieuCho.length === 21, `script đếm ${phieuCho.length}`);
 kiem("2b", "khối ② = 59 bài", baiCho.length === 59, `script đếm ${baiCho.length}`);
-kiem("3", "mỗi khối ≤5 dòng", (t.match(/\.slice\(0, 3\)/g) ?? []).length === 4, "dùng slice(0,3)");
+kiem("3", "mỗi khối ≤5 dòng", (t.match(/\.slice\(0, 5\)/g) ?? []).length === 4, "dùng slice(0,5)");
 kiem("4", "mọi tên người có avatar", t.includes("<Person name={ten}"), "Dong() luôn render <Person>");
 kiem("5", "mỗi dòng bấm được", (t.match(/onNut=\{\(\) =>/g) ?? []).length === 4);
 kiem("6", "khối ② cảnh báo bài chưa công bố", t.includes("chưa thấy điểm"));
