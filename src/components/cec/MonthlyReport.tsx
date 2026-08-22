@@ -746,7 +746,11 @@ export function MonthlyReportTab({ row }: { row: ClassRow }) {
         <MonthlyBatch row={row} month={month} />
       ) : (
         <>
-      <GenPanel row={row} month={month} onMonth={setMonth} onGen={() => undefined} />
+      {/* `onGen={() => undefined}` là nút CHẾT: bấm "Tạo Monthly Report" không có
+          gì xảy ra, cũng không có toast để QC nghi ngờ — đúng loại lỗi đã đi diệt
+          một lượt nhưng bỏ sót chỗ này. Việc thật của nút là chuyển sang chế độ
+          soạn cả lớp, màn đó đã dựng sẵn ở `MonthlyBatch`. */}
+      <GenPanel row={row} month={month} onMonth={setMonth} onGen={() => setCheDo("ca-lop")} />
       <List row={row} month={month} onOpen={(s, m) => setOpen({ s, m })} />
         </>
       )}

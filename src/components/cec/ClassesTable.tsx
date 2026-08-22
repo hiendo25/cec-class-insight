@@ -1118,6 +1118,16 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                                   isOpen,
                                   toggle: () => setExpanded(isOpen ? null : r.id),
                                   open: () => onOpenClass?.(r),
+                                  /* renderCell là hàm module-level, KHÔNG thấy state
+                                     của component. Trước đây nó gọi thẳng `setGiaoLop`
+                                     và `xuLyCanhBao` -> ReferenceError khi bấm cột ⋯.
+                                     Phải truyền vào qua ctl. */
+                                  giao: () => setGiaoLop(r),
+                                  nhac: () =>
+                                    xuLyCanhBao(r, {
+                                      title: "Học sinh chưa nộp bài",
+                                      action: "Nhắc học sinh",
+                                    }),
                                 })}
                               </td>
                             ))}
@@ -1431,7 +1441,13 @@ function renderCell(
   key: string,
   r: ClassRow,
   idx: number,
-  ctl: { isOpen: boolean; toggle: () => void; open: () => void },
+  ctl: {
+    isOpen: boolean;
+    toggle: () => void;
+    open: () => void;
+    giao: () => void;
+    nhac: () => void;
+  },
 ) {
   const muted = (t: string) => (
     <span className="italic" style={{ color: INK3 }}>
@@ -1586,10 +1602,8 @@ function renderCell(
         <RowMenu
           row={r}
           onOpen={ctl.open}
-          onGiao={() => setGiaoLop(r)}
-          onNhac={() =>
-            xuLyCanhBao(r, { title: "Học sinh chưa nộp bài", action: "Nhắc học sinh" })
-          }
+          onGiao={ctl.giao}
+          onNhac={ctl.nhac}
         />
       );
     default:
