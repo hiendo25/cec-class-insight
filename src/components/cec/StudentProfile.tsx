@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { TODAY, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
+import { SCORES, TESTS } from "@/data/tests";
 import type { ClassRow } from "@/data/classes";
 import { SESSIONS } from "@/data/sessions";
 import type { Student } from "@/data/students";
@@ -220,6 +221,71 @@ function Donut({ errors, size = 168 }: { errors: ErrorGroup[]; size?: number }) 
         câu đã làm
       </text>
     </svg>
+  );
+}
+
+/**
+ * Điểm kiểm tra định kỳ — con số phụ huynh hỏi ĐẦU TIÊN.
+ * Lấy từ TESTS/SCORES đã có; app cũ có hẳn tab riêng cho mảng này.
+ */
+function DiemKiemTra({ classId, studentId }: { classId: number; studentId: string }) {
+  const rows = useMemo(() => {
+    const ts = (TESTS[classId] ?? []).filter((t) => t.daThi);
+    const m = SCORES[studentId] ?? {};
+    return ts.map((t) => ({ id: t.id, ten: t.ten, ngay: t.ngay, diem: m[t.id] }));
+  }, [classId, studentId]);
+
+  const coDiem = rows.filter((r) => typeof r.diem === "number");
+  const tb = coDiem.length
+    ? +(coDiem.reduce((a, b) => a + (b.diem as number), 0) / coDiem.length).toFixed(1)
+    : null;
+
+  return (
+    <section className="rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
+      <div className="mb-1 flex items-baseline gap-[10px]">
+        <h2 className="text-[15px] font-semibold" style={{ color: INK }}>
+          Điểm kiểm tra định kỳ
+        </h2>
+        <span className="flex-1" />
+        {tb !== null && (
+          <span className="text-[12.5px]" style={{ color: INK2 }}>
+            TB <b style={{ color: scoreTone(tb).fg }}>{tb.toFixed(1)}</b>
+          </span>
+        )}
+      </div>
+      <p className="mb-3 text-[12px]" style={{ color: INK3 }}>
+        Điểm bài thi định kỳ của lớp — khác điểm bài tập online.
+      </p>
+
+      {rows.length === 0 ? (
+        <p className="py-[18px] text-center text-[12.5px]" style={{ color: INK3 }}>
+          Lớp chưa có bài kiểm tra định kỳ nào đã thi.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-[6px]">
+          {rows.map((r) => (
+            <div key={r.id} className="flex items-center gap-[10px] text-[12.5px]">
+              <span className="min-w-0 flex-1 truncate" style={{ color: INK }}>{r.ten}</span>
+              <span className="shrink-0 tabular-nums text-[11.5px]" style={{ color: INK3 }}>{r.ngay}</span>
+              {typeof r.diem === "number" ? (
+                <span
+                  className="w-[46px] shrink-0 rounded-[5px] py-[2px] text-center font-semibold tabular-nums"
+                  style={{ background: scoreTone(r.diem).bg, color: scoreTone(r.diem).fg }}
+                >
+                  {r.diem.toFixed(1)}
+                </span>
+              ) : r.diem === null ? (
+                <span className="w-[46px] shrink-0 text-center text-[11.5px] italic" style={{ color: INK3 }}>
+                  vắng
+                </span>
+              ) : (
+                <span className="w-[46px] shrink-0 text-center" style={{ color: INK3 }}>—</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -760,16 +826,20 @@ export function StudentProfile({
         </section>
       </div>
 
-      {/* nhóm lỗi */}
-      <section className="rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
-        <h2 className="mb-1 text-[15px] font-semibold" style={{ color: INK }}>
-          Nhóm lỗi hay gặp
-        </h2>
-        <p className="mb-3 text-[12px]" style={{ color: INK3 }}>
-          Gộp theo chủ điểm của các bài đã chấm. Cột phải so với cùng kỳ tháng trước.
-        </p>
-        <ErrorGroups errors={profile.errors} />
-      </section>
+      {/* nhóm lỗi + điểm kiểm tra định kỳ — hai thứ phụ huynh hỏi nhiều nhất */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <section className="rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
+          <h2 className="mb-1 text-[15px] font-semibold" style={{ color: INK }}>
+            Nhóm lỗi hay gặp
+          </h2>
+          <p className="mb-3 text-[12px]" style={{ color: INK3 }}>
+            Gộp theo chủ điểm của các bài đã chấm. Cột phải so với cùng kỳ tháng trước.
+          </p>
+          <ErrorGroups errors={profile.errors} />
+        </section>
+
+        <DiemKiemTra classId={row.id} studentId={student.id} />
+      </div>
 
       {/* lịch sử */}
       <section className="rounded-xl bg-white pb-1" style={{ border: `1px solid ${LINE}` }}>
