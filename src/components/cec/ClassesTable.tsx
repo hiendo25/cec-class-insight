@@ -1,8 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AssignDialog } from "./AssignDialog";
 import { TH_BG, TH_FG, TH_LINE, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { Person } from "./Person";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import { ME } from "@/data/me";
+import { STUDENTS } from "@/data/students";
+import { markReminded } from "@/data/overrides";
 import { useAction } from "./ActionDialog";
 import { Modal } from "./Modal";
 import {
@@ -338,6 +341,68 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
   const [mineOnly, setMineOnly] = useState(initial?.get("mine") !== "0");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<number[]>([]);
+  /* Lớp đang mở modal giao bài từ cảnh báo trong dòng */
+  const [giaoLop, setGiaoLop] = useState<ClassRow | null>(null);
+
+  /**
+   * Xử lý nút trong cảnh báo của dòng.
+   *
+   * Trước đây MỌI cảnh báo dùng chung một hộp thoại suông: bấm "Giao bài" là
+   * hiện ngay "Đã giao bài cho lớp X" — không chọn đề, không chọn học sinh,
+   * không hạn nộp. Nút nói dối.
+   *
+   * Giờ tách theo bản chất việc:
+   *   - Giao bài  -> MỞ MODAL giao bài thật, QC chọn đề và người nhận
+   *   - Nhắc HS   -> hộp xác nhận có TÊN + MÃ từng em, ghi nhận thật
+   */
+  const xuLyCanhBao = (r: ClassRow, it: { title: string; action: string }) => {
+    if (/giao bài/i.test(it.action)) {
+      setGiaoLop(r);
+      return;
+    }
+
+    if (/nhắc/i.test(it.action)) {
+      const noBai = (STUDENTS[r.id] ?? []).filter(
+        (st) => st.state === "Đang học" && st.assigned - st.submitted > 0,
+      );
+      ask({
+        title: `Nhắc ${noBai.length} học sinh — lớp ${r.code}`,
+        body: (
+          <>
+            <p style={{ marginBottom: 8 }}>Gửi lời nhắc nộp bài tới {noBai.length} em:</p>
+            <ul style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {noBai.map((st) => (
+                <li key={st.id} style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+                  <span style={{ fontWeight: 500 }}>{st.name}</span>
+                  <span style={{ fontSize: 11.5, color: INK3 }} className="tabular-nums">
+                    {st.code}
+                  </span>
+                  <span style={{ fontSize: 12, color: WARN }}>
+                    còn {st.assigned - st.submitted} bài
+                  </span>
+                  <span style={{ fontSize: 11.5, color: INK3 }} className="tabular-nums">
+                    {st.phone}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        ),
+        confirmLabel: `Gửi lời nhắc cho ${noBai.length} em`,
+        doneText: `Đã nhắc ${noBai.length} em ở lớp ${r.code}.`,
+        run: () => noBai.forEach((st) => markReminded(`hs-${st.id}`)),
+      });
+      return;
+    }
+
+    /* Việc khác: giữ hộp xác nhận, nhưng nói rõ chưa nối hành động thật */
+    ask({
+      title: `${it.action} — lớp ${r.code}`,
+      body: <>{it.title}</>,
+      confirmLabel: it.action,
+      doneText: `Đã ghi nhận: ${it.action.toLowerCase()} — lớp ${r.code}.`,
+    });
+  };
   const [expanded, setExpanded] = useState<number | null>(null);
   const [hiddenCols, setHiddenCols] = useState<string[]>(
     COLS.filter((c) => c.defaultOff).map((c) => c.key),
@@ -1030,14 +1095,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                                       <span className="min-w-[260px]">{it.title}</span>
                                       <button
                                         type="button"
-                                        onClick={() =>
-                                          ask({
-                                            title: `${it.action} — lớp ${r.code}`,
-                                            body: <>{it.title}</>,
-                                            confirmLabel: it.action,
-                                            doneText: `Đã ${it.action.toLowerCase()} cho lớp ${r.code}.`,
-                                          })
-                                        }
+                                        onClick={() => xuLyCanhBao(r, it)}
                                         className="cec-btn cec-btn-secondary"
                                         style={{ color: NAVY }}
                                       >
@@ -1237,6 +1295,10 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
           </>
         </Modal>
       )}
+
+      {/* Bấm "Giao bài" trong cảnh báo phải MỞ MODAL THẬT — trước đây chỉ hiện
+          toast "Đã giao bài cho lớp X" mà không chọn đề, không chọn người nhận. */}
+      {giaoLop && <AssignDialog from={giaoLop} onClose={() => setGiaoLop(null)} />}
     </div>
   );
 }
