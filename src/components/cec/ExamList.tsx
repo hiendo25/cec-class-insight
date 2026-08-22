@@ -29,6 +29,10 @@ const SORT_CUA: Record<string, SortCot | undefined> = {
   "Thời gian": "thoiGian",
   "Ngày tạo": "ngayTao",
 };
+/** Chiều rộng từng cột — khớp thứ tự mảng tiêu đề bên dưới.
+ *  Tên đề chiếm phần lớn như PROD; các cột còn lại vừa đủ nội dung. */
+const COL_W = [420, 96, 150, 100, 96, 62, 92, 140, 150, 104];
+
 /** dd/mm/yyyy -> số so sánh được; sai định dạng thì trả 0 chứ không NaN làm hỏng sort */
 const ngaySo = (d: string) => {
   const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(d.trim());
@@ -254,7 +258,15 @@ export function ExamList() {
         </div>
       ) : (
         <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
-          <table className="w-full border-collapse text-[13px]">
+          {/* PROD dinh chieu rong tung cot: ten de ~440px mot dong, cat bang "…".
+              Khong co colgroup thi trinh duyet chia deu -> cot ten bi bop con 95px
+              trong khi cot "Cap do" chi chua "A1" lai rong gap doi. */}
+          <table className="border-collapse text-[13px]" style={{ minWidth: 1180, width: "100%" }}>
+            <colgroup>
+              {COL_W.map((w, i) => (
+                <col key={i} style={{ width: w }} />
+              ))}
+            </colgroup>
             <thead>
               <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
                 {["Tên đề bài", "Loại", "Cơ sở", "Kỹ năng", "Cấp độ", "Câu", "Thời gian", "Người tạo", "Trạng thái", "Ngày tạo"].map(
@@ -268,7 +280,7 @@ export function ExamList() {
                             type="button"
                             onClick={() => setSap((v) => (v.cot === c ? { cot: c, giam: !v.giam } : { cot: c, giam: true }))}
                             className="flex items-center gap-[5px] font-semibold hover:underline"
-                            style={{ color: "#fff" }}
+                            style={{ color: TH_FG }}
                             title={`Sắp xếp theo ${h}`}
                           >
                             {h}
@@ -316,26 +328,29 @@ function Dong({ e, i, onMo }: { e: Exam; i: number; onMo: () => void }) {
       className="cursor-pointer"
       style={{ background: i % 2 ? "#f5f8fc" : "#fff", borderBottom: "1px solid #edeff4" }}
     >
-      <td className="px-[12px] py-[9px]">
-        <button type="button" onClick={onMo} className="text-left font-medium hover:underline" style={{ color: NAVY }}>
+      {/* Một dòng, cắt bằng "…" như PROD — để tên dài không đội cao cả hàng */}
+      <td className="max-w-0 px-[12px] py-[9px]">
+        <button
+          type="button"
+          onClick={onMo}
+          className="block w-full truncate text-left font-medium hover:underline"
+          style={{ color: NAVY }}
+          title={e.ten}
+        >
           {e.ten}
         </button>
-        <span className="ml-[8px] text-[11.5px] tabular-nums" style={{ color: INK3 }}>
-          {e.ma}
+        <span className="block truncate text-[11.5px]" style={{ color: INK3 }}>
+          <span className="tabular-nums">{e.ma}</span>
+          {e.nhanBanTu && <> · nhân bản từ {e.nhanBanTu}</>}
         </span>
-        {e.nhanBanTu && (
-          <span className="ml-[7px] text-[11.5px]" style={{ color: INK3 }}>
-            · nhân bản từ {e.nhanBanTu}
-          </span>
-        )}
       </td>
       <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.loai}</td>
-      <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.coSo}</td>
+      <td className="max-w-0 truncate px-[12px]" style={{ color: INK2 }} title={e.coSo}>{e.coSo}</td>
       <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.kyNang}</td>
       <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.capDo}</td>
       <td className="px-[12px] tabular-nums" style={{ color: INK2 }}>{e.soCau}</td>
       <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>{e.thoiGian} phút</td>
-      <td className="whitespace-nowrap px-[12px]" style={{ color: INK2 }}>{e.nguoiTao}</td>
+      <td className="max-w-0 truncate px-[12px]" style={{ color: INK2 }} title={e.nguoiTao}>{e.nguoiTao}</td>
       <td className="whitespace-nowrap px-[12px]">
         <span className="rounded-full px-[8px] py-[2px] text-[11.5px]" style={{ background: tt.bg, color: tt.fg }}>
           {tt.ngan}
