@@ -118,6 +118,7 @@ export function Today() {
           tieuDe="Phiếu buổi chờ tôi duyệt"
           dem={phieuCho.length}
           rong="Không còn phiếu nào chờ duyệt."
+          coNguon={lopCuaToi.some((c) => (SESSIONS[c.id] ?? []).length > 0)}
           chan={`${phieuCho.length} phiếu · ${new Set(phieuCho.map((p) => p.classId)).size} lớp`}
           xemHet={phieuCho.length > 3 ? `Xem tất cả ${phieuCho.length} ›` : null}
           onXemHet={() => navigate({ to: "/queue/phieu" })}
@@ -141,6 +142,7 @@ export function Today() {
           tieuDe="Bài AI chấm chờ xác nhận"
           dem={baiCho.length}
           rong="Không còn bài nào chờ xác nhận."
+          coNguon={BAI_NOP.some((b) => idCuaToi.has(b.classId))}
           chan={
             chuaCongBo.length > 0 ? (
               <span style={{ color: WARN }}>
@@ -172,6 +174,7 @@ export function Today() {
           tieuDe="Em nợ bài quá hạn"
           dem={emNoBai.length}
           rong="Không có em nào đang nợ bài."
+          coNguon={lopCuaToi.some((c) => (STUDENTS[c.id] ?? []).length > 0)}
           chan={`${emNoBai.length} em · ${new Set(emNoBai.map((e) => e.classId)).size} lớp — chỉ tính em đang học`}
           xemHet={emNoBai.length > 3 ? `Xem tất cả ${emNoBai.length} ›` : null}
           onXemHet={() => navigate({ to: "/assignment/student" })}
@@ -196,6 +199,7 @@ export function Today() {
           tieuDe="Báo cáo tháng chưa xong"
           dem={baoCaoCho.length}
           rong="Báo cáo tháng đã duyệt hết."
+          coNguon={Object.keys(MONTHLY).length > 0}
           chan={`${baoCaoCho.length} lớp còn báo cáo dang dở`}
           xemHet={baoCaoCho.length > 3 ? `Xem tất cả ${baoCaoCho.length} ›` : null}
           onXemHet={() => navigate({ to: "/class" })}
@@ -222,12 +226,16 @@ export function Today() {
 
 /** Một khối việc. Rỗng vẫn hiện — ẩn đi thì QC tưởng app hỏng. */
 function Khoi({
-  so, tieuDe, dem, rong, chan, xemHet, onXemHet, children,
+  so, tieuDe, dem, rong, coNguon, chan, xemHet, onXemHet, children,
 }: {
   so: number;
   tieuDe: string;
   dem: number;
   rong: string;
+  /** false = CHƯA CÓ dữ liệu nguồn, khác hẳn "hết việc rồi".
+   *  Lỗi nặng nhất của PROD là gộp hai thứ này làm một: QC thấy "0" rồi
+   *  tưởng hết việc, trong khi thật ra bộ đếm chưa chạy. */
+  coNguon: boolean;
   chan: React.ReactNode;
   xemHet: string | null;
   onXemHet: () => void;
@@ -255,9 +263,17 @@ function Khoi({
 
       <div className="flex-1" style={{ borderTop: `1px solid ${LINE}` }}>
         {dem === 0 ? (
-          <p className="px-[16px] py-[26px] text-center text-[12.5px]" style={{ color: OK }}>
-            {rong}
-          </p>
+          coNguon ? (
+            <p className="px-[16px] py-[26px] text-center text-[12.5px]" style={{ color: OK }}>
+              {rong}
+            </p>
+          ) : (
+            <p className="px-[16px] py-[26px] text-center text-[12.5px]" style={{ color: INK3 }}>
+              Chưa có dữ liệu — bộ đếm chạy lúc 6h sáng.
+              <br />
+              <span className="text-[11.5px]">Không phải hết việc, mà là chưa tính được.</span>
+            </p>
+          )
         ) : (
           children
         )}

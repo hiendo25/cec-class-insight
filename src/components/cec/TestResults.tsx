@@ -203,6 +203,9 @@ export function TestResults({ row }: { row: ClassRow }) {
       <section className="rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
         <div className="px-[14px] pb-[8px] pt-[11px] text-[13px] font-semibold" style={{ color: INK }}>
           Lịch kiểm tra và đề dùng
+          <span className="ml-[8px] text-[12px] font-normal" style={{ color: INK3 }}>
+            — buổi nào thi, nhóm bài gì, dạng gì, dùng đề nào
+          </span>
         </div>
         {tests.map((t) => (
           <div
@@ -213,6 +216,11 @@ export function TestResults({ row }: { row: ClassRow }) {
             <span className="w-[150px] shrink-0 font-medium" style={{ color: INK }}>{t.ten}</span>
             <span className="w-[128px] shrink-0 tabular-nums" style={{ color: INK2 }}>
               buổi {t.buoi} · {t.ngay}
+            </span>
+            {/* App cũ tách hai thứ: Test category (nhóm bài) và Test type (dạng bài).
+                Gộp làm một thì QC không lọc được "cho tôi xem mọi bài Summative". */}
+            <span className="shrink-0 rounded-[4px] px-[7px] py-[1px] text-[11.5px]" style={{ background: "#eef1f7", color: NAVY }}>
+              {t.category}
             </span>
             <span className="shrink-0 rounded-[4px] px-[7px] py-[1px] text-[11.5px]" style={{ background: "#f0f2f6", color: INK2 }}>
               {t.testType}

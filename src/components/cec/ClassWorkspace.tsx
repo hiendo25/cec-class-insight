@@ -10,11 +10,12 @@ import { ResultMatrix } from "./ResultMatrix";
 import { TestResults } from "./TestResults";
 import { useNavigate } from "@tanstack/react-router";
 import { GradingQueue } from "./GradingQueue";
+import { choDuyetCuaLop } from "@/data/submissions";
 import { Person } from "./Person";
 import { MonthlyBatch } from "./MonthlyBatch";
-import { MONTHLY } from "@/data/reports";
+import { MONTHLY, REPORTS } from "@/data/reports";
 import { soNgayToi } from "@/data/const";
-import { daNhac, markReminded, useOverrides } from "@/data/overrides";
+import { daDuyetBai, daNhac, markReminded, reportStatusOf, useOverrides } from "@/data/overrides";
 import {
   IconBell,
   IconCalendarCheck,
@@ -1065,6 +1066,38 @@ export function ClassWorkspace({
       </>
     );
 
+  /* Số việc còn tồn từng tab — dẫn xuất từ dữ liệu thật, không đếm rời */
+  const viecTon = useMemo<Partial<Record<Tab, number>>>(() => {
+    const hs = STUDENTS[row.id] ?? [];
+    const buoi = SESSIONS[row.id] ?? [];
+    const bai = ASSIGNMENTS[row.id] ?? [];
+
+    /* Học sinh: em cần chú ý (nợ bài / điểm thấp / vắng nhiều) */
+    const canChuY = hs.filter((s) => s.state === "Đang học" && isAtRisk(s)).length;
+
+    /* Lịch học: buổi đã dạy mà GV chưa gửi phiếu — QC phải đi đòi */
+    const phieuChuaGui = buoi.filter((b) => b.past && b.report === "draft").length;
+
+    /* Bài tập: bài còn em chưa nộp */
+    const baiConNo = bai.filter((a) => a.total - a.submitted > 0).length;
+
+    /* Duyệt bài: bài tự luận AI chấm chờ QC xác nhận */
+    const choXacNhan = choDuyetCuaLop(row.id).filter((b) => !daDuyetBai(b.id)).length;
+
+    /* Kết quả: phiếu buổi TA đã gửi, chờ QC duyệt */
+    const choDuyetPhieu = (REPORTS[row.id] ?? []).filter(
+      (r) => reportStatusOf(r.id, r.status) === "pending",
+    ).length;
+
+    return {
+      "Học sinh": canChuY,
+      "Lịch học": phieuChuaGui,
+      "Bài tập": baiConNo,
+      "Duyệt bài": choXacNhan,
+      "Kết quả": choDuyetPhieu,
+    };
+  }, [row.id]);
+
   return (
     <div className="flex flex-col gap-[14px]">
       <div className="flex items-start justify-between gap-[16px]">
@@ -1140,6 +1173,7 @@ export function ClassWorkspace({
       <nav className="flex items-end gap-[3px]" style={{ borderBottom: `1px solid ${LINE}` }}>
         {TABS.map((t) => {
           const on = t === tab;
+          const n = viecTon[t] ?? 0;
           return (
             <button
               key={t}
@@ -1155,6 +1189,16 @@ export function ClassWorkspace({
               }}
             >
               {t}
+              {/* Badge chỉ hiện khi CÓ việc — tab "Duyệt bài" đang 16 bài chờ mà
+                  nhìn từ ngoài không biết, QC phải mở từng tab mới thấy. */}
+              {n > 0 && (
+                <span
+                  className="ml-[6px] rounded-full px-[6px] py-[1px] text-[11px] font-semibold tabular-nums"
+                  style={{ background: on ? NAVY : "#e7ebf3", color: on ? "#fff" : NAVY }}
+                >
+                  {n}
+                </span>
+              )}
             </button>
           );
         })}

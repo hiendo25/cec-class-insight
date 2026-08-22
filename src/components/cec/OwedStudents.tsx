@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { TODAY, TH_BG, TH_FG, TH_LINE, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
+import { homNayChoTen, xuatCSV } from "@/lib/xuatBang";
 import { useNavigate } from "@tanstack/react-router";
 import { CLASSES } from "@/data/classes";
 import { STUDENTS, type Student } from "@/data/students";
@@ -176,6 +177,32 @@ export function OwedStudents() {
         <span style={{ color: INK3 }}>
           Hiển thị {list.length}/{dungDem.length} em
         </span>
+        {/* App cũ có nút xuất ở hầu hết bảng; QC hay gửi bảng cho quản lý.
+            Xuất ĐÚNG cái đang nhìn — đã lọc, đã sắp xếp. */}
+        <button
+          type="button"
+          disabled={list.length === 0}
+          onClick={() =>
+            xuatCSV(
+              `HocSinhNoBai_${homNayChoTen(TODAY)}`,
+              ["Học sinh", "Mã HS", "Lớp", "Điện thoại", "Đã nộp", "Được giao", "Còn nợ", "Bỏ dở", "Điểm TB"],
+              list.map((r) => [
+                r.st.name, r.st.code, r.classCode, r.st.phone,
+                r.st.submitted, r.st.assigned, r.owed,
+                r.unfinished, r.st.avg ?? "",
+              ]),
+            )
+          }
+          className="rounded-[6px] px-[11px] py-[6px] text-[12.5px] font-medium"
+          style={{
+            border: `1px solid ${LINE}`,
+            color: list.length ? NAVY : INK3,
+            cursor: list.length ? "pointer" : "not-allowed",
+          }}
+          title={list.length ? `Xuất ${list.length} dòng đang hiển thị ra file Excel` : "Không có dòng nào để xuất"}
+        >
+          Xuất Excel
+        </button>
       </div>
 
       {list.length === 0 ? (
