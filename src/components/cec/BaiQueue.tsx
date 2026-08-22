@@ -58,7 +58,7 @@ export function BaiQueue() {
     <div className="flex flex-col gap-[13px]">
       <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
         <span
-          className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+          className="rounded-[8px] px-[11px] py-[6px] font-semibold"
           style={{ background: list.length ? "#fdf3e7" : "#e6f5ec", color: list.length ? WARN : OK }}
         >
           {list.length ? `Chờ tôi xác nhận: ${list.length}` : "Đã xác nhận hết"}
@@ -66,7 +66,7 @@ export function BaiQueue() {
         <select
           value={locLop}
           onChange={(e) => { setLocLop(e.target.value); setIdx(0); }}
-          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
           style={{ border: `1px solid ${locLop ? NAVY : "#d9dde5"}`, background: "#fff", color: locLop ? INK : INK2 }}
         >
           <option value="">Tất cả {lopCo.length} lớp</option>
@@ -77,7 +77,7 @@ export function BaiQueue() {
         <select
           value={locDang}
           onChange={(e) => { setLocDang(e.target.value); setIdx(0); }}
-          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
           style={{ border: `1px solid ${locDang ? NAVY : "#d9dde5"}`, background: "#fff", color: locDang ? INK : INK2 }}
         >
           <option value="">Tất cả dạng bài</option>
@@ -107,7 +107,7 @@ export function BaiQueue() {
 
       {!bai ? (
         <p
-          className="rounded-[10px] bg-white py-[40px] text-center text-[13px]"
+          className="rounded-[12px] bg-white py-[40px] text-center text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: locLop ? INK3 : OK }}
         >
           {locLop || locDang ? (

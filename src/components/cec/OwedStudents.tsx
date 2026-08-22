@@ -121,7 +121,7 @@ export function OwedStudents() {
       {/* bộ lọc */}
       <div className="flex flex-wrap items-center gap-[9px] text-[12.5px]">
         <span
-          className="flex items-center gap-[7px] rounded-[6px] bg-white px-[10px] py-[7px]"
+          className="flex items-center gap-[7px] rounded-[8px] bg-white px-[10px] py-[7px]"
           style={{ border: `1px solid #d9dde5`, minWidth: 260 }}
         >
           <IconSearch size={14} />
@@ -144,7 +144,7 @@ export function OwedStudents() {
         <button
           type="button"
           onClick={() => setOwedOnly((v) => !v)}
-          className="rounded-[6px] px-[11px] py-[7px]"
+          className="rounded-[8px] px-[11px] py-[7px]"
           style={{
             border: `1px solid ${owedOnly ? WARN : LINE}`,
             background: owedOnly ? "#fdf3e7" : "#fff",
@@ -159,7 +159,7 @@ export function OwedStudents() {
           <button
             type="button"
             onClick={() => setKeCaDongLop((v) => !v)}
-            className="rounded-[6px] px-[11px] py-[7px]"
+            className="rounded-[8px] px-[11px] py-[7px]"
             style={{
               border: `1px solid ${keCaDongLop ? DANGER : LINE}`,
               background: keCaDongLop ? "#fdecea" : "#fff",
@@ -193,7 +193,7 @@ export function OwedStudents() {
               ]),
             )
           }
-          className="rounded-[6px] px-[11px] py-[6px] text-[12.5px] font-medium"
+          className="rounded-[8px] px-[11px] py-[6px] text-[12.5px] font-medium"
           style={{
             border: `1px solid ${LINE}`,
             color: list.length ? NAVY : INK3,
@@ -318,7 +318,7 @@ export function OwedStudents() {
                             doneText: `Đã gửi lời nhắc tới ${r.st.name}.`,
                           })
                         }
-                        className="flex items-center gap-[5px] rounded-[6px] px-[9px] py-[5px] text-[12px]"
+                        className="flex items-center gap-[5px] rounded-[8px] px-[9px] py-[5px] text-[12px]"
                         style={{ border: `1px solid ${LINE}`, color: INK }}
                       >
                         <IconBell size={13} /> Nhắc
@@ -333,7 +333,7 @@ export function OwedStudents() {
                           })
                         }
                         title={`Giao bài cho lớp ${r.classCode}`}
-                        className="flex items-center gap-[5px] rounded-[6px] px-[9px] py-[5px] text-[12px]"
+                        className="flex items-center gap-[5px] rounded-[8px] px-[9px] py-[5px] text-[12px]"
                         style={{ border: `1px solid ${LINE}`, color: NAVY }}
                       >
                         <IconClipboard size={13} /> Giao bài

@@ -137,7 +137,7 @@ export function ParentReply({
             <div className="flex flex-wrap gap-[7px]">
               {TINH_HUONG.map((t) => (
                 <button key={t} type="button" onClick={() => setTinhHuong(t)}
-                  className="rounded-[6px] px-[11px] py-[6px] text-[12.5px]"
+                  className="rounded-[8px] px-[11px] py-[6px] text-[12.5px]"
                   style={{
                     border: `1px solid ${t === tinhHuong ? NAVY : "#d9dde5"}`,
                     background: t === tinhHuong ? "#eef1f7" : "#fff",
@@ -174,12 +174,12 @@ export function ParentReply({
           <span className="flex-1" />
           <button type="button"
             onClick={() => { void navigator.clipboard?.writeText(text); setDaChep(true); }}
-            className="rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold"
+            className="rounded-[8px] px-[13px] py-[8px] text-[12.5px] font-semibold"
             style={{ border: `1px solid #d9dde5`, color: daChep ? OK : INK }}>
             {daChep ? "Đã sao chép" : "Sao chép"}
           </button>
           <button type="button" onClick={() => { onLuu(text); onClose(); }}
-            className="flex items-center gap-[7px] rounded-[6px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
+            className="flex items-center gap-[7px] rounded-[8px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
             style={{ background: NAVY }}>
             <IconCheck size={13} />
             Lưu vào Phản hồi phụ huynh

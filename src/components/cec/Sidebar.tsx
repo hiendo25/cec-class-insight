@@ -95,7 +95,7 @@ export function Sidebar() {
                 fontWeight: active ? 600 : 400,
                 color: to ? (active ? "#fff" : "rgba(255,255,255,0.82)") : "rgba(255,255,255,0.38)",
               } as const;
-              const cls = "flex h-[36px] items-center gap-[10px] rounded-[6px] text-[13.5px]";
+              const cls = "flex h-[36px] items-center gap-[10px] rounded-[8px] text-[13.5px]";
 
               /* Mục chưa có màn thì KHÔNG cho bấm và nói rõ "sắp có" —
                  thà thiếu còn hơn bấm vào không đi đâu. */

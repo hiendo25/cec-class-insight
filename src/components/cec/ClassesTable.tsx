@@ -132,7 +132,7 @@ const COLS: Col[] = [
   { key: "size", label: "Sĩ số", width: 88, filter: "size" },  /* tính cả em bảo lưu/nghỉ */
   /* Cảnh báo đặt TRƯỚC Lịch học: đây là cột QC cần nhất, bật thêm Cơ sở/EC
      làm bảng rộng ra nên nó bị đẩy khỏi màn — việc cần xử lý mà phải cuộn mới thấy. */
-  { key: "warn", label: "Cảnh báo", width: 168, filter: "warn" },
+  { key: "warn", label: "Cảnh báo", width: 210, filter: "warn" },
   { key: "schedule", label: "Lịch học", width: 132, filter: "schedule" },
   { key: "start", label: "Ngày bắt đầu", width: 116 },
   { key: "end", label: "Ngày kết thúc", width: 116 },
@@ -196,7 +196,7 @@ function Tick({
           onChange();
         }
       }}
-      className="inline-grid h-[15px] w-[15px] cursor-pointer place-items-center rounded-[3px] align-middle"
+      className="inline-grid h-[15px] w-[15px] cursor-pointer place-items-center rounded-[4px] align-middle"
       style={{
         border: `1px solid ${checked || indeterminate ? NAVY : "#c3c9d6"}`,
         background: checked || indeterminate ? NAVY : "#fff",
@@ -269,7 +269,7 @@ function ColumnFilter({
 
       {open && (
         <div
-          className="absolute left-0 top-[30px] z-40 w-[250px] rounded-[6px] bg-white shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
+          className="absolute left-0 top-[30px] z-40 w-[250px] rounded-[8px] bg-white shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
           style={{ border: `1px solid ${LINE}` }}
         >
           <div
@@ -595,7 +595,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
       {/* filter row */}
       <div className="flex flex-wrap items-center gap-[8px]">
         <div
-          className="flex h-8 items-center gap-[6px] rounded-[6px] bg-white px-[8px]"
+          className="flex h-8 items-center gap-[6px] rounded-[8px] bg-white px-[8px]"
           style={{ border: `1px solid #d9dde5`, width: 260 }}
         >
           <span style={{ color: INK3 }}>
@@ -635,7 +635,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
 
           {viewsOpen && (
             <div
-              className="absolute left-0 top-[38px] z-40 w-[268px] rounded-[6px] bg-white py-[4px] shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
+              className="absolute left-0 top-[38px] z-40 w-[268px] rounded-[8px] bg-white py-[4px] shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
               style={{ border: `1px solid ${LINE}` }}
             >
               {views.map((v) => {
@@ -713,7 +713,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
           </button>
           {colsOpen && (
             <div
-              className="absolute right-0 top-[36px] z-40 w-[230px] rounded-[6px] bg-white py-[4px] shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
+              className="absolute right-0 top-[36px] z-40 w-[230px] rounded-[8px] bg-white py-[4px] shadow-[0_8px_24px_rgba(20,28,56,0.16)]"
               style={{ border: `1px solid ${LINE}` }}
             >
               {/* 12 cột x ~34px = ~410px nên 300px cắt cụt mất 3 mục cuối,
@@ -785,7 +785,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
             >
               {s}
               <span
-                className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[9px] px-[5px] text-[11px] font-semibold tabular-nums"
+                className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[8px] px-[5px] text-[11px] font-semibold tabular-nums"
                 style={{
                   background: on ? NAVY : "#eef1f7",
                   color: on ? "#fff" : INK2,
@@ -827,7 +827,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
       {/* bulk bar */}
       {selected.length > 0 && (
         <div
-          className="flex items-center gap-[10px] rounded-[6px] bg-white px-[12px] py-[8px] text-[13px]"
+          className="flex items-center gap-[10px] rounded-[8px] bg-white px-[12px] py-[8px] text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: INK }}
         >
           <Tick checked onChange={() => setSelected([])} />
@@ -1064,7 +1064,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                         {visibleCols.map((c) => (
                           <td key={c.key} className="px-[10px]">
                             <span
-                              className="block h-[10px] animate-pulse rounded-[3px]"
+                              className="block h-[10px] animate-pulse rounded-[4px]"
                               style={{ background: "#e9ecf3", width: "70%" }}
                             />
                           </td>
@@ -1216,7 +1216,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                     setPageSize(Number(e.target.value));
                     setPage(1);
                   }}
-                  className="h-8 rounded-[6px] bg-white px-[8px] text-[12.5px]"
+                  className="h-8 rounded-[8px] bg-white px-[8px] text-[12.5px]"
                   style={{ border: `1px solid #d9dde5`, color: INK }}
                 >
                   {[20, 50, 100].map((n) => (
@@ -1231,7 +1231,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 <button
                   type="button"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="grid h-8 w-8 place-items-center rounded-[6px] bg-white"
+                  className="grid h-8 w-8 place-items-center rounded-[8px] bg-white"
                   style={{ border: `1px solid #d9dde5`, color: INK }}
                 >
                   <IconChevronLeft />
@@ -1241,7 +1241,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                     key={i}
                     type="button"
                     onClick={() => setPage(i + 1)}
-                    className="grid h-8 min-w-8 place-items-center rounded-[6px] px-[8px]"
+                    className="grid h-8 min-w-8 place-items-center rounded-[8px] px-[8px]"
                     style={
                       page === i + 1
                         ? { background: NAVY, color: "#fff" }
@@ -1254,7 +1254,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 <button
                   type="button"
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="grid h-8 w-8 place-items-center rounded-[6px] bg-white"
+                  className="grid h-8 w-8 place-items-center rounded-[8px] bg-white"
                   style={{ border: `1px solid #d9dde5`, color: INK }}
                 >
                   <IconChevronRight />
@@ -1284,7 +1284,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 if (e.key === "Escape") setSaveOpen(false);
               }}
               placeholder="Ví dụ: Lớp cần xử lý tuần này"
-              className="w-full rounded-[6px] px-[11px] py-[8px] text-[13px]"
+              className="w-full rounded-[8px] px-[11px] py-[8px] text-[13px]"
               style={{ border: `1px solid #d9dde5`, color: INK }}
             />
             <div className="mt-[14px] flex justify-end gap-[8px]">
@@ -1299,7 +1299,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 type="button"
                 onClick={doSaveView}
                 disabled={!saveName.trim()}
-                className="rounded-[6px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
+                className="rounded-[8px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
                 style={{ background: saveName.trim() ? NAVY : "#b9c0cc" }}
               >
                 Lưu bộ lọc
@@ -1335,7 +1335,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                   setDefId(getDefaultViewId());
                   setDelView(null);
                 }}
-                className="rounded-[6px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
+                className="rounded-[8px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
                 style={{ background: DANGER }}
               >
                 Xoá
@@ -1394,7 +1394,7 @@ function RowMenu({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="grid h-[26px] w-[26px] place-items-center rounded-[5px] hover:bg-[#eef1f7]"
+        className="grid h-[26px] w-[26px] place-items-center rounded-[4px] hover:bg-[#eef1f7]"
         style={{ color: open ? NAVY : INK2 }}
         aria-label={`Thao tác với lớp ${row.code}`}
       >
@@ -1403,7 +1403,7 @@ function RowMenu({
 
       {open && (
         <div
-          className="absolute right-0 top-[30px] z-50 w-[210px] overflow-hidden rounded-[6px] bg-white py-[4px] text-left shadow-[0_8px_24px_rgba(20,28,56,0.18)]"
+          className="absolute right-0 top-[30px] z-50 w-[210px] overflow-hidden rounded-[8px] bg-white py-[4px] text-left shadow-[0_8px_24px_rgba(20,28,56,0.18)]"
           style={{ border: `1px solid ${LINE}` }}
         >
           {items.map(({ label, Icon, danger, run }) => (
@@ -1457,7 +1457,7 @@ function renderCell(
       const t = TYPE_STYLE[r.type] ?? TYPE_STYLE["default"]!;
       return (
         <span
-          className="inline-flex h-[22px] items-center gap-[5px] rounded-[11px] px-[8px] text-[11.5px] font-medium"
+          className="inline-flex h-[22px] items-center gap-[5px] rounded-[12px] px-[8px] text-[11.5px] font-medium"
           style={{ background: t.bg, color: t.fg, border: `1px solid ${t.bd}` }}
         >
           <t.Icon size={12} />

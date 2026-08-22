@@ -59,7 +59,7 @@ function Chon({
     <select
       value={giaTri}
       onChange={(e) => onChon(e.target.value)}
-      className="rounded-[6px] px-[10px] py-[7px] text-[12.5px]"
+      className="rounded-[8px] px-[10px] py-[7px] text-[12.5px]"
       style={{
         border: `1px solid ${giaTri ? NAVY : "#d9dde5"}`,
         color: giaTri ? INK : INK2,
@@ -201,7 +201,7 @@ export function ExamList() {
       {/* bộ lọc — đúng các trường PROD có */}
       <div className="flex flex-wrap items-center gap-[8px] text-[12.5px]">
         <span
-          className="flex items-center gap-[7px] rounded-[6px] bg-white px-[10px] py-[7px]"
+          className="flex items-center gap-[7px] rounded-[8px] bg-white px-[10px] py-[7px]"
           style={{ border: `1px solid #d9dde5`, minWidth: 260 }}
         >
           <IconSearch size={14} />
@@ -399,7 +399,7 @@ function Dong({
         <button
           type="button"
           onClick={() => setMoMenu((v) => !v)}
-          className="grid h-[26px] w-[26px] place-items-center rounded-[6px] text-[15px] leading-none"
+          className="grid h-[26px] w-[26px] place-items-center rounded-[8px] text-[15px] leading-none"
           style={{ color: INK2 }}
           aria-label="Thao tác khác"
           title="Thao tác"

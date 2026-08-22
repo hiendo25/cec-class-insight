@@ -324,7 +324,7 @@ function DongThoiGian({ classId, student }: { classId: number; student: Student 
               key={l || "all"}
               type="button"
               onClick={() => setLoc(l)}
-              className="rounded-[6px] px-[9px] py-[4px] text-[12px]"
+              className="rounded-[8px] px-[9px] py-[4px] text-[12px]"
               style={{
                 border: `1px solid ${on ? NAVY : "#dfe3ea"}`,
                 background: on ? "#eef1f7" : "#fff",
@@ -411,7 +411,7 @@ function DiemKiemTra({ classId, studentId }: { classId: number; studentId: strin
               <span className="shrink-0 tabular-nums text-[11.5px]" style={{ color: INK3 }}>{r.ngay}</span>
               {typeof r.diem === "number" ? (
                 <span
-                  className="w-[46px] shrink-0 rounded-[5px] py-[2px] text-center font-semibold tabular-nums"
+                  className="w-[46px] shrink-0 rounded-[4px] py-[2px] text-center font-semibold tabular-nums"
                   style={{ background: scoreTone(r.diem).bg, color: scoreTone(r.diem).fg }}
                 >
                   {r.diem.toFixed(1)}
@@ -454,7 +454,7 @@ function ErrorGroups({ errors }: { errors: ErrorGroup[] }) {
           return (
             <div key={e.topic} className="flex items-center gap-2 text-[13px]">
               <span
-                className="h-[10px] w-[10px] shrink-0 rounded-[2px]"
+                className="h-[10px] w-[10px] shrink-0 rounded-[4px]"
                 style={{ background: TOPIC_COLOR[i % TOPIC_COLOR.length] }}
               />
               <span className="min-w-0 flex-1 truncate" style={{ color: INK }}>
@@ -559,7 +559,7 @@ function Rhythm({ daily }: { daily: DailyPoint[] }) {
       </svg>
       <div className="flex items-center gap-4 pt-1 text-[12px]" style={{ color: INK2 }}>
         <span className="flex items-center gap-1.5">
-          <span className="h-[10px] w-[10px] rounded-[2px]" style={{ background: "#7fb98f" }} /> Số câu đã làm
+          <span className="h-[10px] w-[10px] rounded-[4px]" style={{ background: "#7fb98f" }} /> Số câu đã làm
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-[2px] w-[14px]" style={{ background: NAVY }} /> Số phút ngồi làm
@@ -1042,7 +1042,7 @@ export function StudentProfile({
               Phản hồi phụ huynh
             </h2>
             {phanHoi && (
-              <span className="rounded-[5px] px-[8px] py-[2px] text-[11.5px] font-medium"
+              <span className="rounded-[4px] px-[8px] py-[2px] text-[11.5px] font-medium"
                 style={ticket?.xong
                   ? { background: "#e6f5ec", color: OK }
                   : { background: "#fdf3e7", color: WARN }}>
@@ -1054,7 +1054,7 @@ export function StudentProfile({
               <button
                 type="button"
                 onClick={() => { dongPhanHoi(student.id, ME.name); setDauX((n) => n + 1); }}
-                className="rounded-[6px] px-[11px] py-[5px] text-[12px] font-semibold"
+                className="rounded-[8px] px-[11px] py-[5px] text-[12px] font-semibold"
                 style={{ border: `1px solid ${LINE}`, color: NAVY }}
               >
                 Đánh dấu đã xử lý

@@ -178,13 +178,13 @@ function TabStudents({
   return (
     <div className="flex flex-col gap-[12px]">
       <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
-        <span className="flex rounded-[6px] p-[2px]" style={{ background: "#eef0f5" }}>
+        <span className="flex rounded-[8px] p-[2px]" style={{ background: "#eef0f5" }}>
           {(["Đang học", "Lịch sử", "Tất cả"] as Group[]).map((g) => (
             <button
               key={g}
               type="button"
               onClick={() => setGroup(g)}
-              className="rounded-[5px] px-[11px] py-[5px] text-[12.5px]"
+              className="rounded-[4px] px-[11px] py-[5px] text-[12.5px]"
               style={{
                 background: group === g ? "#fff" : "transparent",
                 fontWeight: group === g ? 600 : 400,
@@ -199,7 +199,7 @@ function TabStudents({
         <button
           type="button"
           onClick={() => setOnlyRisk((v) => !v)}
-          className="flex items-center gap-[7px] rounded-[6px] px-[11px] py-[7px] font-medium"
+          className="flex items-center gap-[7px] rounded-[8px] px-[11px] py-[7px] font-medium"
           style={{
             border: `1px solid ${onlyRisk ? WARN : LINE}`,
             background: onlyRisk ? "#fdf3e7" : "#fff",
@@ -351,7 +351,7 @@ function TabStudents({
                     <button
                       type="button"
                       onClick={() => onOpenAssign(s)}
-                      className="rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      className="rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold"
                       style={{ border: `1px solid ${LINE}`, color: NAVY }}
                     >
                       Giao bài
@@ -474,7 +474,7 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                     <button
                       type="button"
                       onClick={() => nav({ to: "/queue/phieu" })}
-                      className="mr-[6px] rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      className="mr-[6px] rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold"
                       style={{ border: `1px solid ${LINE}`, color: NAVY }}
                     >
                       Duyệt
@@ -493,7 +493,7 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                           run: () => markReminded(`phieu-${row.id}-${s.no}`),
                         })
                       }
-                      className="mr-[6px] rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      className="mr-[6px] rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold"
                       style={{
                         border: `1px solid ${LINE}`,
                         color: daNhac(`phieu-${row.id}-${s.no}`) ? INK3 : WARN,
@@ -507,7 +507,7 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                     <button
                       type="button"
                       onClick={onAssign}
-                      className="rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      className="rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold"
                       style={{ border: `1px solid ${LINE}`, color: NAVY }}
                     >
                       Giao bài
@@ -533,7 +533,7 @@ function PhieuBuoi({ st }: { st: "draft" | "pending" | "approved" | null }) {
     approved: { t: "đã duyệt", bg: "#e6f5ec", fg: OK },
   }[st];
   return (
-    <span className="whitespace-nowrap rounded-[5px] px-[8px] py-[3px] text-[11.5px] font-medium"
+    <span className="whitespace-nowrap rounded-[4px] px-[8px] py-[3px] text-[11.5px] font-medium"
       style={{ background: m.bg, color: m.fg }}>
       {m.t}
     </span>
@@ -588,13 +588,13 @@ function KetQua(props: {
   return (
     <div className="flex flex-col gap-[12px]">
       <div className="flex flex-wrap items-center gap-[8px] text-[12.5px]">
-        <span className="flex rounded-[6px] p-[2px]" style={{ background: "#eef0f5" }}>
+        <span className="flex rounded-[8px] p-[2px]" style={{ background: "#eef0f5" }}>
           {(["buoi", "thang"] as const).map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setCheDo(c)}
-              className="rounded-[5px] px-[11px] py-[5px]"
+              className="rounded-[4px] px-[11px] py-[5px]"
               style={{
                 background: cheDo === c ? "#fff" : "transparent",
                 fontWeight: cheDo === c ? 600 : 400,
@@ -610,7 +610,7 @@ function KetQua(props: {
           <select
             value={thang}
             onChange={(e) => setThang(e.target.value)}
-            className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+            className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
             style={{ border: `1px solid #d9dde5`, background: "#fff", color: INK }}
           >
             {thangCo.map((m) => (
@@ -623,7 +623,7 @@ function KetQua(props: {
       {cheDo === "buoi" ? (
         <ResultMatrix {...props} />
       ) : thangCo.length === 0 ? (
-        <p className="rounded-[10px] bg-white py-[36px] text-center text-[13px]"
+        <p className="rounded-[12px] bg-white py-[36px] text-center text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: INK3 }}>
           Lớp này chưa có báo cáo tháng nào.
         </p>
@@ -653,7 +653,7 @@ function TabAssignments({
         <button
           type="button"
           onClick={onAssign}
-          className="rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
+          className="rounded-[8px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
           style={{ background: NAVY }}
         >
           Giao bài cho lớp
@@ -683,7 +683,7 @@ function TabAssignments({
                 const tt = trangThaiBai(a.due, a.submitted, a.total);
                 return (
                   <span
-                    className="shrink-0 rounded-[5px] px-[8px] py-[2px] text-[11.5px] font-medium"
+                    className="shrink-0 rounded-[4px] px-[8px] py-[2px] text-[11.5px] font-medium"
                     style={{ background: tt.bg, color: tt.fg }}
                     title={tt.quaNgay ? `Quá hạn ${tt.quaNgay} ngày` : undefined}
                   >
@@ -758,7 +758,7 @@ function TabAssignments({
                         run: () => lateSt.forEach((st) => markReminded(`hs-${st.id}`)),
                       })
                     }
-                    className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                    className="shrink-0 rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold"
                     style={{ border: `1px solid ${LINE}`, color: NAVY }}
                   >
                     Nhắc {missing} em
@@ -785,7 +785,7 @@ function TabAssignments({
                        có thật nên đưa thẳng sang đó. */
                     onClick={() => onTab("Duyệt bài")}
                     title={`Sang tab Duyệt bài — ${ungraded} bài chờ xác nhận`}
-                    className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold text-white"
+                    className="shrink-0 rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold text-white"
                     style={{ background: NAVY }}
                   >
                     Duyệt bài
@@ -982,7 +982,7 @@ function ClassMeta({ row, stats }: { row: ClassRow; stats: Stats }) {
             {pct}%
           </span>
         </span>
-        <span className="flex items-center gap-[6px] rounded-[6px] px-[9px] py-[4px] text-[12.5px]" style={{ background: "#f4f6fa", color: INK }}>
+        <span className="flex items-center gap-[6px] rounded-[8px] px-[9px] py-[4px] text-[12.5px]" style={{ background: "#f4f6fa", color: INK }}>
           <IconUsers size={14} />
           <strong className="tabular-nums">{stats.students.length}</strong> học viên
         </span>
@@ -1197,7 +1197,7 @@ export function ClassWorkspace({
                   : {}),
               })
             }
-            className="flex items-center gap-[7px] rounded-[6px] bg-white px-[11px] py-[8px] text-[12.5px]"
+            className="flex items-center gap-[7px] rounded-[8px] bg-white px-[11px] py-[8px] text-[12.5px]"
             style={{ border: `1px solid #d9dde5`, color: INK }}
           >
             <IconBell size={15} />
@@ -1206,7 +1206,7 @@ export function ClassWorkspace({
           <button
             type="button"
             onClick={() => setAssignOpen(true)}
-            className="flex items-center gap-[7px] rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
+            className="flex items-center gap-[7px] rounded-[8px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
             style={{ background: NAVY }}
           >
             <IconClipboard size={15} />

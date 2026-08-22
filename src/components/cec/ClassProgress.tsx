@@ -96,7 +96,7 @@ export function ClassProgress() {
 
       <div className="flex flex-wrap items-center gap-[9px] text-[12.5px]">
         <span
-          className="flex items-center gap-[7px] rounded-[6px] bg-white px-[10px] py-[7px]"
+          className="flex items-center gap-[7px] rounded-[8px] bg-white px-[10px] py-[7px]"
           style={{ border: `1px solid #d9dde5`, minWidth: 240 }}
         >
           <IconSearch size={14} />
@@ -119,7 +119,7 @@ export function ClassProgress() {
         <button
           type="button"
           onClick={() => setTodoOnly((v) => !v)}
-          className="rounded-[6px] px-[11px] py-[7px]"
+          className="rounded-[8px] px-[11px] py-[7px]"
           style={{
             border: `1px solid ${todoOnly ? WARN : LINE}`,
             background: todoOnly ? "#fdf3e7" : "#fff",
@@ -162,7 +162,7 @@ export function ClassProgress() {
                 setMineOnly(false);
                 setTodoOnly(false);
               }}
-              className="rounded-[6px] px-[13px] py-[7px] text-[12.5px] font-semibold"
+              className="rounded-[8px] px-[13px] py-[7px] text-[12.5px] font-semibold"
               style={{ border: `1px solid ${LINE}`, color: NAVY }}
             >
               Bỏ hết bộ lọc, xem cả {rows.length} lớp
@@ -266,7 +266,7 @@ export function ClassProgress() {
                           })
                         }
                         title={`Giao bài cho lớp ${r.code}`}
-                        className="flex items-center gap-[5px] rounded-[6px] px-[9px] py-[5px] text-[12px]"
+                        className="flex items-center gap-[5px] rounded-[8px] px-[9px] py-[5px] text-[12px]"
                         style={{ border: `1px solid ${LINE}`, color: NAVY }}
                       >
                         <IconClipboard size={13} /> Giao bài

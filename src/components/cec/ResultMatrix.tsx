@@ -227,7 +227,7 @@ function Matrix({
           <button
             type="button"
             onClick={() => setOnlyPending(!onlyPending)}
-            className="rounded-[6px] px-[11px] py-[5px] text-[12.5px]"
+            className="rounded-[8px] px-[11px] py-[5px] text-[12.5px]"
             style={{
               border: `1px solid ${onlyPending ? NAVY : "#d9dde5"}`,
               background: onlyPending ? "#eef1f7" : "#fff",
@@ -242,13 +242,13 @@ function Matrix({
         <span className="flex-1" />
 
         <span className="flex items-center gap-[6px]" style={{ color: INK2 }}>
-          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#e6f5ec" }} /> từ 7
+          <span className="h-[9px] w-[9px] rounded-[4px]" style={{ background: "#e6f5ec" }} /> từ 7
         </span>
         <span className="flex items-center gap-[6px]" style={{ color: INK2 }}>
-          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdf3e7" }} /> 5–7
+          <span className="h-[9px] w-[9px] rounded-[4px]" style={{ background: "#fdf3e7" }} /> 5–7
         </span>
         <span className="flex items-center gap-[6px]" style={{ color: INK2 }}>
-          <span className="h-[9px] w-[9px] rounded-[2px]" style={{ background: "#fdecea" }} /> dưới 5
+          <span className="h-[9px] w-[9px] rounded-[4px]" style={{ background: "#fdecea" }} /> dưới 5
         </span>
         <span style={{ color: INK2 }}>NX = chưa có điểm · 📋 = báo cáo tháng · ô viền chấm = phiếu chờ bạn duyệt · ô mờ = giáo viên chưa nộp</span>
       </div>
@@ -259,7 +259,7 @@ function Matrix({
             type="button"
             onClick={() => nudge(-1)}
             disabled={hidden.left === 0}
-            className="rounded-[6px] px-[10px] py-[5px]"
+            className="rounded-[8px] px-[10px] py-[5px]"
             style={{
               border: `1px solid ${LINE}`,
               background: "#fff",
@@ -273,7 +273,7 @@ function Matrix({
             type="button"
             onClick={() => nudge(1)}
             disabled={hidden.right === 0}
-            className="rounded-[6px] px-[10px] py-[5px]"
+            className="rounded-[8px] px-[10px] py-[5px]"
             style={{
               border: `1px solid ${LINE}`,
               background: "#fff",
@@ -392,7 +392,7 @@ function Matrix({
                               (reportStatusOf(rep.id, rep.status) === "pending" ? "Phiếu chờ bạn duyệt — " : "") +
                               (rep.absenceReason ?? (rep.attendance === "absent" ? "Vắng không phép" : "Vắng có phép"))
                             }
-                            className="inline-block min-w-[46px] rounded-[5px] px-[6px] py-[3px] text-[11.5px]"
+                            className="inline-block min-w-[46px] rounded-[4px] px-[6px] py-[3px] text-[11.5px]"
                             style={{
                               background: "#eceef3",
                               color: INK2,
@@ -425,7 +425,7 @@ function Matrix({
                                 ? "Giáo viên chưa nộp phiếu"
                                 : "Xem nhận xét buổi"
                           }
-                          className="inline-flex min-w-[46px] items-center justify-center gap-[4px] rounded-[5px] px-[6px] py-[3px] tabular-nums"
+                          className="inline-flex min-w-[46px] items-center justify-center gap-[4px] rounded-[4px] px-[6px] py-[3px] tabular-nums"
                           style={{
                             background: t?.bg ?? "transparent",
                             color: t?.fg ?? INK3,

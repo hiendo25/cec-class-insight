@@ -151,7 +151,7 @@ export function Today() {
                 params: { classId: String(lopChuaGiao[0]!.id), tab: "bai-tap" },
               })
             }
-            className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+            className="rounded-[8px] px-[11px] py-[6px] font-semibold"
             style={{ border: `1px solid #e0cfae`, background: "#fff", color: WARN }}
           >
             Mở lớp đầu tiên
@@ -171,20 +171,31 @@ export function Today() {
             — đề đã có bản mới, {troBanCu.reduce((a, b) => a + b.soHS, 0)} em vẫn mở ra bản cũ.
             Cần giao lại hoặc cập nhật bản.
           </span>
-          <span className="flex-1" />
-          <button
-            type="button"
-            onClick={() =>
-              navigate({
-                to: "/class/$classId/$tab",
-                params: { classId: String(troBanCu[0]!.classId), tab: "bai-tap" },
-              })
-            }
-            className="rounded-[6px] px-[11px] py-[6px] font-semibold"
-            style={{ border: `1px solid #e3bdb8`, background: "#fff", color: DANGER }}
-          >
-            Xem bài đầu tiên
-          </button>
+          {/* Cảnh báo nói 6 bài mà nút chỉ mở 1 bài thì xử lý xong 1, còn 5 bài
+              kia không có đường tới. Liệt kê ĐỦ, mỗi bài một đường đi riêng. */}
+          <ul className="mt-[4px] flex w-full flex-col gap-[4px]">
+            {troBanCu.map((b) => (
+              <li key={b.assignmentId} className="flex flex-wrap items-center gap-[8px]">
+                <span style={{ color: INK }}>{b.baiTen}</span>
+                <span style={{ color: INK3 }}>{tenLop.get(b.classId)}</span>
+                <span style={{ color: INK2 }}>{b.soHS} em đang mở bản cũ</span>
+                <span className="flex-1" />
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate({
+                      to: "/class/$classId/$tab",
+                      params: { classId: String(b.classId), tab: "bai-tap" },
+                    })
+                  }
+                  className="rounded-[8px] px-[10px] py-[4px] text-[12px] font-semibold"
+                  style={{ border: `1px solid #e3bdb8`, background: "#fff", color: DANGER }}
+                >
+                  Mở lớp
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -346,7 +357,7 @@ function Khoi({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col rounded-[10px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+    <section className="flex flex-col rounded-[12px] bg-white" style={{ border: `1px solid ${LINE}` }}>
       {/* Số KHÔNG còn là thứ to nhất — 15 app quốc tế đều mở bằng danh sách việc,
           không mở bằng ô số. Số chỉ là nhãn phụ cạnh tiêu đề. */}
       <div className="flex items-baseline gap-[9px] px-[16px] pb-[3px] pt-[13px]">
@@ -446,7 +457,7 @@ function Dong({
         type="button"
         onClick={onNut}
         disabled={tatNut}
-        className="mt-[2px] shrink-0 rounded-[6px] px-[11px] py-[5px] text-[12px] font-semibold"
+        className="mt-[2px] shrink-0 rounded-[8px] px-[11px] py-[5px] text-[12px] font-semibold"
         style={{
           border: `1px solid ${tatNut ? LINE : "#d9dde5"}`,
           color: tatNut ? INK3 : NAVY,

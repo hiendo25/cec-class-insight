@@ -70,7 +70,7 @@ function LocDe({
     <select
       value={giaTri}
       onChange={(e) => onChon(e.target.value)}
-      className="rounded-[5px] px-[7px] py-[5px] text-[11.5px]"
+      className="rounded-[4px] px-[7px] py-[5px] text-[11.5px]"
       style={{
         border: `1px solid ${giaTri ? NAVY : "#d9dde5"}`,
         background: "#fff",
@@ -299,7 +299,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
         role="dialog"
         aria-modal="true"
         aria-label="Giao bài tập"
-        className="w-[720px] rounded-[10px] bg-white shadow-[0_20px_60px_rgba(20,28,56,0.28)]"
+        className="w-[720px] rounded-[12px] bg-white shadow-[0_20px_60px_rgba(20,28,56,0.28)]"
         onClick={(e) => e.stopPropagation()}
       >
         <header
@@ -350,7 +350,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                       value={stuQuery}
                       onChange={(e) => setStuQuery(e.target.value)}
                       placeholder="Gõ mã học sinh hoặc tên, ví dụ 43064HN hoặc Hà Hải"
-                      className="w-full rounded-[6px] py-[8px] pl-[32px] pr-[11px] text-[13px]"
+                      className="w-full rounded-[8px] py-[8px] pl-[32px] pr-[11px] text-[13px]"
                       style={{ border: `1px solid #d9dde5`, color: INK }}
                     />
                     {stuHits.length > 0 && (
@@ -392,7 +392,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                       {pickedStudentRows.map(({ st, cls }) => (
                         <span
                           key={st.id}
-                          className="inline-flex items-center gap-[7px] rounded-[14px] py-[4px] pl-[10px] pr-[6px] text-[12.5px]"
+                          className="inline-flex items-center gap-[7px] rounded-[12px] py-[4px] pl-[10px] pr-[6px] text-[12.5px]"
                           style={{ background: "#eef1f7", border: `1px solid #dde2ec` }}
                         >
                           {st.name}
@@ -422,7 +422,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                 {picked.map((c) => (
                   <span
                     key={c.id}
-                    className="inline-flex items-center gap-[7px] rounded-[14px] py-[4px] pl-[10px] pr-[6px] text-[12.5px]"
+                    className="inline-flex items-center gap-[7px] rounded-[12px] py-[4px] pl-[10px] pr-[6px] text-[12.5px]"
                     style={{ background: "#eef1f7", border: `1px solid #dde2ec` }}
                   >
                     {c.code}
@@ -444,7 +444,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                 <button
                   type="button"
                   onClick={() => setPickerOpen((o) => !o)}
-                  className="rounded-[14px] px-[11px] py-[5px] text-[12.5px] font-medium"
+                  className="rounded-[12px] px-[11px] py-[5px] text-[12.5px] font-medium"
                   style={{ border: `1px dashed #c3cad8`, color: NAVY }}
                 >
                   + Thêm lớp
@@ -458,7 +458,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                 >
                   <div className="flex items-center gap-[8px] px-[10px] py-[8px]">
                     <span
-                      className="flex flex-1 items-center gap-[7px] rounded-[6px] bg-white px-[9px] py-[6px]"
+                      className="flex flex-1 items-center gap-[7px] rounded-[8px] bg-white px-[9px] py-[6px]"
                       style={{ border: `1px solid #d9dde5` }}
                     >
                       <IconSearch size={13} />
@@ -472,7 +472,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                     <button
                       type="button"
                       onClick={() => setMineOnly((v) => !v)}
-                      className="flex items-center gap-[6px] rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+                      className="flex items-center gap-[6px] rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
                       style={{
                         border: `1px solid ${mineOnly ? NAVY : "#d9dde5"}`,
                         background: mineOnly ? NAVY : "#fff",
@@ -498,10 +498,10 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                           onClick={() =>
                             setClassIds((v) => (on ? v.filter((x) => x !== c.id) : [...v, c.id]))
                           }
-                          className="flex w-full items-center gap-[9px] rounded-[5px] px-[8px] py-[7px] text-left text-[12.5px] hover:bg-white"
+                          className="flex w-full items-center gap-[9px] rounded-[4px] px-[8px] py-[7px] text-left text-[12.5px] hover:bg-white"
                         >
                           <span
-                            className="grid h-[15px] w-[15px] shrink-0 place-items-center rounded-[3px]"
+                            className="grid h-[15px] w-[15px] shrink-0 place-items-center rounded-[4px]"
                             style={{
                               border: `1px solid ${on ? NAVY : "#c3cad8"}`,
                               background: on ? NAVY : "#fff",
@@ -563,7 +563,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
               <button
                 type="button"
                 onClick={() => setExamOpen((o) => !o)}
-                className="flex w-full items-center gap-[9px] rounded-[6px] px-[11px] py-[8px] text-left text-[13px]"
+                className="flex w-full items-center gap-[9px] rounded-[8px] px-[11px] py-[8px] text-left text-[13px]"
                 style={{ border: `1px solid ${exam ? NAVY : "#d9dde5"}` }}
               >
                 <IconSearch size={14} />
@@ -588,7 +588,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                 >
                   <div className="px-[10px] py-[8px]">
                     <span
-                      className="flex items-center gap-[7px] rounded-[6px] bg-white px-[9px] py-[6px]"
+                      className="flex items-center gap-[7px] rounded-[8px] bg-white px-[9px] py-[6px]"
                       style={{ border: `1px solid #d9dde5` }}
                     >
                       <IconSearch size={13} />
@@ -629,7 +629,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                           setMinutes(null);
                           setExamOpen(false);
                         }}
-                        className="flex w-full items-center gap-[9px] rounded-[5px] px-[8px] py-[7px] text-left text-[12.5px] hover:bg-white"
+                        className="flex w-full items-center gap-[9px] rounded-[4px] px-[8px] py-[7px] text-left text-[12.5px] hover:bg-white"
                       >
                         <span className="min-w-0 flex-1">
                           <span className="block truncate">{e.name}</span>
@@ -701,7 +701,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                             onChange={(e) =>
                               setSessionBy((v) => ({ ...v, [c.id]: Number(e.target.value) }))
                             }
-                            className="rounded-[6px] px-[9px] py-[6px] text-[12.5px]"
+                            className="rounded-[8px] px-[9px] py-[6px] text-[12.5px]"
                             style={{ border: `1px solid #d9dde5` }}
                           >
                             {list.map((s) => (
@@ -749,7 +749,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                   onChange={(e) => setDueSame(e.target.value)}
                   onFocus={() => setDueMode("same")}
                   placeholder="dd/mm/yyyy"
-                  className="w-[124px] rounded-[6px] px-[9px] py-[5px] text-[12.5px]"
+                  className="w-[124px] rounded-[8px] px-[9px] py-[5px] text-[12.5px]"
                   style={{ border: `1px solid #d9dde5` }}
                 />
               </label>
@@ -781,7 +781,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                           min={1}
                           value={attempts ?? 1}
                           onChange={(e) => setAttempts(Math.max(1, Number(e.target.value) || 1))}
-                          className="w-[74px] rounded-[6px] px-[8px] py-[4px]"
+                          className="w-[74px] rounded-[8px] px-[8px] py-[4px]"
                           style={{ border: `1px solid #d9dde5` }}
                         />
                       }
@@ -798,7 +798,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                           min={1}
                           value={minutes ?? 30}
                           onChange={(e) => setMinutes(Math.max(1, Number(e.target.value) || 1))}
-                          className="w-[74px] rounded-[6px] px-[8px] py-[4px]"
+                          className="w-[74px] rounded-[8px] px-[8px] py-[4px]"
                           style={{ border: `1px solid #d9dde5` }}
                         />
                       }
@@ -821,7 +821,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                       onChange={(e) => setGhiChu(e.target.value)}
                       rows={2}
                       placeholder="Ví dụ: con làm phần 2 trước, phần 1 cô đã chữa trên lớp."
-                      className="w-full rounded-[6px] px-[10px] py-[7px] text-[12.5px] outline-none"
+                      className="w-full rounded-[8px] px-[10px] py-[7px] text-[12.5px] outline-none"
                       style={{ border: `1px solid #d9dde5`, color: INK }}
                     />
                   </div>
@@ -918,7 +918,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                 <button
                   type="button"
                   onClick={() => setStates(["Đang học"])}
-                  className="mt-[7px] rounded-[6px] px-[11px] py-[6px] text-[12px] font-semibold"
+                  className="mt-[7px] rounded-[8px] px-[11px] py-[6px] text-[12px] font-semibold"
                   style={{ border: `1px solid #d9dde5`, background: "#fff", color: NAVY }}
                 >
                   Chỉ giao cho em đang học
@@ -949,7 +949,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                 hoanTacGiao(daGiaoId);
                 setDaGiaoId(null);
               }}
-              className="rounded-[6px] px-[12px] py-[6px] font-semibold"
+              className="rounded-[8px] px-[12px] py-[6px] font-semibold"
               style={{ border: `1px solid #1f6f4a`, background: "#fff", color: "#1f6f4a" }}
             >
               Hoàn tác ({conLai}s)
@@ -957,7 +957,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
             <button
               type="button"
               onClick={onClose}
-              className="rounded-[6px] px-[12px] py-[6px] font-semibold text-white"
+              className="rounded-[8px] px-[12px] py-[6px] font-semibold text-white"
               style={{ background: "#1f6f4a" }}
             >
               Xong
@@ -980,7 +980,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
           <button
             type="button"
             onClick={onClose}
-            className="rounded-[6px] px-[14px] py-[8px] text-[12.5px]"
+            className="rounded-[8px] px-[14px] py-[8px] text-[12.5px]"
             style={{ border: `1px solid #d9dde5`, color: INK }}
           >
             Huỷ
@@ -1022,7 +1022,7 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                     ? "Chưa có em nào nhận bài"
                     : blocks[0]
             }
-            className="rounded-[6px] px-[16px] py-[8px] text-[12.5px] font-semibold text-white"
+            className="rounded-[8px] px-[16px] py-[8px] text-[12.5px] font-semibold text-white"
             style={{ background: canSubmit ? NAVY : "#b9c0cc", cursor: canSubmit ? "pointer" : "not-allowed" }}
           >
             {dangXacNhan ? `Vẫn giao cho ${totalStudents} em` : "Giao bài"}

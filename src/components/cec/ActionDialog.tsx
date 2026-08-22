@@ -94,7 +94,7 @@ function Hop({
         role="dialog"
         aria-modal="true"
         aria-label={ask.title}
-        className="w-[420px] rounded-[10px] bg-white p-[18px]"
+        className="w-[420px] rounded-[12px] bg-white p-[18px]"
         style={{ boxShadow: "0 12px 32px rgba(20,28,56,0.22)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -115,7 +115,7 @@ function Hop({
               onDone(ask.doneText);
               onClose();
             }}
-            className="rounded-[6px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
+            className="rounded-[8px] px-[14px] py-[8px] text-[12.5px] font-semibold text-white"
             style={{ background: ask.danger ? "#d4342c" : NAVY }}
           >
             {ask.confirmLabel}

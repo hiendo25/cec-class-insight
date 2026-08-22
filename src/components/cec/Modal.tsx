@@ -33,7 +33,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={label}
-        className="rounded-[10px] bg-white p-[18px]"
+        className="rounded-[12px] bg-white p-[18px]"
         style={{ width, boxShadow: "0 12px 32px rgba(20,28,56,0.22)" }}
         onClick={(e) => e.stopPropagation()}
       >

@@ -82,7 +82,7 @@ export function TestResults({ row }: { row: ClassRow }) {
         <button
           type="button"
           onClick={() => setChiDangHoc((v) => !v)}
-          className="rounded-[6px] px-[11px] py-[6px]"
+          className="rounded-[8px] px-[11px] py-[6px]"
           style={{
             border: `1px solid ${chiDangHoc ? NAVY : LINE}`,
             background: chiDangHoc ? "#eef1f7" : "#fff",
@@ -114,7 +114,7 @@ export function TestResults({ row }: { row: ClassRow }) {
                   chuaCB.forEach(congBoODiem);
                   setDauX((n) => n + 1);
                 }}
-                className="rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                className="rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold"
                 style={{ border: `1px solid ${LINE}`, color: NAVY }}
               >
                 Công bố cả bảng
@@ -181,7 +181,7 @@ export function TestResults({ row }: { row: ClassRow }) {
                     if (v === null)
                       return (
                         <td key={t.id} className="px-[6px] text-center" style={{ background: bg }}>
-                          <span className="rounded-[5px] px-[7px] py-[3px] text-[11.5px] italic" style={{ background: "#eceef3", color: INK2 }}>
+                          <span className="rounded-[4px] px-[7px] py-[3px] text-[11.5px] italic" style={{ background: "#eceef3", color: INK2 }}>
                             vắng
                           </span>
                         </td>
@@ -201,7 +201,7 @@ export function TestResults({ row }: { row: ClassRow }) {
                             hien ? goCongBoODiem(oKey) : congBoODiem(oKey);
                             setDauX((n) => n + 1);
                           }}
-                          className="inline-flex items-center gap-[4px] rounded-[5px] px-[7px] py-[3px] font-semibold tabular-nums"
+                          className="inline-flex items-center gap-[4px] rounded-[4px] px-[7px] py-[3px] font-semibold tabular-nums"
                           style={{
                             background: c.bg,
                             color: c.fg,

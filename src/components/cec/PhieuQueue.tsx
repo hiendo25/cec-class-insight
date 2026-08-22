@@ -67,7 +67,7 @@ export function PhieuQueue() {
     <div className="flex flex-col gap-[13px]">
       <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
         <span
-          className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+          className="rounded-[8px] px-[11px] py-[6px] font-semibold"
           style={{ background: list.length ? "#fdf3e7" : "#e6f5ec", color: list.length ? WARN : OK }}
         >
           {list.length ? `Chờ tôi duyệt: ${list.length} buổi` : "Đã duyệt hết"}
@@ -75,7 +75,7 @@ export function PhieuQueue() {
         <select
           value={locLop}
           onChange={(e) => { setLocLop(e.target.value); setIdx(0); }}
-          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
           style={{ border: `1px solid ${locLop ? NAVY : "#d9dde5"}`, background: "#fff", color: locLop ? INK : INK2 }}
         >
           <option value="">Tất cả {lopCo.length} lớp</option>
@@ -94,12 +94,12 @@ export function PhieuQueue() {
       </div>
 
       {!buoi ? (
-        <p className="rounded-[10px] bg-white py-[40px] text-center text-[13px]"
+        <p className="rounded-[12px] bg-white py-[40px] text-center text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: locLop ? INK3 : OK }}>
           {locLop ? "Không có buổi nào khớp bộ lọc." : "Không còn phiếu nào chờ duyệt."}
         </p>
       ) : (
-        <section className="rounded-[10px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+        <section className="rounded-[12px] bg-white" style={{ border: `1px solid ${LINE}` }}>
           <div className="flex flex-wrap items-center gap-[10px] px-[16px] py-[11px]"
             style={{ borderBottom: `1px solid ${LINE}`, background: "#fbfcfe" }}>
             <button
@@ -157,7 +157,7 @@ export function PhieuQueue() {
                 buoi.phieu.forEach((p) => setReportStatus(p.id, "approved"));
                 setDauX((n) => n + 1);
               }}
-              className="flex items-center gap-[7px] rounded-[6px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
+              className="flex items-center gap-[7px] rounded-[8px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
               style={{ background: NAVY }}
             >
               <IconCheck size={13} />
@@ -186,7 +186,7 @@ function PhieuDong({
   const m = M[status] ?? M["pending"]!;
 
   return (
-    <div className="flex flex-wrap items-center gap-[10px] rounded-[7px] px-[11px] py-[8px]"
+    <div className="flex flex-wrap items-center gap-[10px] rounded-[8px] px-[11px] py-[8px]"
       style={{ border: `1px solid ${LINE}`, background: status === "approved" ? "#fbfdfc" : "#fff" }}>
       <span className="min-w-[190px] text-[12.5px]" style={{ color: INK }}>
         <Person name={em?.by ?? studentId} size={20} />
@@ -194,19 +194,19 @@ function PhieuDong({
       <span className="min-w-0 flex-1 truncate text-[12px]" style={{ color: INK2 }}>
         {em?.comment ?? "—"}
       </span>
-      <span className="shrink-0 rounded-[5px] px-[8px] py-[2px] text-[11.5px] font-medium"
+      <span className="shrink-0 rounded-[4px] px-[8px] py-[2px] text-[11.5px] font-medium"
         style={{ background: m.bg, color: m.fg }}>
         {m.t}
       </span>
       {status !== "approved" && (
         <>
           <button type="button" onClick={() => { setReportStatus(id, "draft"); onDoi(); }}
-            className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px]"
+            className="shrink-0 rounded-[8px] px-[10px] py-[5px] text-[12px]"
             style={{ border: `1px solid ${LINE}`, color: WARN }}>
             Trả lại
           </button>
           <button type="button" onClick={() => { setReportStatus(id, "approved"); onDoi(); }}
-            className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+            className="shrink-0 rounded-[8px] px-[10px] py-[5px] text-[12px] font-semibold"
             style={{ border: `1px solid ${LINE}`, color: NAVY }}>
             Duyệt
           </button>
@@ -222,7 +222,7 @@ function NutDi({ nhan, tat, onBam }: { nhan: string; tat: boolean; onBam: () => 
       type="button"
       onClick={onBam}
       disabled={tat}
-      className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+      className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
       style={{
         border: `1px solid ${tat ? "#e3e6ec" : "#d9dde5"}`,
         color: tat ? "#b9c0cc" : INK,

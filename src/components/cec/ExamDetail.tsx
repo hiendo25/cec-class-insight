@@ -102,7 +102,7 @@ export function ExamDetail({ exam }: { exam: Exam }) {
               run: () => setThuLam(true),
             })
           }
-          className="flex shrink-0 items-center gap-[7px] rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
+          className="flex shrink-0 items-center gap-[7px] rounded-[8px] px-[13px] py-[8px] text-[12.5px] font-semibold text-white"
           style={{ background: NAVY }}
         >
           <IconClipboard size={15} /> Thử làm
@@ -296,7 +296,7 @@ function ThuLam({ exam, onDong }: { exam: Exam; onDong: () => void }) {
         <button
           type="button"
           onClick={onDong}
-          className="rounded-[6px] px-[11px] py-[6px] text-[12.5px]"
+          className="rounded-[8px] px-[11px] py-[6px] text-[12.5px]"
           style={{ border: `1px solid ${LINE}`, background: "#fff", color: INK }}
         >
           Đóng bản thử
@@ -309,7 +309,7 @@ function ThuLam({ exam, onDong }: { exam: Exam; onDong: () => void }) {
             key={x.id}
             type="button"
             onClick={() => setPhan(i)}
-            className="rounded-[6px] px-[10px] py-[5px]"
+            className="rounded-[8px] px-[10px] py-[5px]"
             style={{
               border: `1px solid ${i === phan ? NAVY : LINE}`,
               background: i === phan ? "#eef1f7" : "#fff",
@@ -330,7 +330,7 @@ function ThuLam({ exam, onDong }: { exam: Exam; onDong: () => void }) {
           {Array.from({ length: Math.min(p.soCau, 5) }, (_, i) => (
             <div
               key={i}
-              className="rounded-[6px] px-[12px] py-[9px] text-[13px]"
+              className="rounded-[8px] px-[12px] py-[9px] text-[13px]"
               style={{ border: `1px solid ${LINE}`, background: "#fbfcfe", color: INK2 }}
             >
               <span className="font-semibold" style={{ color: INK }}>

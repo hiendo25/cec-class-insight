@@ -67,7 +67,7 @@ export function MonthlyHub() {
         <select
           value={thang}
           onChange={(e) => setThang(e.target.value)}
-          className="rounded-[6px] px-[11px] py-[7px] text-[13px] font-semibold"
+          className="rounded-[8px] px-[11px] py-[7px] text-[13px] font-semibold"
           style={{ border: `1px solid ${NAVY}`, background: "#fff", color: NAVY }}
         >
           {thangCo.map((m) => (
@@ -78,7 +78,7 @@ export function MonthlyHub() {
         <button
           type="button"
           onClick={() => setChiCuaToi((v) => !v)}
-          className="rounded-[6px] px-[11px] py-[6px]"
+          className="rounded-[8px] px-[11px] py-[6px]"
           style={{
             border: `1px solid ${chiCuaToi ? NAVY : "#d9dde5"}`,
             background: chiCuaToi ? "#eef1f7" : "#fff",
@@ -91,7 +91,7 @@ export function MonthlyHub() {
 
         <span className="flex-1" />
         <span
-          className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+          className="rounded-[8px] px-[11px] py-[6px] font-semibold"
           style={{
             background: chuaXong.length ? "#fdf3e7" : "#e6f5ec",
             color: chuaXong.length ? WARN : OK,
@@ -107,7 +107,7 @@ export function MonthlyHub() {
       </div>
 
       {list.length === 0 ? (
-        <p className="rounded-[10px] bg-white py-[40px] text-center text-[13px]"
+        <p className="rounded-[12px] bg-white py-[40px] text-center text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: INK3 }}>
           {chiCuaToi ? (
             <>
@@ -170,7 +170,7 @@ export function MonthlyHub() {
                         onClick={() =>
                           navigate({ to: "/class/$classId/$tab", params: { classId: String(d.id), tab: "ket-qua" } })
                         }
-                        className="rounded-[6px] px-[11px] py-[5px] text-[12px] font-semibold"
+                        className="rounded-[8px] px-[11px] py-[5px] text-[12px] font-semibold"
                         style={{ border: `1px solid ${LINE}`, color: xong ? INK2 : NAVY }}
                       >
                         {xong ? "Xem lại" : d.duyet === 0 ? "Soạn cả lớp" : "Tiếp tục"}

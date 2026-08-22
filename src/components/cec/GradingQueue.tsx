@@ -53,7 +53,7 @@ export function GradingQueue({ row }: { row: ClassRow }) {
       {/* tóm tắt hai nhóm */}
       <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
         <span
-          className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+          className="rounded-[8px] px-[11px] py-[6px] font-semibold"
           style={{ background: conLai.length ? "#fdf3e7" : "#e6f5ec", color: conLai.length ? WARN : OK }}
         >
           {conLai.length ? `Chờ tôi xác nhận: ${conLai.length}` : "Đã duyệt hết"}
@@ -138,7 +138,7 @@ export function GradingQueue({ row }: { row: ClassRow }) {
                     <td className="px-[12px]">
                       {b.diemMay !== null && (
                         <span
-                          className="inline-block min-w-[42px] rounded-[5px] px-[7px] py-[2px] text-center font-semibold tabular-nums"
+                          className="inline-block min-w-[42px] rounded-[4px] px-[7px] py-[2px] text-center font-semibold tabular-nums"
                           style={{ background: tone(b.diemMay).bg, color: tone(b.diemMay).fg }}
                         >
                           {b.diemMay.toFixed(1)}
@@ -220,7 +220,7 @@ export function BaiDuyet({
           type="button"
           onClick={onTruoc}
           disabled={viTri === 0}
-          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
           style={{
             border: `1px solid ${viTri === 0 ? "#e3e6ec" : "#d9dde5"}`,
             color: viTri === 0 ? "#b9c0cc" : INK,
@@ -233,7 +233,7 @@ export function BaiDuyet({
           type="button"
           onClick={onSau}
           disabled={viTri >= tong - 1}
-          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
           style={{
             border: `1px solid ${viTri >= tong - 1 ? "#e3e6ec" : "#d9dde5"}`,
             color: viTri >= tong - 1 ? "#b9c0cc" : INK,
@@ -251,7 +251,7 @@ export function BaiDuyet({
             Bài làm của em
           </p>
           <div
-            className="rounded-[6px] px-[12px] py-[11px] text-[13px] leading-[1.65]"
+            className="rounded-[8px] px-[12px] py-[11px] text-[13px] leading-[1.65]"
             style={{ background: "#f8f9fc", border: `1px solid ${LINE}`, color: INK }}
           >
             {bai.noiDung ?? (
@@ -278,7 +278,7 @@ export function BaiDuyet({
               từ máy; app mình có luồng QC duyệt nên phải có khung chấm thật. */}
           {rubric && (
             <p
-              className="mb-[9px] rounded-[6px] px-[10px] py-[6px] text-[11.5px]"
+              className="mb-[9px] rounded-[8px] px-[10px] py-[6px] text-[11.5px]"
               style={{ background: "#f4f6fa", color: INK2 }}
             >
               <b style={{ color: NAVY }}>Khung chấm:</b> {rubric}
@@ -292,12 +292,12 @@ export function BaiDuyet({
                 value={diem}
                 onChange={(e) => setDiem(e.target.value)}
                 inputMode="decimal"
-                className="w-[74px] rounded-[6px] px-[9px] py-[5px] text-[13px] tabular-nums outline-none"
+                className="w-[74px] rounded-[8px] px-[9px] py-[5px] text-[13px] tabular-nums outline-none"
                 style={{ border: `1px solid ${hopLe ? NAVY : "#d4342c"}` }}
               />
             ) : (
               <span
-                className="inline-block min-w-[48px] rounded-[5px] px-[9px] py-[3px] text-center text-[13px] font-semibold tabular-nums"
+                className="inline-block min-w-[48px] rounded-[4px] px-[9px] py-[3px] text-center text-[13px] font-semibold tabular-nums"
                 style={{ background: tone(soDiem).bg, color: tone(soDiem).fg }}
               >
                 {hopLe ? soDiem.toFixed(1) : "—"}
@@ -324,7 +324,7 @@ export function BaiDuyet({
             value={nx}
             onChange={(e) => setNx(e.target.value)}
             rows={5}
-            className="w-full rounded-[6px] px-[11px] py-[9px] text-[12.5px] leading-[1.6] outline-none"
+            className="w-full rounded-[8px] px-[11px] py-[9px] text-[12.5px] leading-[1.6] outline-none"
             style={{ border: `1px solid #d9dde5`, color: INK }}
           />
           {nx !== (bai.nhanXetAI ?? "") && (
@@ -354,7 +354,7 @@ export function BaiDuyet({
             type="button"
             disabled={!hopLe}
             onClick={() => diemDaDuyet(bai.id, soDiem, bai.diemAI, nx, false)}
-            className="rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold"
+            className="rounded-[8px] px-[13px] py-[8px] text-[12.5px] font-semibold"
             style={{
               border: `1px solid ${hopLe ? "#d9dde5" : "#e3e6ec"}`,
               color: hopLe ? INK : "#b9c0cc",
@@ -375,7 +375,7 @@ export function BaiDuyet({
             diemDaDuyet(bai.id, soDiem, bai.diemAI, nx, true);
             /* ở nguyên vị trí: bài vừa duyệt rời hàng đợi, bài kế tiếp trượt vào đúng chỗ này */
           }}
-          className="flex items-center gap-[7px] rounded-[6px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
+          className="flex items-center gap-[7px] rounded-[8px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
           style={{ background: hopLe ? NAVY : "#b9c0cc", cursor: hopLe ? "pointer" : "not-allowed" }}
           title={hopLe ? undefined : "Điểm phải trong khoảng 0 đến 10"}
         >

@@ -105,7 +105,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
 
   if (the.length === 0)
     return (
-      <p className="rounded-[10px] bg-white py-[36px] text-center text-[13px]"
+      <p className="rounded-[12px] bg-white py-[36px] text-center text-[13px]"
         style={{ border: `1px solid ${LINE}`, color: INK3 }}>
         Lớp này chưa có báo cáo tháng {month}.
       </p>
@@ -123,7 +123,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
           </strong>
           <span className="flex-1" />
           <button type="button" onClick={() => navigate({ to: "/queue/phieu" })}
-            className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+            className="rounded-[8px] px-[11px] py-[6px] font-semibold"
             style={{ border: `1px solid #e0cfae`, background: "#fff", color: WARN }}>
             Đi duyệt {phieuThang.chuaDuyet} phiếu
           </button>
@@ -140,7 +140,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
         <button
           type="button"
           onClick={() => { setDaSoan(true); setDaSoanLai(new Set()); }}
-          className="rounded-[6px] px-[12px] py-[6px] font-semibold"
+          className="rounded-[8px] px-[12px] py-[6px] font-semibold"
           style={{ border: `1px solid #d9dde5`, background: "#fff", color: NAVY }}
         >
           {daSoan ? "AI soạn lại cả lớp" : `AI soạn cho cả lớp ${the.length} em`}
@@ -167,7 +167,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
         </span>
         <span className="flex-1" />
         <button type="button" onClick={chonHetXanh}
-          className="rounded-[6px] px-[11px] py-[6px]"
+          className="rounded-[8px] px-[11px] py-[6px]"
           style={{ border: `1px solid #d9dde5`, color: INK }}>
           Chọn tất cả thẻ xanh
         </button>
@@ -178,7 +178,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
             chon.forEach((sid) => setMonthlyStatus(`${sid}:${month}`, "approved"));
             setChon(new Set());
           }}
-          className="flex items-center gap-[7px] rounded-[6px] px-[13px] py-[7px] font-semibold text-white"
+          className="flex items-center gap-[7px] rounded-[8px] px-[13px] py-[7px] font-semibold text-white"
           style={{ background: chon.size ? NAVY : "#b9c0cc", cursor: chon.size ? "pointer" : "not-allowed" }}
         >
           <IconCheck size={13} />
@@ -217,7 +217,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
           <strong>Đã gửi {the.length} báo cáo tháng {month} cho phụ huynh.</strong>
           <span className="flex-1" />
           <button type="button" onClick={() => setDaGui(false)}
-            className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+            className="rounded-[8px] px-[11px] py-[6px] font-semibold"
             style={{ border: `1px solid #b7dcc6`, background: "#fff", color: OK }}>
             Hoàn tác
           </button>
@@ -237,7 +237,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
           type="button"
           disabled={chuaDuyet.length > 0}
           onClick={() => setDaGui(true)}
-          className="rounded-[6px] px-[14px] py-[8px] font-semibold text-white"
+          className="rounded-[8px] px-[14px] py-[8px] font-semibold text-white"
           style={{
             background: chuaDuyet.length ? "#b9c0cc" : NAVY,
             cursor: chuaDuyet.length ? "not-allowed" : "pointer",
@@ -276,7 +276,7 @@ function The({
   const xong = t.status === "approved";
 
   return (
-    <section className="rounded-[9px] bg-white" style={{ border: `1px solid ${xong ? "#cbe6d6" : LINE}` }}>
+    <section className="rounded-[8px] bg-white" style={{ border: `1px solid ${xong ? "#cbe6d6" : LINE}` }}>
       <div className="flex flex-wrap items-center gap-[10px] px-[14px] py-[10px]"
         style={{ borderBottom: `1px solid #f1f3f7` }}>
         <input
@@ -297,7 +297,7 @@ function The({
         )}
         <span className="flex-1" />
         {/* Ba trạng thái theo đúng hai bước của app cũ, không gộp làm "Nháp" */}
-        <span className="rounded-[5px] px-[8px] py-[2px] text-[11.5px] font-medium"
+        <span className="rounded-[4px] px-[8px] py-[2px] text-[11.5px] font-medium"
           style={
             xong
               ? { background: "#e6f5ec", color: OK }
@@ -360,7 +360,7 @@ function The({
               const on = x === goiY;
               return (
                 <span key={x}
-                  className="rounded-[5px] px-[9px] py-[3px] text-[11.5px]"
+                  className="rounded-[4px] px-[9px] py-[3px] text-[11.5px]"
                   style={{
                     border: `1px solid ${on ? NAVY : "#dfe3ea"}`,
                     background: on ? "#eef1f7" : "#fff",
@@ -400,19 +400,19 @@ function The({
         <span className="flex-1" />
         {t.co === "do" && !xong && (
           <button type="button" onClick={onSoanLai}
-            className="rounded-[6px] px-[11px] py-[6px] text-[12px] font-semibold"
+            className="rounded-[8px] px-[11px] py-[6px] text-[12px] font-semibold"
             style={{ border: `1px solid #e0cfae`, color: WARN }}>
             AI soạn lại
           </button>
         )}
         <button type="button" onClick={onMoRong}
-          className="rounded-[6px] px-[11px] py-[6px] text-[12px]"
+          className="rounded-[8px] px-[11px] py-[6px] text-[12px]"
           style={{ border: `1px solid #d9dde5`, color: NAVY }}>
           {moRong ? "Thu gọn" : "Mở xem"}
         </button>
         {!xong && t.status === "pending" && (
           <button type="button" onClick={onDuyet}
-            className="rounded-[6px] px-[13px] py-[6px] text-[12px] font-semibold text-white"
+            className="rounded-[8px] px-[13px] py-[6px] text-[12px] font-semibold text-white"
             style={{ background: NAVY }}>
             Duyệt
           </button>

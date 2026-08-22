@@ -712,13 +712,13 @@ export function MonthlyReportTab({ row }: { row: ClassRow }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-[8px] text-[12.5px]">
-        <span className="flex rounded-[6px] p-[2px]" style={{ background: "#eef0f5" }}>
+        <span className="flex rounded-[8px] p-[2px]" style={{ background: "#eef0f5" }}>
           {(["ca-lop", "tung-em"] as const).map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setCheDo(c)}
-              className="rounded-[5px] px-[11px] py-[5px]"
+              className="rounded-[4px] px-[11px] py-[5px]"
               style={{
                 background: cheDo === c ? "#fff" : "transparent",
                 fontWeight: cheDo === c ? 600 : 400,
@@ -733,7 +733,7 @@ export function MonthlyReportTab({ row }: { row: ClassRow }) {
         <select
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          className="rounded-[8px] px-[10px] py-[6px] text-[12.5px]"
           style={{ border: `1px solid #d9dde5`, background: "#fff", color: INK }}
         >
           {months.map((m) => (
