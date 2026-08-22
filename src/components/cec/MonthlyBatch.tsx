@@ -30,6 +30,12 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
   /* Gửi xong phải nói ra — nút báo thành công mà màn không đổi gì
      còn tệ hơn nút chết, QC tưởng xong việc rồi bỏ đi. */
   const [daGui, setDaGui] = useState(false);
+  /* Thẻ đã bấm "AI soạn lại" — đổi nội dung và gỡ cờ nghi trùng */
+  const [daSoanLai, setDaSoanLai] = useState<Set<string>>(new Set());
+  /* Thẻ đang mở xem chi tiết */
+  const [moThe, setMoThe] = useState<string | null>(null);
+  /* Đã bấm "AI soạn cho cả lớp" chưa — trước đó thẻ hiện sẵn, QC không hiểu ở đâu ra */
+  const [daSoan, setDaSoan] = useState(false);
 
   const hs = STUDENTS[row.id] ?? [];
 
@@ -66,8 +72,11 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
       /* 🟡 thiếu nguồn: số phiếu nhắc tên em ít hơn số buổi trong kỳ */
       const thieuNguon = bc.reportCount < bc.sessionTotal;
 
-      const co: Co = nghiTrung ? "do" : thieuNguon ? "vang" : "xanh";
-      const lyDo = nghiTrung
+      /* Soạn lại rồi thì hết nghi trùng — nếu vẫn để cờ đỏ thì QC bấm xong
+         không thấy gì đổi, đúng kiểu nút nói dối. */
+      const daLam = daSoanLai.has(s.id);
+      const co: Co = nghiTrung && !daLam ? "do" : thieuNguon ? "vang" : "xanh";
+      const lyDo = nghiTrung && !daLam
         ? `Nghi trùng: ${khongDoi}/${bc.skills.length} kỹ năng không đổi so với tháng trước.`
         : thieuNguon
           ? `Thiếu nguồn: chỉ có ${bc.reportCount}/${bc.sessionTotal} phiếu nhắc tên em.`
@@ -78,7 +87,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
     /* đỏ lên trước — cái cần đọc kỹ nhất nằm trên cùng */
     const uu: Record<Co, number> = { do: 0, vang: 1, xanh: 2 };
     return ra.sort((a, b) => uu[a.co] - uu[b.co]);
-  }, [hs, month]);
+  }, [hs, month, daSoanLai]);
 
   const demCo = (c: Co) => the.filter((t) => t.co === c).length;
   const chuaDuyet = the.filter((t) => t.status !== "approved");
@@ -114,9 +123,27 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
         </div>
       )}
 
-      <p className="text-[12.5px]" style={{ color: INK2 }}>
-        Nguồn: {phieuThang.daDuyet} phiếu buổi đã duyệt · {the.length} bản nháp AI · 0 bài ghi âm
-      </p>
+      <div className="flex flex-wrap items-center gap-[10px] text-[12.5px]">
+        <span style={{ color: INK2 }}>
+          Nguồn: {phieuThang.daDuyet} phiếu buổi đã duyệt · {the.length} bản nháp AI · 0 bài ghi âm
+        </span>
+        <span className="flex-1" />
+        {/* Không có bước này thì QC không hiểu 9 thẻ ở đâu ra, và khi dữ liệu
+            đổi (duyệt thêm phiếu) cũng không soạn lại được. */}
+        <button
+          type="button"
+          onClick={() => { setDaSoan(true); setDaSoanLai(new Set()); }}
+          className="rounded-[6px] px-[12px] py-[6px] font-semibold"
+          style={{ border: `1px solid #d9dde5`, background: "#fff", color: NAVY }}
+        >
+          {daSoan ? "AI soạn lại cả lớp" : `AI soạn cho cả lớp ${the.length} em`}
+        </button>
+      </div>
+      {daSoan && (
+        <p className="-mt-[6px] text-[12px]" style={{ color: OK }}>
+          Đã soạn lại {the.length} bản nháp từ {phieuThang.daDuyet} phiếu buổi đã duyệt.
+        </p>
+      )}
 
       {/* ba cờ + hành động theo lô */}
       <div className="flex flex-wrap items-center gap-[12px] text-[12.5px]">
@@ -158,6 +185,10 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
               })
             }
             onDuyet={() => setMonthlyStatus(`${t.sid}:${month}`, "approved")}
+            onSoanLai={() => setDaSoanLai((v) => new Set(v).add(t.sid))}
+            daSoanLai={daSoanLai.has(t.sid)}
+            moRong={moThe === t.sid}
+            onMoRong={() => setMoThe(moThe === t.sid ? null : t.sid)}
           />
         ))}
       </div>
@@ -215,12 +246,16 @@ function Co1({ mau, nhan, so }: { mau: string; nhan: string; so: number }) {
 }
 
 function The({
-  t, chon, onChon, onDuyet,
+  t, chon, onChon, onDuyet, onSoanLai, daSoanLai, moRong, onMoRong,
 }: {
   t: { sid: string; name: string; code: string; state: string; bc: MonthlyReport; co: Co; lyDo: string; status: string };
   chon: boolean;
   onChon: () => void;
   onDuyet: () => void;
+  onSoanLai: () => void;
+  daSoanLai: boolean;
+  moRong: boolean;
+  onMoRong: () => void;
 }) {
   const mau = t.co === "do" ? DANGER : t.co === "vang" ? WARN : OK;
   const xong = t.status === "approved";
@@ -267,20 +302,51 @@ function The({
         </p>
       </div>
 
+      {moRong && (
+        <div className="px-[14px] pb-[10px]" style={{ borderTop: `1px solid #f1f3f7` }}>
+          <p className="mb-[7px] mt-[9px] text-[12px] font-semibold" style={{ color: INK2 }}>
+            Tiến bộ 7 kỹ năng
+          </p>
+          <div className="grid gap-x-[16px] gap-y-[4px] text-[12.5px] sm:grid-cols-2">
+            {t.bc.skills.map((k) => (
+              <div key={k.name} className="flex items-center gap-[8px]">
+                <span className="w-[74px] shrink-0" style={{ color: INK2 }}>{k.name}</span>
+                <span className="w-[38px] tabular-nums font-semibold" style={{ color: INK }}>
+                  {k.now === null ? "—" : k.now.toFixed(1)}
+                </span>
+                <span className="tabular-nums text-[11.5px]"
+                  style={{ color: !k.delta ? INK3 : k.delta > 0 ? OK : DANGER }}>
+                  {!k.delta ? "→ không đổi" : `${k.delta > 0 ? "↑" : "↓"}${Math.abs(k.delta).toFixed(1)} so tháng trước`}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-[9px] text-[11.5px]" style={{ color: INK3 }}>
+            Nguồn: {t.bc.reportCount}/{t.bc.sessionTotal} phiếu buổi nhắc tên em ·
+            {" "}{t.bc.hwDone}/{t.bc.hwTotal} bài tập · điểm danh {t.bc.attendRate}%
+          </p>
+          {daSoanLai && (
+            <p className="mt-[6px] text-[11.5px]" style={{ color: OK }}>
+              Đã soạn lại — AI viết bản mới, không dùng lại câu của tháng trước.
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-[8px] px-[14px] py-[9px]"
         style={{ borderTop: `1px solid #f1f3f7`, background: "#fbfcfe" }}>
         <span className="flex-1" />
         {t.co === "do" && !xong && (
-          <button type="button"
-            className="rounded-[6px] px-[11px] py-[6px] text-[12px]"
-            style={{ border: `1px solid #d9dde5`, color: WARN }}>
+          <button type="button" onClick={onSoanLai}
+            className="rounded-[6px] px-[11px] py-[6px] text-[12px] font-semibold"
+            style={{ border: `1px solid #e0cfae`, color: WARN }}>
             AI soạn lại
           </button>
         )}
-        <button type="button"
+        <button type="button" onClick={onMoRong}
           className="rounded-[6px] px-[11px] py-[6px] text-[12px]"
           style={{ border: `1px solid #d9dde5`, color: NAVY }}>
-          Mở xem
+          {moRong ? "Thu gọn" : "Mở xem"}
         </button>
         {!xong && (
           <button type="button" onClick={onDuyet}

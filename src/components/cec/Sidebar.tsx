@@ -60,7 +60,7 @@ const GROUPS: { title: string; items: Item[] }[] = [
   {
     title: "Khác",
     items: [
-      { label: "Báo cáo", Icon: IconChart },
+      { label: "Báo cáo tháng", Icon: IconChart, to: "/report" },
     ],
   },
 ];

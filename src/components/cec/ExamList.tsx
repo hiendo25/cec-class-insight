@@ -11,6 +11,8 @@ import {
   type Exam,
 } from "@/data/exams";
 import { ME } from "@/data/me";
+import { CLASSES } from "@/data/classes";
+import { AssignDialog } from "./AssignDialog";
 import { matchCode, matchWords } from "@/lib/search";
 import { IconCheck, IconSearch } from "./icons";
 
@@ -31,7 +33,7 @@ const SORT_CUA: Record<string, SortCot | undefined> = {
 };
 /** Chiều rộng từng cột — khớp thứ tự mảng tiêu đề bên dưới.
  *  Tên đề chiếm phần lớn như PROD; các cột còn lại vừa đủ nội dung. */
-const COL_W = [420, 96, 150, 100, 96, 62, 92, 140, 150, 104];
+const COL_W = [420, 96, 150, 100, 96, 62, 92, 140, 150, 104, 48];
 
 /** dd/mm/yyyy -> số so sánh được; sai định dạng thì trả 0 chứ không NaN làm hỏng sort */
 const ngaySo = (d: string) => {
@@ -80,9 +82,12 @@ function Chon({
  *
  * Audit PROD (_ee/_PROD_MAN_DEBAI.md) chốt: QC tra cứu / lọc đề, mở xem cấu trúc,
  * bấm "Thử làm" để kiểm đáp án và máy chấm, đọc cấu hình đối chiếu điểm.
- * QC KHÔNG soạn đề, không xuất bản, không nhân bản, không gán buổi học —
- * nên màn này bỏ hẳn các nút đó, và bỏ luôn kiểu sửa-inline của PROD
- * (cột Loại/Cơ sở trên PROD bấm nhầm là đổi dữ liệu thật, không hỏi lại).
+ * ĐƯỜNG VÀO CHÍNH ĐỂ GIAO BÀI LÀ TỪ ĐÂY — chị Chinh nhắc 4 lần:
+ * "vào chọn giao hs hoặc giao lớp ở đây... như vậy đúng luồng vận hành".
+ * Trước đây chỗ này ghi "QC không giao bài" — luật người build tự bịa, đã gỡ.
+ *
+ * Chỉ bỏ kiểu sửa-inline của PROD (bấm nhầm ô Loại/Cơ sở là đổi dữ liệu thật,
+ * không hỏi lại) — đó là rủi ro thao tác, khác với giới hạn quyền.
  */
 export function ExamList() {
   const navigate = useNavigate();
@@ -91,6 +96,8 @@ export function ExamList() {
   const [q, setQ] = useState("");
   const [sap, setSap] = useState<{ cot: SortCot; giam: boolean }>({ cot: "ngayTao", giam: true });
   const [soHien, setSoHien] = useState(100);
+  /* Đề đang mở modal giao bài — đường vào CHÍNH theo yêu cầu chị Chinh */
+  const [giaoDe, setGiaoDe] = useState<Exam | null>(null);
 
   /* Người tạo lấy từ chính kho đề — PROD dùng dropdown động có ô tìm kiếm */
   const nguoiTaoList = useMemo(
@@ -155,9 +162,9 @@ export function ExamList() {
         className="rounded-[8px] px-[14px] py-[10px] text-[12.5px]"
         style={{ background: "#f4f6fa", border: `1px solid ${LINE}`, color: INK2 }}
       >
-        Màn này để <strong>tra cứu và kiểm đề</strong>. Bấm một đề để xem cấu trúc, cấu hình chấm
-        điểm và <strong>Thử làm</strong> trước khi giao cho học sinh. Việc soạn đề và xuất bản do
-        người soạn đề làm.
+        Bấm một đề để xem cấu trúc, cấu hình chấm điểm và <strong>Thử làm</strong>.
+        Giao bài cho lớp hoặc cho học sinh lẻ ngay tại đây — bấm{" "}
+        <strong>Giao bài</strong> ở menu <strong>⋯</strong> cuối mỗi dòng.
       </p>
 
       {/* tab */}
@@ -269,7 +276,7 @@ export function ExamList() {
             </colgroup>
             <thead>
               <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
-                {["Tên đề bài", "Loại", "Cơ sở", "Kỹ năng", "Cấp độ", "Câu", "Thời gian", "Người tạo", "Trạng thái", "Ngày tạo"].map(
+                {["Tên đề bài", "Loại", "Cơ sở", "Kỹ năng", "Cấp độ", "Câu", "Thời gian", "Người tạo", "Trạng thái", "Ngày tạo", ""].map(
                   (h) => {
                     const c = SORT_CUA[h];
                     const on = c && sap.cot === c;
@@ -297,11 +304,25 @@ export function ExamList() {
             </thead>
             <tbody>
               {daSap.slice(0, soHien).map((e, i) => (
-                <Dong key={e.id} e={e} i={i} onMo={() => navigate({ to: "/exam/$examId", params: { examId: e.id } })} />
+                <Dong
+                  key={e.id}
+                  e={e}
+                  i={i}
+                  onMo={() => navigate({ to: "/exam/$examId", params: { examId: e.id } })}
+                  onGiao={() => setGiaoDe(e)}
+                />
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {giaoDe && (
+        <AssignDialog
+          from={CLASSES.find((c) => c.mine) ?? CLASSES[0]!}
+          examId={giaoDe.id}
+          onClose={() => setGiaoDe(null)}
+        />
       )}
 
       {list.length > soHien && (
@@ -320,8 +341,24 @@ export function ExamList() {
   );
 }
 
-function Dong({ e, i, onMo }: { e: Exam; i: number; onMo: () => void }) {
+function MenuMuc({ nhan, onBam, dam }: { nhan: string; onBam: () => void; dam?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onBam}
+      className="block w-full px-[12px] py-[7px] text-left hover:bg-[#f4f6fa]"
+      style={{ color: dam ? NAVY : INK, fontWeight: dam ? 600 : 400 }}
+    >
+      {nhan}
+    </button>
+  );
+}
+
+function Dong({
+  e, i, onMo, onGiao,
+}: { e: Exam; i: number; onMo: () => void; onGiao: () => void }) {
   const tt = TT_STYLE[e.trangThai] ?? TT_STYLE["Nháp"]!;
+  const [moMenu, setMoMenu] = useState(false);
   return (
     <tr
       onClick={onMo}
@@ -357,6 +394,43 @@ function Dong({ e, i, onMo }: { e: Exam; i: number; onMo: () => void }) {
         </span>
       </td>
       <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK3 }}>{e.ngayTao}</td>
+      {/* Menu ⋯ — chị Chinh gửi ảnh PROD có mục "Assign assignment" ở đúng chỗ này */}
+      <td className="relative px-[8px]" onClick={(ev) => ev.stopPropagation()}>
+        <button
+          type="button"
+          onClick={() => setMoMenu((v) => !v)}
+          className="grid h-[26px] w-[26px] place-items-center rounded-[6px] text-[15px] leading-none"
+          style={{ color: INK2 }}
+          aria-label="Thao tác khác"
+          title="Thao tác"
+        >
+          ⋯
+        </button>
+        {moMenu && (
+          <>
+            <span className="fixed inset-0 z-[20]" onClick={() => setMoMenu(false)} />
+            <div
+              className="absolute right-[8px] top-[32px] z-[21] w-[186px] overflow-hidden rounded-[8px] bg-white py-[4px] text-[12.5px]"
+              style={{ border: `1px solid ${LINE}`, boxShadow: "0 8px 22px rgba(20,28,56,0.16)" }}
+            >
+              {/* Thao tác thật trên PROD (22/08): menu ⋯ có đúng 5 mục
+                  Xem chi tiết · Nhân bản · Gán buổi học · Xuất bản · Xoá.
+                  KHÔNG có "Giao bài" — trước đó tôi đoán theo ảnh tiếng Anh
+                  chị Chinh gửi (Assign assignment) rồi dịch sai.
+
+                  Bỏ khỏi menu:
+                  · Xuất bản, Xoá — đổi dữ liệu thật, không thuộc QC
+                  · Gán buổi học — gắn đề vào buổi trong GIÁO TRÌNH, việc của người
+                    soạn chương trình. Khác hẳn giao bài cho HS. Từng để hai mục này
+                    gọi CÙNG một hàm, tức nói dối người dùng.
+                  · Nhân bản — đẻ rác trong kho, QC không cần */}
+              <MenuMuc nhan="Giao bài" dam onBam={() => { setMoMenu(false); onGiao(); }} />
+              <MenuMuc nhan="Xem chi tiết" onBam={() => { setMoMenu(false); onMo(); }} />
+              <MenuMuc nhan="Bài đã giao từ đề này" onBam={() => { setMoMenu(false); onMo(); }} />
+            </div>
+          </>
+        )}
+      </td>
     </tr>
   );
 }

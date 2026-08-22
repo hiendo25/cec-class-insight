@@ -54,6 +54,8 @@ const STUDENT_STATES = ["Đang học", "Bảo lưu", "Đã chuyển lớp", "Đ�
 type Props = {
   from: ClassRow;
   onClose: () => void;
+  /** Mở sẵn với một đề — dùng khi vào từ kho đề (đường vào CHÍNH theo chị Chinh) */
+  examId?: string;
   /** Giao riêng cho một em: mở sẵn chế độ "Chọn học sinh" và chọn sẵn em đó.
    *  Trước đây bấm "Giao bài" ở màn HS nợ bài lại mở chế độ "Cả lớp" —
    *  QC định giao 1 em mà lỡ tay giao cho cả 7 em. */
@@ -84,7 +86,7 @@ function LocDe({
   );
 }
 
-export function AssignDialog({ from, onClose, studentId }: Props) {
+export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: Props) {
   const modalRef = useModal(onClose);
   const [classIds, setClassIds] = useState<number[]>([from.id]);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -103,7 +105,7 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
 
   const [examOpen, setExamOpen] = useState(false);
   const [examQuery, setExamQuery] = useState("");
-  const [examId, setExamId] = useState<string | null>(null);
+  const [examId, setExamId] = useState<string | null>(examBanDau ?? null);
   const exam = EXAMS.find((e) => e.id === examId) ?? null;
   const [useLatest, setUseLatest] = useState(true);
 

@@ -211,9 +211,13 @@ export function OwedStudents() {
                     <button
                       type="button"
                       onClick={() =>
+                        /* Bấm TÊN EM phải mở HỒ SƠ EM, không phải chỉ mở màn lớp.
+                           Thiếu `?hs=` thì QC phải tự tìm lại em trong danh sách —
+                           luồng "phụ huynh gọi, tra một em" gãy đúng ở nhịp này. */
                         navigate({
                           to: "/class/$classId/$tab",
                           params: { classId: String(r.classId), tab: "hoc-sinh" },
+                          search: { hs: r.st.id },
                         })
                       }
                       className="font-medium hover:underline"

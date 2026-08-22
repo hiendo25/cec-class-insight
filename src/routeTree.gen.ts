@@ -17,6 +17,7 @@ import { Route as ExamIndexRouteImport } from './routes/exam/index'
 import { Route as ExamExamIdRouteImport } from './routes/exam/$examId'
 import { Route as QueueBaiRouteImport } from './routes/queue/bai'
 import { Route as QueuePhieuRouteImport } from './routes/queue/phieu'
+import { Route as ReportIndexRouteImport } from './routes/report/index'
 import { Route as ClassClassIdTabRouteImport } from './routes/class/$classId.$tab'
 
 const IndexRoute = IndexRouteImport.update({
@@ -59,6 +60,11 @@ const QueuePhieuRoute = QueuePhieuRouteImport.update({
   path: '/queue/phieu',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReportIndexRoute = ReportIndexRouteImport.update({
+  id: '/report/',
+  path: '/report/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClassClassIdTabRoute = ClassClassIdTabRouteImport.update({
   id: '/class/$classId/$tab',
   path: '/class/$classId/$tab',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/queue/phieu': typeof QueuePhieuRoute
   '/class/': typeof ClassIndexRoute
   '/exam/': typeof ExamIndexRoute
+  '/report/': typeof ReportIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/queue/phieu': typeof QueuePhieuRoute
   '/class': typeof ClassIndexRoute
   '/exam': typeof ExamIndexRoute
+  '/report': typeof ReportIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/queue/phieu': typeof QueuePhieuRoute
   '/class/': typeof ClassIndexRoute
   '/exam/': typeof ExamIndexRoute
+  '/report/': typeof ReportIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/queue/phieu'
     | '/class/'
     | '/exam/'
+    | '/report/'
     | '/class/$classId/$tab'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/queue/phieu'
     | '/class'
     | '/exam'
+    | '/report'
     | '/class/$classId/$tab'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/queue/phieu'
     | '/class/'
     | '/exam/'
+    | '/report/'
     | '/class/$classId/$tab'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   QueuePhieuRoute: typeof QueuePhieuRoute
   ClassIndexRoute: typeof ClassIndexRoute
   ExamIndexRoute: typeof ExamIndexRoute
+  ReportIndexRoute: typeof ReportIndexRoute
   ClassClassIdTabRoute: typeof ClassClassIdTabRoute
 }
 
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QueuePhieuRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/report/': {
+      id: '/report/'
+      path: '/report'
+      fullPath: '/report/'
+      preLoaderRoute: typeof ReportIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/class/$classId/$tab': {
       id: '/class/$classId/$tab'
       path: '/class/$classId/$tab'
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   QueuePhieuRoute: QueuePhieuRoute,
   ClassIndexRoute: ClassIndexRoute,
   ExamIndexRoute: ExamIndexRoute,
+  ReportIndexRoute: ReportIndexRoute,
   ClassClassIdTabRoute: ClassClassIdTabRoute,
 }
 export const routeTree = rootRouteImport
