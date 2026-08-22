@@ -190,7 +190,7 @@ export function OwedStudents() {
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
-                {["Học sinh", "Lớp", "Nợ bài", "Bỏ dở", "Lần cuối làm bài", "Điểm TB", ""].map((h) => (
+                {["Học sinh", "Lớp", "Điện thoại", "Nợ bài", "Bỏ dở", "Lần cuối làm bài", "Điểm TB", ""].map((h) => (
                   <th key={h} className="whitespace-nowrap px-[12px] py-[10px] text-left text-[12.5px] font-semibold">
                     {h}
                   </th>
@@ -239,6 +239,13 @@ export function OwedStudents() {
                         {r.classStatus}
                       </span>
                     )}
+                  </td>
+                  {/* SĐT ngay trên dòng — app cũ có, để QC gọi phụ huynh luôn
+                      thay vì mở hồ sơ em rồi mới thấy số. */}
+                  <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>
+                    <a href={`tel:${r.st.phone}`} className="hover:underline" style={{ color: NAVY }}>
+                      {r.st.phone}
+                    </a>
                   </td>
                   <td className="whitespace-nowrap px-[12px] tabular-nums">
                     {r.owed > 0 ? (

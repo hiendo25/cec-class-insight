@@ -7,6 +7,7 @@ import { STUDENTS } from "@/data/students";
 import { INK, INK2, INK3, LINE, NAVY, OK, WARN, DANGER } from "@/data/const";
 import { monthlyStatusOf, setMonthlyStatus, reportStatusOf, useOverrides } from "@/data/overrides";
 import { Person } from "./Person";
+import { ME } from "@/data/me";
 import { IconCheck, IconWarn } from "./icons";
 
 type Co = "xanh" | "vang" | "do";
@@ -93,8 +94,13 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
   const chuaDuyet = the.filter((t) => t.status !== "approved");
   const daDuyet = the.length - chuaDuyet.length;
 
+  /* Chỉ chọn được thẻ TA ĐÃ GỬI. Thẻ còn là nháp thì TA chưa xong,
+     QC duyệt vào là duyệt bản nửa vời — app cũ tách rõ TA Submit / QC Approve. */
   const chonHetXanh = () =>
-    setChon(new Set(the.filter((t) => t.co === "xanh" && t.status !== "approved").map((t) => t.sid)));
+    setChon(new Set(the.filter((t) => t.co === "xanh" && t.status === "pending").map((t) => t.sid)));
+
+  const soNhap = the.filter((t) => t.status === "draft").length;
+  const soChoDuyet = the.filter((t) => t.status === "pending").length;
 
   if (the.length === 0)
     return (
@@ -150,6 +156,14 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
         <Co1 mau={OK} nhan="đủ nguồn" so={demCo("xanh")} />
         <Co1 mau={WARN} nhan="thiếu nguồn" so={demCo("vang")} />
         <Co1 mau={DANGER} nhan="nghi trùng tháng trước" so={demCo("do")} />
+        <span className="mx-[4px] h-[14px] w-px" style={{ background: "#d9dde5" }} />
+        {/* Hai bước như app cũ: TA gửi -> QC duyệt */}
+        <span style={{ color: soNhap ? INK2 : INK3 }}>
+          TA chưa gửi <b className="tabular-nums">{soNhap}</b>
+        </span>
+        <span style={{ color: soChoDuyet ? NAVY : INK3 }}>
+          chờ tôi duyệt <b className="tabular-nums">{soChoDuyet}</b>
+        </span>
         <span className="flex-1" />
         <button type="button" onClick={chonHetXanh}
           className="rounded-[6px] px-[11px] py-[6px]"
@@ -264,8 +278,15 @@ function The({
     <section className="rounded-[9px] bg-white" style={{ border: `1px solid ${xong ? "#cbe6d6" : LINE}` }}>
       <div className="flex flex-wrap items-center gap-[10px] px-[14px] py-[10px]"
         style={{ borderBottom: `1px solid #f1f3f7` }}>
-        <input type="checkbox" checked={chon} disabled={xong} onChange={onChon}
-          style={{ accentColor: NAVY }} aria-label={`Chọn báo cáo của ${t.name}`} />
+        <input
+          type="checkbox"
+          checked={chon}
+          disabled={xong || t.status === "draft"}
+          onChange={onChon}
+          style={{ accentColor: NAVY }}
+          title={t.status === "draft" ? "TA chưa gửi bản này" : undefined}
+          aria-label={`Chọn báo cáo của ${t.name}`}
+        />
         <span className="h-[9px] w-[9px] shrink-0 rounded-full" style={{ background: mau }} />
         <Person name={t.name} size={24} />
         <span className="tabular-nums text-[11.5px]" style={{ color: INK3 }}>{t.code}</span>
@@ -274,9 +295,16 @@ function The({
             style={{ background: "#f0f2f6", color: INK2 }}>{t.state}</span>
         )}
         <span className="flex-1" />
+        {/* Ba trạng thái theo đúng hai bước của app cũ, không gộp làm "Nháp" */}
         <span className="rounded-[5px] px-[8px] py-[2px] text-[11.5px] font-medium"
-          style={xong ? { background: "#e6f5ec", color: OK } : { background: "#f0f2f6", color: INK2 }}>
-          {xong ? "Đã duyệt" : "Nháp"}
+          style={
+            xong
+              ? { background: "#e6f5ec", color: OK }
+              : t.status === "pending"
+                ? { background: "#eef1f7", color: NAVY }
+                : { background: "#f0f2f6", color: INK2 }
+          }>
+          {xong ? "QC đã duyệt" : t.status === "pending" ? "TA đã gửi — chờ tôi duyệt" : "TA đang soạn"}
         </span>
       </div>
 
@@ -321,9 +349,42 @@ function The({
               </div>
             ))}
           </div>
+          {/* Phân loại — app cũ có 3 mức trong modal Comment detail */}
+          <div className="mt-[10px] flex flex-wrap items-center gap-[8px] text-[12.5px]">
+            <span style={{ color: INK2 }}>Xếp loại:</span>
+            {(["Xuất sắc", "Tốt", "Cần hỗ trợ"] as const).map((x) => {
+              const goiY = t.bc.attendRate >= 90 && (t.bc.hwDone / Math.max(1, t.bc.hwTotal)) >= 0.8
+                ? "Xuất sắc"
+                : t.bc.attendRate >= 70 ? "Tốt" : "Cần hỗ trợ";
+              const on = x === goiY;
+              return (
+                <span key={x}
+                  className="rounded-[5px] px-[9px] py-[3px] text-[11.5px]"
+                  style={{
+                    border: `1px solid ${on ? NAVY : "#dfe3ea"}`,
+                    background: on ? "#eef1f7" : "#fff",
+                    color: on ? NAVY : INK3,
+                    fontWeight: on ? 600 : 400,
+                  }}
+                  title={on ? "AI đề xuất theo điểm danh và tỉ lệ nộp bài" : undefined}
+                >
+                  {x}
+                </span>
+              );
+            })}
+          </div>
+
           <p className="mt-[9px] text-[11.5px]" style={{ color: INK3 }}>
             Nguồn: {t.bc.reportCount}/{t.bc.sessionTotal} phiếu buổi nhắc tên em ·
             {" "}{t.bc.hwDone}/{t.bc.hwTotal} bài tập · điểm danh {t.bc.attendRate}%
+          </p>
+          {/* Lưu vết — app cũ ghi "sysadmin modified at 23:55, 01/08/2026" */}
+          <p className="mt-[4px] text-[11px]" style={{ color: INK3 }}>
+            {xong
+              ? `${ME.name} đã duyệt`
+              : t.status === "pending"
+                ? "Trợ giảng đã gửi, chờ QC duyệt"
+                : "Trợ giảng đang soạn, chưa gửi"}
           </p>
           {daSoanLai && (
             <p className="mt-[6px] text-[11.5px]" style={{ color: OK }}>
@@ -348,12 +409,17 @@ function The({
           style={{ border: `1px solid #d9dde5`, color: NAVY }}>
           {moRong ? "Thu gọn" : "Mở xem"}
         </button>
-        {!xong && (
+        {!xong && t.status === "pending" && (
           <button type="button" onClick={onDuyet}
             className="rounded-[6px] px-[13px] py-[6px] text-[12px] font-semibold text-white"
             style={{ background: NAVY }}>
             Duyệt
           </button>
+        )}
+        {!xong && t.status === "draft" && (
+          <span className="text-[12px]" style={{ color: INK3 }}>
+            Chờ trợ giảng gửi
+          </span>
         )}
       </div>
     </section>
