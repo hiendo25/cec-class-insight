@@ -3,7 +3,7 @@ import { TODAY, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/con
 import { SCORES, TESTS } from "@/data/tests";
 import { MONTHLY, REPORTS } from "@/data/reports";
 import { ParentReply } from "./ParentReply";
-import { dongPhanHoi, ghiPhanHoi, phanHoiCua } from "@/data/overrides";
+import { dongPhanHoi, ghiPhanHoi, markReminded, phanHoiCua } from "@/data/overrides";
 import { ME } from "@/data/me";
 import type { ClassRow } from "@/data/classes";
 import { SESSIONS } from "@/data/sessions";
@@ -836,6 +836,9 @@ export function StudentProfile({
                   ),
                 confirmLabel: owed > 0 ? "Gửi lời nhắc" : "Đã hiểu",
                 doneText: owed > 0 ? `Đã gửi lời nhắc tới ${student.name}.` : "Không cần nhắc.",
+                /* Không có `run` thì toast báo "đã nhắc" mà dòng việc vẫn nguyên
+                   — chính ActionDialog ghi chú kiểu này "còn tệ hơn nút chết". */
+                ...(owed > 0 ? { run: () => { markReminded(`hs-${student.id}`); setDauX((n) => n + 1); } } : {}),
               })
             }
             className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px]"

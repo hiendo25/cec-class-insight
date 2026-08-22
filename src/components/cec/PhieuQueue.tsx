@@ -20,6 +20,8 @@ export function PhieuQueue() {
   useOverrides();
   const navigate = useNavigate();
   const [locLop, setLocLop] = useState("");
+  /* Đếm số lần duyệt — buộc tính lại danh sách sau mỗi thao tác */
+  const [dauX, setDauX] = useState(0);
 
   const tenLop = useMemo(() => new Map(CLASSES.map((c) => [c.id, c.code])), []);
 
@@ -46,7 +48,10 @@ export function PhieuQueue() {
       }
     }
     return ra.sort((a, b) => (b.cho ?? 0) - (a.cho ?? 0));
-  }, []);
+    /* PHẢI có `dauX` trong mảng phụ thuộc: bên trong đọc reportStatusOf(),
+       để rỗng thì trạng thái đóng băng lúc mount — duyệt xong nhãn vẫn nguyên,
+       QC bấm mãi không thấy gì đổi mà cũng không có toast để nghi ngờ. */
+  }, [dauX]);
 
   const list = locLop ? buoiCho.filter((b) => String(b.classId) === locLop) : buoiCho;
   const lopCo = useMemo(
@@ -130,7 +135,7 @@ export function PhieuQueue() {
             </p>
             <div className="flex flex-col gap-[6px]">
               {buoi.phieu.map((p) => (
-                <PhieuDong key={p.id} id={p.id} classId={buoi.classId} studentId={p.studentId} status={p.status} />
+                <PhieuDong key={p.id} id={p.id} classId={buoi.classId} studentId={p.studentId} status={p.status} onDoi={() => setDauX((n) => n + 1)} />
               ))}
               {buoi.phieu.length === 0 && (
                 <p className="py-[14px] text-center text-[12.5px]" style={{ color: INK3 }}>
@@ -148,7 +153,10 @@ export function PhieuQueue() {
             <span className="flex-1" />
             <button
               type="button"
-              onClick={() => buoi.phieu.forEach((p) => setReportStatus(p.id, "approved"))}
+              onClick={() => {
+                buoi.phieu.forEach((p) => setReportStatus(p.id, "approved"));
+                setDauX((n) => n + 1);
+              }}
               className="flex items-center gap-[7px] rounded-[6px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
               style={{ background: NAVY }}
             >
@@ -163,8 +171,8 @@ export function PhieuQueue() {
 }
 
 function PhieuDong({
-  id, classId, studentId, status,
-}: { id: string; classId: number; studentId: string; status: string }) {
+  id, classId, studentId, status, onDoi,
+}: { id: string; classId: number; studentId: string; status: string; onDoi: () => void }) {
   const em = useMemo(() => {
     const rp = (REPORTS[classId] ?? []).find((r) => r.id === id);
     return rp;
@@ -192,12 +200,12 @@ function PhieuDong({
       </span>
       {status !== "approved" && (
         <>
-          <button type="button" onClick={() => setReportStatus(id, "draft")}
+          <button type="button" onClick={() => { setReportStatus(id, "draft"); onDoi(); }}
             className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px]"
             style={{ border: `1px solid ${LINE}`, color: WARN }}>
             Trả lại
           </button>
-          <button type="button" onClick={() => setReportStatus(id, "approved")}
+          <button type="button" onClick={() => { setReportStatus(id, "approved"); onDoi(); }}
             className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
             style={{ border: `1px solid ${LINE}`, color: NAVY }}>
             Duyệt

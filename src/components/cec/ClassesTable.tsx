@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { AssignDialog } from "./AssignDialog";
 import { TH_BG, TH_FG, TH_LINE, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { Person } from "./Person";
@@ -1302,7 +1303,13 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
   );
 }
 
-function RowMenu({ row, onOpen }: { row: ClassRow; onOpen?: () => void }) {
+function RowMenu({
+  row, onOpen, onGiao, onNhac,
+}: { row: ClassRow; onOpen?: () => void; onGiao?: () => void; onNhac?: () => void }) {
+  const nav = useNavigate();
+  /* Mở đúng tab của lớp — trước đây 5/6 mục không có `run` nên bấm chỉ đóng menu */
+  const moTab = (tab: string) => () =>
+    nav({ to: "/class/$classId/$tab", params: { classId: String(row.id), tab } });
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -1321,16 +1328,16 @@ function RowMenu({ row, onOpen }: { row: ClassRow; onOpen?: () => void }) {
     label: string;
     Icon: (p: { size?: number }) => JSX.Element;
     danger?: boolean;
-    run?: () => void;
+    run?: (() => void) | undefined;
   }[] = [
     { label: "Mở lớp", Icon: IconExternal, run: onOpen },
-    { label: "Xem học sinh", Icon: IconUsers },
-    { label: "Giao bài cho lớp", Icon: IconClipboard },
+    { label: "Xem học sinh", Icon: IconUsers, run: moTab("hoc-sinh") },
+    { label: "Giao bài cho lớp", Icon: IconClipboard, run: onGiao },
     ...(hasIssue
-      ? [{ label: "Nhắc học sinh chưa nộp", Icon: IconBell, danger: true }]
+      ? [{ label: "Nhắc học sinh chưa nộp", Icon: IconBell, danger: true, run: onNhac }]
       : []),
-    { label: "Xem kết quả", Icon: IconChart },
-    { label: "Lịch học của lớp", Icon: IconCalendarCheck },
+    { label: "Xem kết quả", Icon: IconChart, run: moTab("ket-qua") },
+    { label: "Lịch học của lớp", Icon: IconCalendarCheck, run: moTab("lich-hoc") },
   ];
 
   return (
@@ -1398,7 +1405,7 @@ function renderCell(
         </button>
       );
     case "type": {
-      const t = TYPE_STYLE[r.type] ?? TYPE_STYLE.default;
+      const t = TYPE_STYLE[r.type] ?? TYPE_STYLE["default"]!;
       return (
         <span
           className="inline-flex h-[22px] items-center gap-[5px] rounded-[11px] px-[8px] text-[11.5px] font-medium"
@@ -1526,7 +1533,16 @@ function renderCell(
         <span style={{ color: INK3 }}>—</span>
       );
     case "actions":
-      return <RowMenu row={r} onOpen={ctl.open} />;
+      return (
+        <RowMenu
+          row={r}
+          onOpen={ctl.open}
+          onGiao={() => setGiaoLop(r)}
+          onNhac={() =>
+            xuLyCanhBao(r, { title: "Học sinh chưa nộp bài", action: "Nhắc học sinh" })
+          }
+        />
+      );
     default:
       return null;
   }
