@@ -12,6 +12,7 @@ import { GradingQueue } from "./GradingQueue";
 import { Person } from "./Person";
 import { MonthlyBatch } from "./MonthlyBatch";
 import { MONTHLY } from "@/data/reports";
+import { soNgayToi } from "@/data/const";
 import { daNhac, markReminded, useOverrides } from "@/data/overrides";
 import {
   IconBell,
@@ -509,6 +510,21 @@ function PhieuBuoi({ st }: { st: "draft" | "pending" | "approved" | null }) {
 }
 
 /**
+ * Trạng thái BÀI GIAO — khác hẳn trạng thái ĐỀ, không được gộp.
+ *   Bài giao : Đang mở · Đã đóng · Quá hạn   (nói về cả bài, chung cho lớp)
+ *   Đề       : Đã xuất bản · Nháp · v2        (nói về đề)
+ * Một bài có thể ĐÃ ĐÓNG mà vẫn còn em chưa nộp — hai thông tin cùng hiện được.
+ */
+function trangThaiBai(due: string, submitted: number, total: number) {
+  const qua = soNgayToi(due);
+  if (submitted >= total && total > 0)
+    return { nhan: "Đã đóng", bg: "#eef1f7", fg: INK2, quaNgay: 0 };
+  if (qua !== null && qua > 0)
+    return { nhan: "Quá hạn", bg: "#fdecea", fg: DANGER, quaNgay: qua };
+  return { nhan: "Đang mở", bg: "#e6f5ec", fg: OK, quaNgay: 0 };
+}
+
+/**
  * Tab Kết quả — hai chế độ xem.
  *
  * "Theo buổi" là ma trận HS x buổi đã có. "Duyệt cả lớp" là màn cuối tháng:
@@ -628,15 +644,38 @@ function TabAssignments({ row, onAssign }: { row: ClassRow; onAssign: () => void
           <div key={a.id} className="rounded-[8px] bg-white px-[16px] py-[13px]" style={{ border: `1px solid ${LINE}` }}>
             <div className="flex flex-wrap items-center gap-[12px]">
               <span className="text-[13.5px] font-semibold">{a.title}</span>
+              {/* Trạng thái BÀI GIAO — cột riêng, không gộp với trạng thái đề */}
+              {(() => {
+                const tt = trangThaiBai(a.due, a.submitted, a.total);
+                return (
+                  <span
+                    className="shrink-0 rounded-[5px] px-[8px] py-[2px] text-[11.5px] font-medium"
+                    style={{ background: tt.bg, color: tt.fg }}
+                    title={tt.quaNgay ? `Quá hạn ${tt.quaNgay} ngày` : undefined}
+                  >
+                    {tt.nhan}
+                    {tt.quaNgay > 0 ? ` ${tt.quaNgay} ngày` : ""}
+                  </span>
+                );
+              })()}
               <span className="text-[12px]" style={{ color: INK3 }}>
                 Buổi {a.session} · giao {a.assigned} · hạn {a.due}
               </span>
               <span className="flex-1" />
               <span className="text-[12.5px] tabular-nums">{a.submitted}/{a.total} nộp</span>
               <Bar value={a.total ? a.submitted / a.total : 0} />
-              {a.avg !== null && (
+              <span className="shrink-0 text-[12px] tabular-nums" style={{ color: INK3 }}>
+                chấm {a.graded}/{a.submitted}
+              </span>
+              {/* Chưa chấm bài nào thì hiện "—  chưa chấm", KHÔNG hiện 0 —
+                  số 0 làm QC tưởng cả lớp được 0 điểm. */}
+              {a.avg !== null ? (
                 <span className="text-[12.5px] font-semibold tabular-nums" style={{ color: a.avg >= 7 ? OK : WARN }}>
-                  TB {a.avg}
+                  TB {a.avg.toFixed(1)}
+                </span>
+              ) : (
+                <span className="text-[12px]" style={{ color: INK3 }}>
+                  TB — <span className="text-[11.5px]">chưa chấm</span>
                 </span>
               )}
             </div>

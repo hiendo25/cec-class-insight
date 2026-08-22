@@ -122,8 +122,10 @@ const COLS: Col[] = [
   { key: "qc", label: "QC", width: 130, filter: "qc" },
   { key: "ec", label: "EC", width: 130, filter: "ec", optional: true },
   { key: "size", label: "Sĩ số", width: 88, filter: "size" },  /* tính cả em bảo lưu/nghỉ */
-  { key: "schedule", label: "Lịch học", width: 132, filter: "schedule" },
+  /* Cảnh báo đặt TRƯỚC Lịch học: đây là cột QC cần nhất, bật thêm Cơ sở/EC
+     làm bảng rộng ra nên nó bị đẩy khỏi màn — việc cần xử lý mà phải cuộn mới thấy. */
   { key: "warn", label: "Cảnh báo", width: 168, filter: "warn" },
+  { key: "schedule", label: "Lịch học", width: 132, filter: "schedule" },
   { key: "start", label: "Ngày bắt đầu", width: 116 },
   { key: "end", label: "Ngày kết thúc", width: 116 },
   { key: "status", label: "Trạng thái", width: 118, filter: "status" },
