@@ -116,11 +116,49 @@ function xuatFile(s: Student, m: Monthly, row: ClassRow, noiDung: string[]) {
     `CEC — ${row.campus}`,
   ];
 
-  const blob = new Blob([dong.join("\r\n")], { type: "text/plain;charset=utf-8" });
+  /* Xuất HTML thay vì .txt — phụ huynh mở bằng trình duyệt, in ra giấy hoặc
+     lưu PDF được. Đo trên app học sinh: KHÔNG có màn Báo cáo, KHÔNG có khu vực
+     phụ huynh — nghĩa là file này là đường DUY NHẤT tới người nhận, nên phải tử tế.
+     Bản .txt cũ mở ra là chữ thô, gửi phụ huynh không coi được. */
+  const esc = (t: string) =>
+    t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const than = dong
+    .map((d) => {
+      if (!d.trim()) return "";
+      if (/^\d\. /.test(d)) return `<h2>${esc(d)}</h2>`;
+      if (d === "BÁO CÁO HỌC TẬP THÁNG") return "";
+      if (d === "CEC Academic Progress Report") return "";
+      return `<p>${esc(d.trim())}</p>`;
+    })
+    .join("\n");
+
+  const html = `<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<title>Báo cáo tháng ${esc(s.name)} — ${esc(mLabel(m.month))}</title>
+<style>
+  body{font:14px/1.7 system-ui,"Segoe UI",sans-serif;color:#1f2430;max-width:720px;margin:32px auto;padding:0 20px}
+  header{border-bottom:2px solid #1e2d5c;padding-bottom:14px;margin-bottom:20px}
+  h1{font-size:20px;color:#1e2d5c;margin:0 0 4px}
+  .sub{color:#6b7280;font-size:13px}
+  h2{font-size:14px;color:#1e2d5c;margin:22px 0 8px;padding-bottom:5px;border-bottom:1px solid #e6e8ee}
+  p{margin:5px 0}
+  footer{margin-top:28px;padding-top:12px;border-top:1px solid #e6e8ee;color:#6a7386;font-size:12px}
+  @media print{body{margin:0}}
+</style></head><body>
+<header>
+  <h1>Báo cáo học tập tháng</h1>
+  <div class="sub">CEC Academic Progress Report · ${esc(row.campus)}</div>
+</header>
+${than}
+<footer>Nguồn: ${m.reportCount} phiếu nhận xét buổi đã duyệt · in từ hệ thống CEC</footer>
+</body></html>`;
+
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `BaoCaoThang_${s.code}_${m.month.replace("/", "-")}.txt`;
+  a.download = `BaoCaoThang_${s.code}_${m.month.replace("/", "-")}.html`;
   document.body.appendChild(a);
   a.click();
   a.remove();
