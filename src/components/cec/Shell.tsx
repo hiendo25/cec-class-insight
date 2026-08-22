@@ -27,7 +27,7 @@ export function Shell({
 }) {
   return (
     <ActionProvider>
-    <div className="flex min-h-screen" style={{ background: "#f7f8fa", color: "#1f2430" }}>
+    <div className="flex min-h-screen" style={{ background: "#fafafa", color: "#1f2937" }}>
       <Sidebar />
 
       <main className="flex min-w-0 flex-1 flex-col px-5 pb-6 pt-4">
@@ -53,7 +53,7 @@ export function Shell({
         {title && (
           <div className="mt-2 flex items-start justify-between gap-[16px]">
             <header className="flex flex-col gap-[3px]">
-              <h1 className="text-[20px] font-bold" style={{ letterSpacing: "-0.2px" }}>
+              <h1 className="text-[24px] font-medium" style={{ letterSpacing: "-0.02em" }}>
                 {title}
               </h1>
               {desc && (

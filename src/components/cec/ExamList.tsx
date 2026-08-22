@@ -366,7 +366,7 @@ function Dong({
     <tr
       onClick={onMo}
       className="cursor-pointer"
-      style={{ background: i % 2 ? "#f5f8fc" : "#fff", borderBottom: "1px solid #edeff4" }}
+      style={{ background: "#fff", borderBottom: "1px solid rgba(16,24,40,0.06)" }}
     >
       {/* Một dòng, cắt bằng "…" như PROD — để tên dài không đội cao cả hàng */}
       <td className="max-w-0 px-[12px] py-[9px]">

@@ -122,7 +122,7 @@ export function Today() {
   return (
     <div className="flex flex-col gap-[16px]">
       <header className="flex flex-wrap items-end gap-x-[14px] gap-y-[4px]">
-        <h1 className="text-[19px] font-bold" style={{ color: INK }}>
+        <h1 className="text-[24px] font-medium" style={{ color: INK, letterSpacing: "-0.02em" }}>
           Hôm nay của tôi
         </h1>
         <span className="flex-1" />
@@ -369,11 +369,8 @@ function Khoi({
           {tieuDe}
         </span>
         <span
-          className="rounded-full px-[8px] py-[1px] text-[12px] font-bold tabular-nums"
-          style={{
-            background: dem > 0 ? `${mauKhoi}1a` : "#f0f2f6",
-            color: dem > 0 ? mauKhoi : INK3,
-          }}
+          className="text-[24px] font-medium leading-none tabular-nums"
+          style={{ color: dem > 0 ? mauKhoi : "#a8b0be", letterSpacing: "-0.02em" }}
         >
           {dem}
         </span>

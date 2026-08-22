@@ -948,9 +948,20 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
         ) : (
           <>
             <div className="cec-scroll overflow-x-auto">
+              {/* `minWidth: "100%"` KHÔNG phải chiều rộng thật: khi tổng cột vượt
+                  khung, trình duyệt bỏ qua colgroup và bóp cột cuối — nên cột
+                  "Cảnh báo" cắt cụt chữ ở mọi dòng dù đã khai 210px. Đó chính là
+                  cột quyết định QC có vào lớp hay không, mà "đã c…" có thể là
+                  "đã chốt" hay "đã quá hạn" — hai nghĩa ngược nhau.
+                  Cách đúng (ExamList đã làm): cộng tổng cột thành minWidth thật,
+                  bảng tự cuộn ngang trong `overflow-x-auto` bọc ngoài. */}
               <table
                 className="border-collapse text-[13px]"
-                style={{ minWidth: "100%", color: INK }}
+                style={{
+                  minWidth: 36 + visibleCols.reduce((t, c) => t + (c.width ?? 120), 0),
+                  width: "100%",
+                  color: INK,
+                }}
               >
                 <colgroup>
                   <col style={{ width: 36 }} />
@@ -1059,7 +1070,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                 <tbody>
                   {loading &&
                     Array.from({ length: 7 }).map((_, i) => (
-                      <tr key={i} style={{ background: i % 2 ? "#f5f8fc" : "#fff" }}>
+                      <tr key={i} style={{ background: "#fff" }}>
                         <td style={{ height: 46 }} />
                         {visibleCols.map((c) => (
                           <td key={c.key} className="px-[10px]">
@@ -1075,7 +1086,9 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                   {!loading &&
                     pageRows.map((r, i) => {
                       const hasIssue = !!r.issues && r.issues.length > 0;
-                      const bg = i % 2 ? "#f5f8fc" : "#ffffff";
+                      /* Bỏ sọc ngựa vằn: app đang chồng 3 hệ đường kẻ cùng lúc (viền thẻ +
+                         viền cột + sọc). 0/8 sản phẩm đo được dùng sọc. */
+                      const bg = "#ffffff";
                       const isOpen = expanded === r.id;
                       return (
                         <React.Fragment key={r.id}>
@@ -1555,11 +1568,13 @@ function renderCell(
               +{rest}
             </span>
           )}
-          {rest > 0 && (
-            <span className="shrink-0 truncate text-[11.5px]" style={{ color: INK2, maxWidth: 92 }}>
-              · {sorted[1]?.title}
-            </span>
-          )}
+          {/* BỎ hiển thị việc thứ hai ngay trong ô. Ô đang nhét 4 thứ vào một
+              dòng (nhãn chính + badge +n + việc thứ hai + mũi tên) mà ba cái sau
+              đều `shrink-0`, nên chỉ nhãn chính bị bóp — ra "1 buổi đã c…" cụt
+              giữa chữ ở MỌI dòng. "đã c…" có thể là "đã chốt" hay "đã quá hạn",
+              hai nghĩa ngược nhau, nên cột quyết định QC có vào lớp hay không
+              trở thành vô dụng. Badge `+n` đã nói đủ là còn mấy việc; bấm vào
+              mở ra xem hết. */}
           <span
             className="shrink-0"
             style={{ transform: ctl.isOpen ? "rotate(180deg)" : undefined, display: "inline-flex" }}
