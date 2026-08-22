@@ -4,7 +4,8 @@ import { CLASSES } from "@/data/classes";
 import { REPORTS, MONTHLY } from "@/data/reports";
 import { SESSIONS } from "@/data/sessions";
 import { STUDENTS } from "@/data/students";
-import { BAI_NOP } from "@/data/submissions";
+import { BAI_NOP, baiTroBanCu } from "@/data/submissions";
+import { EXAMS } from "@/data/exams";
 import { ME } from "@/data/me";
 import {
   INK, INK2, INK3, LINE, NAVY, OK, WARN, DANGER, TODAY, soNgayToi,
@@ -96,6 +97,13 @@ export function Today() {
     return [...gom.values()].filter((x) => x.xong < x.tong).sort((a, b) => a.xong / a.tong - b.xong / b.tong);
   }, [idCuaToi]);
 
+  /* Bài đã giao mà đề nay có bản mới — QC publish xong tưởng xong việc,
+     HS mở ra vẫn bản cũ. PROD có thẻ đếm này, app mình trước không có. */
+  const troBanCu = useMemo(
+    () => baiTroBanCu(EXAMS).filter((x) => idCuaToi.has(x.classId)),
+    [idCuaToi],
+  );
+
   const ngay = `${THU[TODAY.getDay()]} · ${String(TODAY.getDate()).padStart(2, "0")}/${String(TODAY.getMonth() + 1).padStart(2, "0")}/${TODAY.getFullYear()}`;
 
   return (
@@ -110,6 +118,35 @@ export function Today() {
       <p className="-mt-[10px] text-[12.5px]" style={{ color: INK3 }}>
         {ME.name} · {ME.role} · {ME.campus} — {lopCuaToi.length} lớp bạn phụ trách
       </p>
+
+      {troBanCu.length > 0 && (
+        <div
+          className="flex flex-wrap items-center gap-[10px] rounded-[8px] px-[14px] py-[11px] text-[12.5px]"
+          style={{ background: "#fdecea", border: "1px solid #f2cfcb", color: DANGER }}
+        >
+          <strong>
+            {troBanCu.length} bài đã giao đang trỏ BẢN CŨ của đề
+          </strong>
+          <span style={{ color: INK2 }}>
+            — đề đã có bản mới, {troBanCu.reduce((a, b) => a + b.soHS, 0)} em vẫn mở ra bản cũ.
+            Cần giao lại hoặc cập nhật bản.
+          </span>
+          <span className="flex-1" />
+          <button
+            type="button"
+            onClick={() =>
+              navigate({
+                to: "/class/$classId/$tab",
+                params: { classId: String(troBanCu[0]!.classId), tab: "bai-tap" },
+              })
+            }
+            className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+            style={{ border: `1px solid #e3bdb8`, background: "#fff", color: DANGER }}
+          >
+            Xem bài đầu tiên
+          </button>
+        </div>
+      )}
 
       <div className="grid gap-[14px] lg:grid-cols-2">
         {/* ① phiếu buổi */}
