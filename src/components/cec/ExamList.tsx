@@ -33,7 +33,10 @@ const SORT_CUA: Record<string, SortCot | undefined> = {
 };
 /** Chiều rộng từng cột — khớp thứ tự mảng tiêu đề bên dưới.
  *  Tên đề chiếm phần lớn như PROD; các cột còn lại vừa đủ nội dung. */
-const COL_W = [420, 96, 150, 100, 96, 62, 92, 140, 150, 104, 48];
+/* Cơ sở 150px cắt 100% giá trị (mọi dòng ra "CEC …" — cột vô dụng) trong khi
+   Cấp độ 96px chỉ chứa "A1". Dời chỗ thừa sang chỗ thiếu: Cơ sở 150→210,
+   Cấp độ 96→62, Kỹ năng 100→92. Tổng bảng giữ nguyên nên không đẩy cuộn ngang. */
+const COL_W = [420, 96, 210, 92, 62, 62, 92, 140, 150, 104, 48];
 
 /** dd/mm/yyyy -> số so sánh được; sai định dạng thì trả 0 chứ không NaN làm hỏng sort */
 const ngaySo = (d: string) => {

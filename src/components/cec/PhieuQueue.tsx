@@ -5,6 +5,8 @@ import { REPORTS } from "@/data/reports";
 import { SESSIONS } from "@/data/sessions";
 import { INK, INK2, INK3, LINE, NAVY, OK, WARN, DANGER, soNgayToi } from "@/data/const";
 import { reportStatusOf, setReportStatus, useOverrides } from "@/data/overrides";
+import { STUDENTS } from "@/data/students";
+import { useAction } from "./ActionDialog";
 import { Person } from "./Person";
 import { IconCheck } from "./icons";
 
@@ -19,6 +21,7 @@ import { IconCheck } from "./icons";
 export function PhieuQueue() {
   useOverrides();
   const navigate = useNavigate();
+  const { ask } = useAction();
   const [locLop, setLocLop] = useState("");
   /* Đếm số lần duyệt — buộc tính lại danh sách sau mỗi thao tác */
   const [dauX, setDauX] = useState(0);
@@ -151,18 +154,70 @@ export function PhieuQueue() {
               Phiếu do giáo viên và trợ giảng điền — QC duyệt hoặc trả lại, không viết hộ.
             </span>
             <span className="flex-1" />
-            <button
-              type="button"
-              onClick={() => {
-                buoi.phieu.forEach((p) => setReportStatus(p.id, "approved"));
-                setDauX((n) => n + 1);
-              }}
-              className="flex items-center gap-[7px] rounded-[8px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
-              style={{ background: NAVY }}
-            >
-              <IconCheck size={13} />
-              Duyệt cả buổi ({buoi.phieu.filter((p) => p.status !== "approved").length})
-            </button>
+            {/* CHỈ duyệt phiếu `pending`. Trước đây nhãn đếm `!== approved`
+                nhưng onClick duyệt TẤT CẢ không lọc gì — nghĩa là duyệt luôn cả
+                phiếu giáo viên CHƯA GỬI (`draft`). Duyệt phiếu chưa ai điền xong
+                là hỏng dữ liệu thật, mà thao tác này không hoàn tác được. */}
+            {(() => {
+              const choDuyet = buoi.phieu.filter((p) => p.status === "pending");
+              const chuaGui = buoi.phieu.filter((p) => p.status === "draft");
+              return (
+                <button
+                  type="button"
+                  disabled={choDuyet.length === 0}
+                  onClick={() =>
+                    ask({
+                      title: `Duyệt ${choDuyet.length} phiếu của buổi này?`,
+                      body: (
+                        <>
+                          <p style={{ marginBottom: 8 }}>
+                            Duyệt nhận xét của {choDuyet.length} em — sau khi duyệt phụ huynh
+                            xem được, không hoàn tác:
+                          </p>
+                          <ul style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                            {choDuyet.map((ph) => {
+                              const hs = (STUDENTS[buoi.classId] ?? []).find(
+                                (x) => x.id === ph.studentId,
+                              );
+                              return (
+                                <li key={ph.id} style={{ fontSize: 12.5 }}>
+                                  {hs?.name ?? ph.studentId}
+                                  {hs?.code ? (
+                                    <span
+                                      className="tabular-nums"
+                                      style={{ marginLeft: 8, fontSize: 11.5, color: INK3 }}
+                                    >
+                                      {hs.code}
+                                    </span>
+                                  ) : null}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                          {chuaGui.length > 0 && (
+                            <p style={{ marginTop: 10, fontSize: 12, color: WARN }}>
+                              {chuaGui.length} phiếu giáo viên chưa gửi — KHÔNG duyệt, chờ giáo
+                              viên điền xong.
+                            </p>
+                          )}
+                        </>
+                      ),
+                      confirmLabel: `Duyệt ${choDuyet.length} phiếu`,
+                      doneText: `Đã duyệt ${choDuyet.length} phiếu của buổi này.`,
+                      run: () => {
+                        choDuyet.forEach((ph) => setReportStatus(ph.id, "approved"));
+                        setDauX((n) => n + 1);
+                      },
+                    })
+                  }
+                  className="flex items-center gap-[7px] rounded-[8px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white disabled:opacity-45"
+                  style={{ background: NAVY }}
+                >
+                  <IconCheck size={13} />
+                  Duyệt {choDuyet.length} phiếu chờ tôi
+                </button>
+              );
+            })()}
           </div>
         </section>
       )}
@@ -173,6 +228,13 @@ export function PhieuQueue() {
 function PhieuDong({
   id, classId, studentId, status, onDoi,
 }: { id: string; classId: number; studentId: string; status: string; onDoi: () => void }) {
+  /* Phải hiện tên HỌC SINH, không phải `em.by`.
+     `by` là NGƯỜI ĐIỀN phiếu — một giáo viên điền cả buổi nên 9 phiếu ra 9 dòng
+     trùng y hệt một tên. QC bấm Duyệt là duyệt mù, không biết đang duyệt nhận
+     xét của em nào. Lỗi này nặng hơn mọi lỗi thẩm mỹ vì nó làm hỏng chính
+     việc QC phải làm. */
+  const hs = (STUDENTS[classId] ?? []).find((x) => x.id === studentId);
+  const tenHS = hs?.name ?? studentId;
   const em = useMemo(() => {
     const rp = (REPORTS[classId] ?? []).find((r) => r.id === id);
     return rp;
@@ -189,7 +251,7 @@ function PhieuDong({
     <div className="flex flex-wrap items-center gap-[10px] rounded-[8px] px-[11px] py-[8px]"
       style={{ border: `1px solid ${LINE}`, background: status === "approved" ? "#fbfdfc" : "#fff" }}>
       <span className="min-w-[190px] text-[12.5px]" style={{ color: INK }}>
-        <Person name={em?.by ?? studentId} size={20} />
+        <Person name={tenHS} size={20} />
       </span>
       <span className="min-w-0 flex-1 truncate text-[12px]" style={{ color: INK2 }}>
         {em?.comment ?? "—"}
