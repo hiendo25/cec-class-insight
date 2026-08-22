@@ -213,8 +213,15 @@ function TabStudents({
         </span>
       </div>
 
-      <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
-        <table className="w-full border-collapse text-[13px]">
+      <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+        {/* Định chiều rộng từng cột — không có thì trình duyệt chia đều, cột Ghi chú
+            và Phản hồi PH bị bóp cụt ngang dù đã line-clamp. */}
+        <table className="border-collapse text-[13px]" style={{ minWidth: 1240, width: "100%" }}>
+          <colgroup>
+            {[218, 104, 88, 112, 124, 128, 74, 74, 190, 190, 104].map((w, i) => (
+              <col key={i} style={{ width: w }} />
+            ))}
+          </colgroup>
           <thead>
             <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               {[
@@ -323,13 +330,13 @@ function TabStudents({
                     {s.absent ? `${s.absent} buổi` : "—"}
                   </td>
                   <td className="max-w-[210px] px-[12px]" style={{ color: s.note ? INK : INK3 }}>
-                    <span className="line-clamp-2">{s.note || "—"}</span>
+                    <span className="line-clamp-2" title={s.note || undefined}>{s.note || "—"}</span>
                   </td>
                   <td
                     className="max-w-[210px] px-[12px]"
                     style={{ color: s.parentFeedback ? INK : INK3 }}
                   >
-                    <span className="line-clamp-2">{s.parentFeedback || "—"}</span>
+                    <span className="line-clamp-2" title={s.parentFeedback || undefined}>{s.parentFeedback || "—"}</span>
                   </td>
                   <td
                     className="sticky right-0 whitespace-nowrap px-[12px] py-[8px]"
