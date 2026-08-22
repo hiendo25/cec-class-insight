@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AssignmentIndexRouteImport } from './routes/assignment/index'
 import { Route as AssignmentClassRouteImport } from './routes/assignment/class'
 import { Route as AssignmentStudentRouteImport } from './routes/assignment/student'
 import { Route as ClassIndexRouteImport } from './routes/class/index'
+import { Route as DailyIndexRouteImport } from './routes/daily/index'
 import { Route as ExamIndexRouteImport } from './routes/exam/index'
 import { Route as ExamExamIdRouteImport } from './routes/exam/$examId'
 import { Route as QueueBaiRouteImport } from './routes/queue/bai'
@@ -23,6 +25,11 @@ import { Route as ClassClassIdTabRouteImport } from './routes/class/$classId.$ta
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssignmentIndexRoute = AssignmentIndexRouteImport.update({
+  id: '/assignment/',
+  path: '/assignment/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssignmentClassRoute = AssignmentClassRouteImport.update({
@@ -38,6 +45,11 @@ const AssignmentStudentRoute = AssignmentStudentRouteImport.update({
 const ClassIndexRoute = ClassIndexRouteImport.update({
   id: '/class/',
   path: '/class/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DailyIndexRoute = DailyIndexRouteImport.update({
+  id: '/daily/',
+  path: '/daily/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExamIndexRoute = ExamIndexRouteImport.update({
@@ -78,7 +90,9 @@ export interface FileRoutesByFullPath {
   '/exam/$examId': typeof ExamExamIdRoute
   '/queue/bai': typeof QueueBaiRoute
   '/queue/phieu': typeof QueuePhieuRoute
+  '/assignment/': typeof AssignmentIndexRoute
   '/class/': typeof ClassIndexRoute
+  '/daily/': typeof DailyIndexRoute
   '/exam/': typeof ExamIndexRoute
   '/report/': typeof ReportIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
@@ -90,7 +104,9 @@ export interface FileRoutesByTo {
   '/exam/$examId': typeof ExamExamIdRoute
   '/queue/bai': typeof QueueBaiRoute
   '/queue/phieu': typeof QueuePhieuRoute
+  '/assignment': typeof AssignmentIndexRoute
   '/class': typeof ClassIndexRoute
+  '/daily': typeof DailyIndexRoute
   '/exam': typeof ExamIndexRoute
   '/report': typeof ReportIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
@@ -103,7 +119,9 @@ export interface FileRoutesById {
   '/exam/$examId': typeof ExamExamIdRoute
   '/queue/bai': typeof QueueBaiRoute
   '/queue/phieu': typeof QueuePhieuRoute
+  '/assignment/': typeof AssignmentIndexRoute
   '/class/': typeof ClassIndexRoute
+  '/daily/': typeof DailyIndexRoute
   '/exam/': typeof ExamIndexRoute
   '/report/': typeof ReportIndexRoute
   '/class/$classId/$tab': typeof ClassClassIdTabRoute
@@ -117,7 +135,9 @@ export interface FileRouteTypes {
     | '/exam/$examId'
     | '/queue/bai'
     | '/queue/phieu'
+    | '/assignment/'
     | '/class/'
+    | '/daily/'
     | '/exam/'
     | '/report/'
     | '/class/$classId/$tab'
@@ -129,7 +149,9 @@ export interface FileRouteTypes {
     | '/exam/$examId'
     | '/queue/bai'
     | '/queue/phieu'
+    | '/assignment'
     | '/class'
+    | '/daily'
     | '/exam'
     | '/report'
     | '/class/$classId/$tab'
@@ -141,7 +163,9 @@ export interface FileRouteTypes {
     | '/exam/$examId'
     | '/queue/bai'
     | '/queue/phieu'
+    | '/assignment/'
     | '/class/'
+    | '/daily/'
     | '/exam/'
     | '/report/'
     | '/class/$classId/$tab'
@@ -154,7 +178,9 @@ export interface RootRouteChildren {
   ExamExamIdRoute: typeof ExamExamIdRoute
   QueueBaiRoute: typeof QueueBaiRoute
   QueuePhieuRoute: typeof QueuePhieuRoute
+  AssignmentIndexRoute: typeof AssignmentIndexRoute
   ClassIndexRoute: typeof ClassIndexRoute
+  DailyIndexRoute: typeof DailyIndexRoute
   ExamIndexRoute: typeof ExamIndexRoute
   ReportIndexRoute: typeof ReportIndexRoute
   ClassClassIdTabRoute: typeof ClassClassIdTabRoute
@@ -167,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assignment/': {
+      id: '/assignment/'
+      path: '/assignment'
+      fullPath: '/assignment/'
+      preLoaderRoute: typeof AssignmentIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assignment/class': {
@@ -188,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/class'
       fullPath: '/class/'
       preLoaderRoute: typeof ClassIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/daily/': {
+      id: '/daily/'
+      path: '/daily'
+      fullPath: '/daily/'
+      preLoaderRoute: typeof DailyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exam/': {
@@ -242,7 +282,9 @@ const rootRouteChildren: RootRouteChildren = {
   ExamExamIdRoute: ExamExamIdRoute,
   QueueBaiRoute: QueueBaiRoute,
   QueuePhieuRoute: QueuePhieuRoute,
+  AssignmentIndexRoute: AssignmentIndexRoute,
   ClassIndexRoute: ClassIndexRoute,
+  DailyIndexRoute: DailyIndexRoute,
   ExamIndexRoute: ExamIndexRoute,
   ReportIndexRoute: ReportIndexRoute,
   ClassClassIdTabRoute: ClassClassIdTabRoute,

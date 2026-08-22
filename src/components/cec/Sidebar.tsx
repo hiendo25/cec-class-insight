@@ -43,7 +43,7 @@ const GROUPS: { title: string; items: Item[] }[] = [
     title: "Vận hành",
     items: [
       { label: "Lớp học", Icon: IconBook, to: "/class" },
-      { label: "Lớp học trong ngày", Icon: IconUsers },
+      { label: "Lớp học trong ngày", Icon: IconUsers, to: "/daily" },
     ],
   },
   {
@@ -54,7 +54,7 @@ const GROUPS: { title: string; items: Item[] }[] = [
     title: "Bài tập",
     items: [
       { label: "Tiến độ theo lớp", Icon: IconTask, to: "/assignment/class" },
-      { label: "Bài đã giao", Icon: IconTask },
+      { label: "Bài đã giao", Icon: IconTask, to: "/assignment" },
     ],
   },
   {
