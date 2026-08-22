@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AssignDialog } from "./AssignDialog";
 import { TH_BG, TH_FG, TH_LINE, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { Person } from "./Person";
+import { MaHS } from "./MaHS";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import { ME } from "@/data/me";
 import { STUDENTS } from "@/data/students";
@@ -374,9 +375,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
               {noBai.map((st) => (
                 <li key={st.id} style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
                   <span style={{ fontWeight: 500 }}>{st.name}</span>
-                  <span style={{ fontSize: 11.5, color: INK3 }} className="tabular-nums">
-                    {st.code}
-                  </span>
+                  <MaHS ma={st.code} studentId={st.id} classId={r.id} />
                   <span style={{ fontSize: 12, color: WARN }}>
                     còn {st.assigned - st.submitted} bài
                   </span>

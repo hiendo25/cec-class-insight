@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { MaHS } from "./MaHS";
 import { useNavigate } from "@tanstack/react-router";
 import type { ClassRow } from "@/data/classes";
 import { MONTHLY, REPORTS, type MonthlyReport } from "@/data/reports";
@@ -289,7 +290,7 @@ function The({
         />
         <span className="h-[9px] w-[9px] shrink-0 rounded-full" style={{ background: mau }} />
         <Person name={t.name} size={24} />
-        <span className="tabular-nums text-[11.5px]" style={{ color: INK3 }}>{t.code}</span>
+        <MaHS ma={t.code} studentId={t.sid} classId={t.bc.classId} />
         {t.state !== "Đang học" && (
           <span className="rounded-[4px] px-[7px] py-[1px] text-[11px]"
             style={{ background: "#f0f2f6", color: INK2 }}>{t.state}</span>

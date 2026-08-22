@@ -278,6 +278,8 @@ function TabStudents({
                     >
                       <Person name={s.name} size={24} />
                     </button>
+                    {/* Ở bảng này TÊN đã bấm mở hồ sơ rồi — mã HS để chữ thường,
+                        không cần hai đường vào cùng một nơi trên một dòng. */}
                     <span className="ml-[31px] block text-[11.5px] tabular-nums" style={{ color: INK3 }}>
                       {s.code}
                     </span>

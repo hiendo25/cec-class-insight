@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { MaHS } from "./MaHS";
 import { NAVY, LINE, INK, INK2, INK3, OK, WARN } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { choDuyetCuaLop, mayChamCuaLop, type BaiNop } from "@/data/submissions";
@@ -130,7 +131,7 @@ export function GradingQueue({ row }: { row: ClassRow }) {
                   <tr key={b.id} style={{ background: i % 2 ? "#f9fbfd" : "#fff", borderTop: "1px solid #eef0f5" }}>
                     <td className="px-[12px] py-[7px]">
                       {b.studentName}{" "}
-                      <span className="tabular-nums text-[11px]" style={{ color: INK3 }}>{b.studentCode}</span>
+                      <MaHS ma={b.studentCode} studentId={b.studentId} classId={b.classId} size={11} />
                     </td>
                     <td className="px-[12px]" style={{ color: INK2 }}>{b.baiTen}</td>
                     <td className="px-[12px]" style={{ color: INK3 }}>{b.dangTen}</td>
@@ -204,7 +205,7 @@ export function BaiDuyet({
         <span className="text-[13px] font-semibold" style={{ color: INK }}>
           {bai.studentName}
         </span>
-        <span className="tabular-nums text-[11.5px]" style={{ color: INK3 }}>{bai.studentCode}</span>
+        <MaHS ma={bai.studentCode} studentId={bai.studentId} classId={bai.classId} />
         <span className="rounded-[4px] px-[7px] py-[2px] text-[11.5px]" style={{ background: "#eef1f7", color: NAVY }}>
           {bai.dangTen}
         </span>

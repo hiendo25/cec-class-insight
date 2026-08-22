@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { MaHS } from "./MaHS";
 import { useNavigate } from "@tanstack/react-router";
 import { CLASSES } from "@/data/classes";
 import { REPORTS, MONTHLY } from "@/data/reports";
@@ -255,6 +256,8 @@ export function Today() {
               key={b.id}
               ten={b.studentName}
               ma={b.studentCode}
+              maSid={b.studentId}
+              maCid={b.classId}
               phu={`${b.dangTen} · AI ${b.diemAI?.toFixed(1)}`}
               phu2={`${b.baiTen} · ${tenLop.get(b.classId)}`}
               nut="Xem"
@@ -279,6 +282,8 @@ export function Today() {
               key={e.id}
               ten={e.name}
               ma={e.code}
+              maSid={e.id}
+              maCid={e.classId}
               phu={`${e.submitted}/${e.assigned} bài · còn ${e.assigned - e.submitted} bài`}
               phu2={tenLop.get(e.classId) ?? ""}
               nut={daNhac(`hs-${e.id}`) ? "Đã nhắc" : "Nhắc"}
@@ -395,10 +400,13 @@ function Khoi({
 }
 
 function Dong({
-  ten, ma, phu, phu2, nut, onNut, canhBao, tatNut,
+  ten, ma, maSid, maCid, phu, phu2, nut, onNut, canhBao, tatNut,
 }: {
   ten: string;
   ma?: string;
+  /** để mã HS bấm được mở hồ sơ em */
+  maSid?: string;
+  maCid?: number;
   phu: string;
   phu2?: string;
   nut: string;
@@ -414,7 +422,7 @@ function Dong({
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-x-[7px] text-[12.5px] font-medium" style={{ color: INK }}>
           <Person name={ten} size={22} />
-          {ma && <span className="tabular-nums text-[11px]" style={{ color: INK3 }}>{ma}</span>}
+          {ma && <MaHS ma={ma} studentId={maSid} classId={maCid} size={11} />}
         </span>
         <span className="ml-[29px] block text-[12px]" style={{ color: INK2 }}>{phu}</span>
         {phu2 && (
