@@ -75,7 +75,9 @@ const TYPE_STYLE: Record<
   "Lớp thường": { bg: "#eef2fb", fg: "#2b3f7a", bd: "#d8e0f2", Icon: IconUsers },
   "Lớp bù": { bg: "#fdf3e7", fg: "#8a5a10", bd: "#f2e0c4", Icon: IconRefreshSmall },
   "Lớp 1-1": { bg: "#f6eefc", fg: "#6b2fa0", bd: "#e8d8f5", Icon: IconUserOne },
-  "Lớp online": { bg: "#e8f5f2", fg: "#136d5e", bd: "#cbe8e1", Icon: IconMonitor },
+  /* Bỏ "Lớp online": CEC KHÔNG có lớp online — "trực tuyến" là HÌNH THỨC LÀM BÀI,
+     khác hẳn "lớp online". Để lại thì bộ lọc có một lựa chọn không bao giờ ra kết quả.
+     (PROD mắc lỗi này ở /courses: mặc định lọc "Lớp online" nên giấu mất khoá học.) */
   default: { bg: "#f0f2f6", fg: "#4b5361", bd: "#e2e5ec", Icon: IconUsers },
 };
 

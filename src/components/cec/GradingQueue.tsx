@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { NAVY, LINE, INK, INK2, INK3, OK, WARN } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { choDuyetCuaLop, mayChamCuaLop, type BaiNop } from "@/data/submissions";
+import { EXAMS } from "@/data/exams";
 import { daCongBo, daDuyetBai, diemDaDuyet, useOverrides } from "@/data/overrides";
 import { IconCheck, IconChevronDown } from "./icons";
 
@@ -171,6 +172,11 @@ export function BaiDuyet({
   onTruoc: () => void;
   onSau: () => void;
 }) {
+  /* Rubric lấy từ đề gốc của bài — không có thì không hiện, tránh bịa tiêu chí */
+  const rubric = useMemo(
+    () => EXAMS.find((e) => e.id === bai.examIdGoc)?.rubric ?? null,
+    [bai.examIdGoc],
+  );
   const [suaDiem, setSuaDiem] = useState(false);
   const [diem, setDiem] = useState<string>(String(bai.diemAI ?? ""));
   const [nx, setNx] = useState(bai.nhanXetAI ?? "");
@@ -265,6 +271,18 @@ export function BaiDuyet({
           <p className="mb-[8px] text-[12px] font-semibold uppercase tracking-[0.04em]" style={{ color: INK3 }}>
             AI đề xuất — chưa chính thức
           </p>
+
+          {/* Khung chấm của đề — QC chấm tự luận cần thấy tiêu chí, không chấm
+              theo cảm tính. PROD để rubrics rỗng hoàn toàn nên mọi điểm đều
+              từ máy; app mình có luồng QC duyệt nên phải có khung chấm thật. */}
+          {rubric && (
+            <p
+              className="mb-[9px] rounded-[6px] px-[10px] py-[6px] text-[11.5px]"
+              style={{ background: "#f4f6fa", color: INK2 }}
+            >
+              <b style={{ color: NAVY }}>Khung chấm:</b> {rubric}
+            </p>
+          )}
 
           <div className="flex items-center gap-[10px]">
             <span className="text-[12.5px]" style={{ color: INK2 }}>Điểm:</span>
