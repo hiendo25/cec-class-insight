@@ -407,7 +407,7 @@ function Box({
         <span className="text-[13px] font-semibold" style={{ color: INK }}>{title}</span>
         {ai && (
           <span
-            className="rounded-full px-2 py-0.5 text-[10.5px] font-medium"
+            className="rounded-full px-2 py-0.5 text-[11px] font-medium"
             style={{ background: "#eef1f8", color: NAVY }}
           >
             AI soạn — sửa được

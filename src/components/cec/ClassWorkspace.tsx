@@ -904,7 +904,7 @@ function PersonChip({ name }: { name: string }) {
       style={{ border: `1px solid ${LINE}` }}
     >
       <span
-        className="grid h-[19px] w-[19px] place-items-center rounded-full text-[9.5px] font-semibold text-white"
+        className="grid h-[19px] w-[19px] place-items-center rounded-full text-[11px] font-semibold text-white"
         style={{ background: bg }}
       >
         {ini}

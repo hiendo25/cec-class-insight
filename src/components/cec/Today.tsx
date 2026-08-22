@@ -232,7 +232,8 @@ export function Today() {
         {/* ② bài AI chấm */}
         <Khoi
           tieuDe="Bài AI chấm chờ xác nhận"
-          mauKhoi={OK}
+          laAI
+          mauKhoi="#5b4bb8"
           boiCanh={
             baiCho.length
               ? "Bài tự luận và bài nói — điểm chưa chính thức tới khi bạn xác nhận"
@@ -338,9 +339,11 @@ export function Today() {
 
 /** Một khối việc. Rỗng vẫn hiện — ẩn đi thì QC tưởng app hỏng. */
 function Khoi({
-  tieuDe, dem, rong, coNguon, chan, xemHet, onXemHet, mauKhoi, boiCanh, children,
+  tieuDe, dem, rong, coNguon, chan, xemHet, onXemHet, mauKhoi, boiCanh, laAI, children,
 }: {
   tieuDe: string;
+  /** khối này là việc MÁY ĐOÁN cần người kiểm, không phải việc người gửi */
+  laAI?: boolean;
   /** màu riêng từng loại việc — mã hoá loại, không phải trang trí */
   mauKhoi: string;
   /** một dòng nói rõ con số nghĩa là gì */
@@ -357,7 +360,16 @@ function Khoi({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col rounded-[12px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+    /* Khối AI phải nhìn ra KHÁC: "Phiếu buổi chờ tôi duyệt" là việc NGƯỜI gửi,
+       còn "Bài AI chấm chờ xác nhận" là MÁY ĐOÁN cần người kiểm — hai loại
+       trách nhiệm khác nhau mà trước đây trông y hệt nhau. */
+    <section
+      className="flex flex-col rounded-[12px]"
+      style={{
+        background: laAI ? "var(--ai-nen)" : "#fff",
+        border: `1px solid ${laAI ? "var(--ai-vien)" : LINE}`,
+      }}
+    >
       {/* Số KHÔNG còn là thứ to nhất — 15 app quốc tế đều mở bằng danh sách việc,
           không mở bằng ô số. Số chỉ là nhãn phụ cạnh tiêu đề. */}
       <div className="flex items-baseline gap-[9px] px-[16px] pb-[3px] pt-[13px]">
@@ -366,6 +378,11 @@ function Khoi({
           style={{ background: dem > 0 ? mauKhoi : "#cfd5e0" }}
         />
         <span className="text-[14px] font-semibold" style={{ color: INK }}>
+          {laAI && (
+            <span aria-hidden="true" style={{ color: "var(--ai-chu)", marginRight: 5 }}>
+              ✦
+            </span>
+          )}
           {tieuDe}
         </span>
         <span

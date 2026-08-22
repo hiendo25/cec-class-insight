@@ -260,7 +260,7 @@ function ColumnFilter({
       >
         <span className="truncate">{label}</span>
         <span
-          className="shrink-0 text-[9px] leading-none"
+          className="shrink-0 text-[11px] leading-none"
           style={{ color: open || active ? NAVY : INK3 }}
         >
           {open ? "▼" : "▲"}
@@ -655,7 +655,7 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                       <span className="w-[13px] shrink-0">{on ? "✓" : ""}</span>
                       <span className="truncate">{v.name}</span>
                       {isDefault && (
-                        <span className="shrink-0 text-[10.5px]" style={{ color: INK3 }}>
+                        <span className="shrink-0 text-[11px]" style={{ color: INK3 }}>
                           mặc định
                         </span>
                       )}
@@ -1559,7 +1559,7 @@ function renderCell(
           <span className="truncate">{short}</span>
           {rest > 0 && (
             <span
-              className="shrink-0 rounded-[8px] px-[5px] text-[10.5px] font-semibold"
+              className="shrink-0 rounded-[8px] px-[5px] text-[11px] font-semibold"
               style={{
                 background: urgent ? "#fdecea" : "#fdf3e7",
                 color: urgent ? DANGER : WARN,

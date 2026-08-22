@@ -27,7 +27,7 @@ export function Shell({
 }) {
   return (
     <ActionProvider>
-    <div className="flex min-h-screen" style={{ background: "#fafafa", color: "#1f2937" }}>
+    <div className="flex min-h-screen" style={{ background: "#faf9f5", color: "#1f2937" }}>
       <Sidebar />
 
       <main className="flex min-w-0 flex-1 flex-col px-5 pb-6 pt-4">

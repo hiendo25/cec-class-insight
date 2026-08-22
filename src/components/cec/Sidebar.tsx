@@ -82,7 +82,7 @@ export function Sidebar() {
         {GROUPS.map((g) => (
           <div key={g.title} className="flex flex-col gap-[2px]">
             <span
-              className="px-[10px] pb-[6px] text-[10.5px] font-semibold uppercase"
+              className="px-[10px] pb-[6px] text-[11px] font-semibold uppercase"
               style={{ color: "rgba(255,255,255,0.42)", letterSpacing: "0.06em" }}
             >
               {g.title}
@@ -104,7 +104,12 @@ export function Sidebar() {
                   <span key={label} className={cls} style={{ ...style, cursor: "default" }} title="Sắp có">
                     <Icon size={17} />
                     <span className="truncate">{label}</span>
-                    <span className="ml-auto text-[10px]" style={{ color: "rgba(255,255,255,0.34)" }}>
+                    {/* Không có `shrink-0 whitespace-nowrap` thì nhãn này vỡ 2
+                        dòng và bóp cụt nhãn chính ("Lớp học trong ng…"). */}
+                    <span
+                      className="ml-auto shrink-0 whitespace-nowrap text-[11px]"
+                      style={{ color: "rgba(255,255,255,0.34)" }}
+                    >
                       sắp có
                     </span>
                   </span>

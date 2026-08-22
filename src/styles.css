@@ -118,10 +118,22 @@
      + một ring 1px alpha, chứ không bằng viền hex xám. Vercel không có border
      thật nào (dùng `0 0 0 1px`); shadcn card `border-width: 0`.
      Chú ý bậc nền NGƯỢC trực giác: trang TỐI hơn panel. */
-  --nen-trang: #fafafa;   /* nền trang — tối hơn panel một bậc 2% */
+  /* Nền KEM rất nhạt, không phải xám trung tính. 3/7 app EDU đo được dùng nền
+     kem ấm (#fffef0, #f3efda, #f4eee2); `#fafafa` xám không có nhiệt độ nào —
+     đó chính là thứ tạo cảm giác khô khan. Giữ rất nhạt để không thành app
+     học sinh: đây vẫn là công cụ QC dùng 8 tiếng/ngày. */
+  --nen-trang: #faf9f5;   /* nền trang — tối hơn panel một bậc, ngả kem */
   --nen-panel: #ffffff;   /* thẻ, bảng nổi lên trên */
   --nen-chim: #f4f5f7;    /* vùng lõm: chân thẻ, thanh công cụ */
   --ring: 0 0 0 1px rgba(16, 24, 40, 0.08);
+
+  /* ---- KHU VỰC AI tách sắc ----
+     Thẻ "Bài AI chấm chờ xác nhận" đang trông y hệt thẻ "Phiếu buổi chờ tôi
+     duyệt", trong khi một cái là việc NGƯỜI gửi, cái kia là MÁY ĐOÁN cần người
+     kiểm. Hai loại trách nhiệm khác nhau phải nhìn ra khác nhau. */
+  --ai-nen: #f4f1ff;
+  --ai-vien: #ddd5f7;
+  --ai-chu: #5b4bb8;
 
   /* Bóng tách 2 CỰC, khoảng giữa biến mất. Mọi bóng bắt đầu bằng ring 1px. */
   --bong-nang: 0 0 0 1px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
