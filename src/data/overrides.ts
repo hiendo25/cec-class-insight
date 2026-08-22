@@ -28,6 +28,9 @@ type Store = {
   /** Ticket phản hồi phụ huynh — app cũ có `Resolved / Resolved by / Resolved time`,
    *  app mình trước chỉ có cột chữ tự do nên không biết còn tồn bao nhiêu ca. */
   phanHoi: Record<string, { noiDung: string; xong: boolean; nguoi: string; luc: string }>;
+  /** Điểm kiểm tra đã công bố cho HS thấy — app cũ công bố theo TỪNG Ô
+   *  (icon exam-result-public mỗi ô HS × bài thi), không phải cả bảng một lượt. */
+  diemCongBo: Record<string, true>;
 };
 
 export type BaiDaGiao = {
@@ -45,7 +48,7 @@ const KEY = "cec-qc-overrides";
 /** Đọc lại việc QC đã làm ở lần trước — F5 mà mất sạch thì QC tưởng chưa duyệt,
  *  duyệt lại từ đầu. */
 const doc = (): Store => {
-  if (typeof window === "undefined") return { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {} };
+  if (typeof window === "undefined") return { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {}, diemCongBo: {} };
   try {
     const raw = window.localStorage.getItem(KEY);
     const j = raw ? JSON.parse(raw) : null;
@@ -56,15 +59,16 @@ const doc = (): Store => {
       daGiao: j?.daGiao ?? [],
       duyet: j?.duyet ?? {},
       phanHoi: j?.phanHoi ?? {},
+      diemCongBo: j?.diemCongBo ?? {},
     };
   } catch {
-    return { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {} };
+    return { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {}, diemCongBo: {} };
   }
 };
 
 /* Bắt đầu RỖNG để bản dựng trên máy chủ và trên trình duyệt giống nhau;
    nạp localStorage sau khi trang đã gắn xong (xem useOverrides). */
-let state: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {} };
+let state: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {}, diemCongBo: {} };
 let daNap = false;
 
 /** Nạp việc đã lưu — gọi một lần sau khi trang gắn xong */
@@ -72,7 +76,7 @@ const napMotLan = () => {
   if (daNap || typeof window === "undefined") return;
   daNap = true;
   const luu = doc();
-  if (Object.keys(luu.report).length || Object.keys(luu.monthly).length || Object.keys(luu.reminded).length || luu.daGiao.length || Object.keys(luu.duyet).length || Object.keys(luu.phanHoi).length) {
+  if (Object.keys(luu.report).length || Object.keys(luu.monthly).length || Object.keys(luu.reminded).length || luu.daGiao.length || Object.keys(luu.duyet).length || Object.keys(luu.phanHoi).length || Object.keys(luu.diemCongBo).length) {
     state = luu;
     subs.forEach((f) => f());
   }
@@ -120,7 +124,7 @@ export const useOverrides = () => {
   );
 };
 
-const TRONG: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {} };
+const TRONG: Store = { report: {}, monthly: {}, reminded: {}, daGiao: [], duyet: {}, phanHoi: {}, diemCongBo: {} };
 
 /** Trạng thái thật của một phiếu, sau khi tính lớp ghi đè */
 export const reportStatusOf = (id: string, goc: ReportStatus): ReportStatus =>
@@ -187,6 +191,17 @@ export const dongPhanHoi = (sid: string, nguoi: string) => {
 export const phanHoiCua = (sid: string) => state.phanHoi[sid];
 export const soPhanHoiChuaXong = () =>
   Object.values(state.phanHoi).filter((x) => !x.xong).length;
+
+/** Công bố một ô điểm cho HS thấy. Khoá: "<studentId>:<testId>" */
+export const congBoODiem = (key: string) => {
+  state.diemCongBo[key] = true;
+  emit();
+};
+export const goCongBoODiem = (key: string) => {
+  delete state.diemCongBo[key];
+  emit();
+};
+export const oDaCongBo = (key: string) => !!state.diemCongBo[key];
 
 export const baiDaGiao = () => state.daGiao;
 export const soBaiDaGiaoCuaLop = (classId: number) =>

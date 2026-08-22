@@ -4,6 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import type { ClassRow } from "@/data/classes";
 import { STUDENTS } from "@/data/students";
 import { SCORES, TESTS } from "@/data/tests";
+import { congBoODiem, goCongBoODiem, oDaCongBo, useOverrides } from "@/data/overrides";
 import { IconCheck, IconWarn } from "./icons";
 
 
@@ -19,10 +20,13 @@ const tone = (v: number) =>
  * huynh ("con thi hôm nào, được mấy điểm"). Ở đây một bảng trả lời cả hai.
  */
 export function TestResults({ row }: { row: ClassRow }) {
+  useOverrides();
   const navigate = useNavigate();
   const tests = TESTS[row.id] ?? [];
   const students = STUDENTS[row.id] ?? [];
   const [chiDangHoc, setChiDangHoc] = useState(true);
+  /* Trạng thái công bố nằm ở lớp overrides — buộc vẽ lại sau khi bấm */
+  const [dauX, setDauX] = useState(0);
 
   const list = useMemo(
     () => (chiDangHoc ? students.filter((s) => s.state === "Đang học") : students),
@@ -91,6 +95,35 @@ export function TestResults({ row }: { row: ClassRow }) {
         <span style={{ color: INK3 }}>
           {daThi.length} bài đã thi · {sapThi.length} bài sắp thi
         </span>
+        {(() => {
+          const oCoDiem = list.flatMap((st) =>
+            daThi
+              .filter((t) => typeof SCORES[st.id]?.[t.id] === "number")
+              .map((t) => `${st.id}:${t.id}`),
+          );
+          const chuaCB = oCoDiem.filter((k) => !oDaCongBo(k));
+          if (oCoDiem.length === 0) return null;
+          return chuaCB.length > 0 ? (
+            <span className="flex items-center gap-[8px]">
+              <span style={{ color: WARN }}>
+                🔒 {chuaCB.length}/{oCoDiem.length} ô học sinh chưa thấy điểm
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  chuaCB.forEach(congBoODiem);
+                  setDauX((n) => n + 1);
+                }}
+                className="rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                style={{ border: `1px solid ${LINE}`, color: NAVY }}
+              >
+                Công bố cả bảng
+              </button>
+            </span>
+          ) : (
+            <span style={{ color: OK }}>👁 Học sinh đã thấy toàn bộ điểm</span>
+          );
+        })()}
         <span style={{ color: daBoBot > 0 ? WARN : INK3, fontWeight: daBoBot > 0 ? 600 : 400 }}>
           {daBoBot > 0
             ? `Bảng đang tính trên ${list.length}/${students.length} em — đã bỏ ${daBoBot} em bảo lưu hoặc đã nghỉ`
@@ -156,14 +189,35 @@ export function TestResults({ row }: { row: ClassRow }) {
                     if (v === undefined)
                       return <td key={t.id} className="px-[6px] text-center" style={{ background: bg, color: INK3 }}>—</td>;
                     const c = tone(v);
+                    const oKey = `${s.id}:${t.id}`;
+                    const hien = oDaCongBo(oKey);
                     return (
                       <td key={t.id} className="px-[6px] py-[5px] text-center" style={{ background: bg }}>
-                        <span
-                          className="inline-block min-w-[46px] rounded-[5px] px-[7px] py-[3px] font-semibold tabular-nums"
-                          style={{ background: c.bg, color: c.fg }}
+                        {/* Công bố theo TỪNG Ô như app cũ — có em cần báo riêng
+                            phụ huynh trước, có bài chấm xong nhưng chờ họp tổ. */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            hien ? goCongBoODiem(oKey) : congBoODiem(oKey);
+                            setDauX((n) => n + 1);
+                          }}
+                          className="inline-flex items-center gap-[4px] rounded-[5px] px-[7px] py-[3px] font-semibold tabular-nums"
+                          style={{
+                            background: c.bg,
+                            color: c.fg,
+                            minWidth: 46,
+                            opacity: hien ? 1 : 0.55,
+                            border: hien ? `1px solid ${c.fg}33` : "1px dashed #c3cad8",
+                          }}
+                          title={
+                            hien
+                              ? `Học sinh ĐANG thấy điểm này — bấm để thu lại`
+                              : `Học sinh CHƯA thấy điểm này — bấm để công bố`
+                          }
                         >
                           {v.toFixed(1)}
-                        </span>
+                          <span style={{ fontSize: 9, opacity: 0.85 }}>{hien ? "👁" : "🔒"}</span>
+                        </button>
                       </td>
                     );
                   })}

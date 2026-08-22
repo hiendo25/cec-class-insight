@@ -17,6 +17,10 @@ export function BaiQueue() {
   useOverrides();
   const navigate = useNavigate();
   const [locLop, setLocLop] = useState("");
+  /* Lọc theo DẠNG BÀI — `_RECORDING_VA_STUDENT_REPORT.md` chốt: không làm màn
+     recording riêng, lọc `Nói`/`Phát âm` ra là có ngay bảng của app cũ
+     (đã nhận / đã chấm / chưa chấm). */
+  const [locDang, setLocDang] = useState("");
 
   const tenLop = useMemo(() => new Map(CLASSES.map((c) => [c.id, c.code])), []);
   const idCuaToi = useMemo(() => new Set(CLASSES.filter((c) => c.mine).map((c) => c.id)), []);
@@ -28,7 +32,19 @@ export function BaiQueue() {
   const conLai = tatCa.filter((b) => !daDuyetBai(b.id));
   const chuaCongBo = tatCa.filter((b) => daDuyetBai(b.id) && !daCongBo(b.id));
 
-  const list = locLop ? conLai.filter((b) => String(b.classId) === locLop) : conLai;
+  const list = conLai.filter(
+    (b) => (!locLop || String(b.classId) === locLop) && (!locDang || b.dangTen === locDang),
+  );
+  const dangCo = useMemo(
+    () => [...new Set(tatCa.map((b) => b.dangTen))].sort((a, b) => a.localeCompare(b, "vi")),
+    [tatCa],
+  );
+  /* Ba con số của app cũ: đã nhận · đã chấm · chưa chấm */
+  const theoDang = useMemo(() => {
+    const t = locDang ? tatCa.filter((b) => b.dangTen === locDang) : tatCa;
+    const daCham = t.filter((b) => daDuyetBai(b.id)).length;
+    return { nhan: t.length, cham: daCham, chua: t.length - daCham };
+  }, [tatCa, locDang, conLai.length]);
   const lopCo = useMemo(
     () => [...new Set(conLai.map((b) => b.classId))].map((id) => ({ id, code: tenLop.get(id) ?? "" })),
     [conLai, tenLop],
@@ -58,8 +74,21 @@ export function BaiQueue() {
             <option key={l.id} value={String(l.id)}>{l.code}</option>
           ))}
         </select>
+        <select
+          value={locDang}
+          onChange={(e) => { setLocDang(e.target.value); setIdx(0); }}
+          className="rounded-[6px] px-[10px] py-[6px] text-[12.5px]"
+          style={{ border: `1px solid ${locDang ? NAVY : "#d9dde5"}`, background: "#fff", color: locDang ? INK : INK2 }}
+        >
+          <option value="">Tất cả dạng bài</option>
+          {dangCo.map((d) => (
+            <option key={d} value={d}>{d}</option>
+          ))}
+        </select>
         <span style={{ color: INK3 }}>
-          Chỉ bài tự luận và bài nói — trắc nghiệm máy chấm xong trả điểm ngay
+          {locDang
+            ? `${locDang}: đã nhận ${theoDang.nhan} · đã chấm ${theoDang.cham} · chưa chấm ${theoDang.chua}`
+            : "Chỉ bài tự luận và bài nói — trắc nghiệm máy chấm xong trả điểm ngay"}
         </span>
       </div>
 
@@ -81,11 +110,12 @@ export function BaiQueue() {
           className="rounded-[10px] bg-white py-[40px] text-center text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: locLop ? INK3 : OK }}
         >
-          {locLop ? (
+          {locLop || locDang ? (
             <>
-              Lớp này không còn bài nào chờ xác nhận.{" "}
-              <button type="button" onClick={() => setLocLop("")} className="font-semibold underline" style={{ color: NAVY }}>
-                Bỏ lọc để xem cả {conLai.length} bài
+              Không còn bài nào khớp bộ lọc
+              {locDang ? ` (dạng ${locDang})` : ""}.{" "}
+              <button type="button" onClick={() => { setLocLop(""); setLocDang(""); }} className="font-semibold underline" style={{ color: NAVY }}>
+                Bỏ hết bộ lọc để xem cả {conLai.length} bài
               </button>
             </>
           ) : (
