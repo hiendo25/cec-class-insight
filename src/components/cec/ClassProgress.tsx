@@ -137,12 +137,38 @@ export function ClassProgress() {
       </div>
 
       {list.length === 0 ? (
-        <p
-          className="rounded-[8px] bg-white py-[40px] text-center text-[13px]"
+        /* PROD mặc định chưa chọn lớp -> hiện "Tổng 0" + "Chưa có dữ liệu",
+           QC tưởng không có việc. Rỗng thì phải NÓI RÕ đang lọc gì và cho
+           đường bỏ lọc ngay tại chỗ. */
+        <div
+          className="flex flex-col items-center gap-[10px] rounded-[8px] bg-white py-[36px] text-center text-[13px]"
           style={{ border: `1px solid ${LINE}`, color: INK3 }}
         >
-          Không có lớp nào khớp bộ lọc.
-        </p>
+          <span>
+            Không có lớp nào trong phạm vi:{" "}
+            <b style={{ color: INK }}>
+              {[mineOnly ? "Lớp của tôi" : null, todoOnly ? "Có việc cần xử lý" : null]
+                .filter(Boolean)
+                .join(" · ") || "Tất cả"}
+            </b>
+          </span>
+          <span className="text-[12px]">
+            Kho có {rows.length} lớp — đây là bộ lọc đang che, không phải hết việc.
+          </span>
+          {(mineOnly || todoOnly) && (
+            <button
+              type="button"
+              onClick={() => {
+                setMineOnly(false);
+                setTodoOnly(false);
+              }}
+              className="rounded-[6px] px-[13px] py-[7px] text-[12.5px] font-semibold"
+              style={{ border: `1px solid ${LINE}`, color: NAVY }}
+            >
+              Bỏ hết bộ lọc, xem cả {rows.length} lớp
+            </button>
+          )}
+        </div>
       ) : (
         <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
           <table className="w-full border-collapse text-[13px]">

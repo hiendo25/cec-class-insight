@@ -109,7 +109,9 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
   const exam = EXAMS.find((e) => e.id === examId) ?? null;
   const [useLatest, setUseLatest] = useState(true);
 
-  const [bindSession, setBindSession] = useState(true);
+  /* Luôn gắn buổi — PROD bắt buộc, không cho tắt. Giữ biến để phần dưới
+     không phải sửa hàng loạt. */
+  const bindSession = true;
   const [sessionBy, setSessionBy] = useState<Record<number, number>>({});
   /* Màn xác nhận trung gian: hiện MỌI thứ đáng ngờ trước khi bấm giao thật */
   const [dangXacNhan, setDangXacNhan] = useState(false);
@@ -200,6 +202,15 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
 
   /* ---- chặn ---- */
   const blocks: string[] = [];
+  /* Chưa chọn buổi cho lớp nào đó -> chặn. Bài không thuộc buổi nào thì
+     sau này tra "buổi 12 đã giao gì" sẽ không ra. */
+  {
+    const thieuBuoi = picked.filter((c) => !sessionBy[c.id] && (SESSIONS[c.id] ?? []).length > 0);
+    if (thieuBuoi.length)
+      blocks.push(
+        `Chưa chọn buổi học cho ${thieuBuoi.map((c) => c.code).join(", ")} — bài phải gắn vào một buổi.`,
+      );
+  }
   if (exam && !exam.published) blocks.push("Đề chưa xuất bản — học sinh sẽ không mở được bài.");
   if (dueMode === "same" && dueSame && bindSession) {
     const bad = picked.filter((c) => {
@@ -659,16 +670,15 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
               Gắn với buổi
             </span>
             <div className="min-w-0 flex-1">
-              <label className="flex items-center gap-[7px] text-[13px]">
-                <input
-                  type="checkbox"
-                  checked={bindSession}
-                  onChange={() => setBindSession((v) => !v)}
-                  style={{ accentColor: NAVY }}
-                />
+              {/* Thao tác thật trên PROD: "Chọn buổi học" là ô ĐẦU TIÊN và BẮT BUỘC.
+                  Trục dữ liệu là Lớp -> Buổi học -> Bài tập; bài gắn vào BUỔI,
+                  không gắn vào lớp. Để tuỳ chọn thì QC bỏ qua, bài không thuộc
+                  buổi nào — sau không tra được buổi đó đã giao gì. */}
+              <span className="flex items-center gap-[7px] text-[13px]" style={{ color: INK }}>
                 <IconCalendarCheck size={14} />
                 Gắn bài với buổi học
-              </label>
+                <span className="text-[11.5px]" style={{ color: DANGER }}>· bắt buộc</span>
+              </span>
 
               {bindSession && (
                 <div className="mt-[8px] flex flex-col gap-[7px]">
