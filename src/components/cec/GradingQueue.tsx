@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { NAVY, LINE, INK, INK2, INK3, OK, WARN } from "@/data/const";
 import type { ClassRow } from "@/data/classes";
 import { choDuyetCuaLop, mayChamCuaLop, type BaiNop } from "@/data/submissions";
-import { daDuyetBai, diemDaDuyet, useOverrides } from "@/data/overrides";
+import { daCongBo, daDuyetBai, diemDaDuyet, useOverrides } from "@/data/overrides";
 import { IconCheck, IconChevronDown } from "./icons";
 
 
@@ -44,7 +44,7 @@ export function GradingQueue({ row }: { row: ClassRow }) {
   /* Đo trên trang học sinh: đề tắt "tự công bố kết quả" thì QC duyệt xong
      HS VẪN chưa thấy điểm — phải công bố thêm một bước. Không nói ra thì
      QC tưởng đã xong việc còn HS trắng điểm. */
-  const daDuyetChuaCongBo = cho.filter((b) => daDuyetBai(b.id) && !b.tuCongBo);
+  const daDuyetChuaCongBo = cho.filter((b) => daDuyetBai(b.id) && !daCongBo(b.id));
 
   return (
     <div className="flex flex-col gap-[14px]">
@@ -326,11 +326,34 @@ export function BaiDuyet({
             : "Đề này TẮT tự công bố — xác nhận xong học sinh vẫn chưa thấy điểm."}
         </span>
         <span className="flex-1" />
+
+        {/* Đề TẮT tự công bố: xác nhận thôi thì HS vẫn trắng điểm, nên phải có
+            đường công bố ngay tại đây. Cảnh báo mà không cho hành động thì
+            ngõ cụt vẫn nguyên. */}
+        {!bai.tuCongBo && (
+          <button
+            type="button"
+            disabled={!hopLe}
+            onClick={() => diemDaDuyet(bai.id, soDiem, bai.diemAI, nx, false)}
+            className="rounded-[6px] px-[13px] py-[8px] text-[12.5px] font-semibold"
+            style={{
+              border: `1px solid ${hopLe ? "#d9dde5" : "#e3e6ec"}`,
+              color: hopLe ? INK : "#b9c0cc",
+              cursor: hopLe ? "pointer" : "not-allowed",
+            }}
+            title="Lưu điểm nhưng CHƯA cho học sinh thấy"
+          >
+            Chỉ xác nhận
+          </button>
+        )}
+
         <button
           type="button"
           disabled={!hopLe}
           onClick={() => {
-            diemDaDuyet(bai.id, soDiem, bai.diemAI, nx);
+            /* Đề bật tự công bố thì xác nhận là HS thấy ngay -> congBo = true.
+               Đề tắt thì nút này là "xác nhận VÀ công bố", cũng thành true. */
+            diemDaDuyet(bai.id, soDiem, bai.diemAI, nx, true);
             /* ở nguyên vị trí: bài vừa duyệt rời hàng đợi, bài kế tiếp trượt vào đúng chỗ này */
           }}
           className="flex items-center gap-[7px] rounded-[6px] px-[15px] py-[8px] text-[12.5px] font-semibold text-white"
@@ -338,7 +361,7 @@ export function BaiDuyet({
           title={hopLe ? undefined : "Điểm phải trong khoảng 0 đến 10"}
         >
           <IconCheck size={13} />
-          Xác nhận &amp; bài kế tiếp
+          {bai.tuCongBo ? "Xác nhận & bài kế tiếp" : "Xác nhận và công bố"}
         </button>
       </div>
     </section>

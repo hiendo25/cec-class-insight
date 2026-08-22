@@ -21,8 +21,10 @@ type Store = {
   /** bài QC vừa giao trong phiên — trước đây nút "Giao bài" gọi onClose,
    *  tức bấm xong modal đóng mà KHÔNG giao gì, QC tưởng đã giao */
   daGiao: BaiDaGiao[];
-  /** bài QC đã xác nhận: id bài nộp -> điểm chốt + điểm AI gốc + nhận xét */
-  duyet: Record<string, { diem: number; diemAI: number | null; nhanXet: string }>;
+  /** bài QC đã xác nhận: id bài nộp -> điểm chốt + điểm AI gốc + nhận xét
+   *  `congBo` = QC đã bấm công bố cho học sinh thấy điểm chưa. Đề bật tự công bố
+   *  thì true ngay khi xác nhận; đề tắt thì phải bấm thêm một bước. */
+  duyet: Record<string, { diem: number; diemAI: number | null; nhanXet: string; congBo: boolean }>;
 };
 
 export type BaiDaGiao = {
@@ -144,10 +146,25 @@ export const hoanTacGiao = (id: string) => {
 };
 
 /** QC xác nhận một bài AI chấm. Giữ luôn điểm AI gốc để còn đối chiếu. */
-export const diemDaDuyet = (id: string, diem: number, diemAI: number | null, nhanXet: string) => {
-  state.duyet[id] = { diem, diemAI, nhanXet };
+export const diemDaDuyet = (
+  id: string,
+  diem: number,
+  diemAI: number | null,
+  nhanXet: string,
+  congBo = false,
+) => {
+  state.duyet[id] = { diem, diemAI, nhanXet, congBo };
   emit();
 };
+
+/** Công bố điểm cho học sinh thấy — bước thứ hai với đề tắt tự công bố */
+export const congBoDiem = (id: string) => {
+  const cu = state.duyet[id];
+  if (!cu) return;
+  state.duyet[id] = { ...cu, congBo: true };
+  emit();
+};
+export const daCongBo = (id: string) => !!state.duyet[id]?.congBo;
 export const daDuyetBai = (id: string) => !!state.duyet[id];
 export const ketQuaDuyet = (id: string) => state.duyet[id];
 

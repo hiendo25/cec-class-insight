@@ -27,6 +27,9 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
   useOverrides();
   const navigate = useNavigate();
   const [chon, setChon] = useState<Set<string>>(new Set());
+  /* Gửi xong phải nói ra — nút báo thành công mà màn không đổi gì
+     còn tệ hơn nút chết, QC tưởng xong việc rồi bỏ đi. */
+  const [daGui, setDaGui] = useState(false);
 
   const hs = STUDENTS[row.id] ?? [];
 
@@ -159,6 +162,22 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
         ))}
       </div>
 
+      {daGui && (
+        <div
+          className="flex flex-wrap items-center gap-[10px] rounded-[8px] px-[14px] py-[11px] text-[12.5px]"
+          style={{ background: "#e6f5ec", border: "1px solid #cbe6d6", color: OK }}
+        >
+          <IconCheck size={14} />
+          <strong>Đã gửi {the.length} báo cáo tháng {month} cho phụ huynh.</strong>
+          <span className="flex-1" />
+          <button type="button" onClick={() => setDaGui(false)}
+            className="rounded-[6px] px-[11px] py-[6px] font-semibold"
+            style={{ border: `1px solid #b7dcc6`, background: "#fff", color: OK }}>
+            Hoàn tác
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-[10px] rounded-[8px] bg-white px-[14px] py-[11px] text-[12.5px]"
         style={{ border: `1px solid ${LINE}` }}>
         <span style={{ color: INK2 }}>
@@ -171,6 +190,7 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
         <button
           type="button"
           disabled={chuaDuyet.length > 0}
+          onClick={() => setDaGui(true)}
           className="rounded-[6px] px-[14px] py-[8px] font-semibold text-white"
           style={{
             background: chuaDuyet.length ? "#b9c0cc" : NAVY,

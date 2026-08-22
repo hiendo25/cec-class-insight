@@ -9,7 +9,7 @@ import { ME } from "@/data/me";
 import {
   INK, INK2, INK3, LINE, NAVY, OK, WARN, DANGER, TODAY, soNgayToi,
 } from "@/data/const";
-import { daDuyetBai, daNhac, monthlyStatusOf, reportStatusOf, useOverrides } from "@/data/overrides";
+import { daCongBo, daDuyetBai, daNhac, monthlyStatusOf, reportStatusOf, useOverrides } from "@/data/overrides";
 import { Person } from "./Person";
 
 const THU = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
@@ -62,7 +62,7 @@ export function Today() {
   );
   /* Đã xác nhận nhưng đề tắt tự công bố -> HS vẫn chưa thấy điểm */
   const chuaCongBo = useMemo(
-    () => BAI_NOP.filter((b) => b.tuLuan && idCuaToi.has(b.classId) && daDuyetBai(b.id) && !b.tuCongBo),
+    () => BAI_NOP.filter((b) => b.tuLuan && idCuaToi.has(b.classId) && daDuyetBai(b.id) && !daCongBo(b.id)),
     [idCuaToi],
   );
 

@@ -238,7 +238,10 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
     return () => clearTimeout(t);
   }, [daGiaoId, conLai, onClose]);
 
-  const canSubmit = !!exam && classIds.length > 0 && totalStudents > 0 && blocks.length === 0;
+  /* Điều kiện TỐI THIỂU để bấm được nút: có đề, có lớp, có người nhận.
+     `blocks` KHÔNG nằm ở đây — chặn cứng thì QC không còn đường nào, mà việc
+     giao đề Nháp là quyền của QC, app chỉ được cảnh báo. Xem `dangXacNhan`. */
+  const canSubmit = !!exam && classIds.length > 0 && totalStudents > 0;
 
   /* ---- bảng chọn lớp ---- */
   const pickList = CLASSES.filter((c) => {
@@ -849,6 +852,13 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
               Kiểm tra trước khi giao
             </p>
 
+            {/* Việc NGHIÊM TRỌNG lên trên cùng, màu đỏ — nhưng vẫn cho QC quyết */}
+            {blocks.map((b) => (
+              <p key={b} className="flex items-start gap-[6px] text-[12.5px] font-medium" style={{ color: DANGER }}>
+                <IconWarn size={13} /> {b}
+              </p>
+            ))}
+
             {emKhongDangHoc.length > 0 && (
               <div className="text-[12.5px]" style={{ color: INK }}>
                 <p style={{ color: WARN }}>
@@ -947,7 +957,7 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
           {/* lý do chưa giao được phải nằm NGAY CẠNH nút, không để tít bên trái */}
           {!canSubmit && (
             <span className="shrink-0 text-[12.5px] font-medium" style={{ color: WARN }}>
-              {!exam ? "Chọn đề trước" : totalStudents === 0 ? "Chưa có em nào nhận bài" : "Chưa đủ điều kiện"}
+              {!exam ? "Chọn đề trước" : totalStudents === 0 ? "Chưa có em nào nhận bài" : blocks[0]}
             </span>
           )}
           <button
@@ -956,7 +966,7 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
             onClick={() => {
               if (!exam) return;
               /* Có gì đáng ngờ thì hỏi lại trước, không giao thẳng */
-              if (!dangXacNhan && (emKhongDangHoc.length > 0 || notes.length > 2)) {
+              if (!dangXacNhan && (blocks.length > 0 || emKhongDangHoc.length > 0 || notes.length > 2)) {
                 setDangXacNhan(true);
                 return;
               }
@@ -977,7 +987,9 @@ export function AssignDialog({ from, onClose, studentId }: Props) {
                 ? undefined
                 : !exam
                   ? "Chọn đề trước khi giao"
-                  : "Chưa có em nào nhận bài"
+                  : totalStudents === 0
+                    ? "Chưa có em nào nhận bài"
+                    : blocks[0]
             }
             className="rounded-[6px] px-[16px] py-[8px] text-[12.5px] font-semibold text-white"
             style={{ background: canSubmit ? NAVY : "#b9c0cc", cursor: canSubmit ? "pointer" : "not-allowed" }}

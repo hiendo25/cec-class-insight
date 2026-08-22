@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { CLASSES } from "@/data/classes";
 import { BAI_NOP } from "@/data/submissions";
 import { INK, INK2, INK3, LINE, NAVY, OK, WARN } from "@/data/const";
-import { daDuyetBai, useOverrides } from "@/data/overrides";
+import { daCongBo, daDuyetBai, useOverrides } from "@/data/overrides";
 import { BaiDuyet } from "./GradingQueue";
 
 /**
@@ -26,7 +26,7 @@ export function BaiQueue() {
     [idCuaToi],
   );
   const conLai = tatCa.filter((b) => !daDuyetBai(b.id));
-  const chuaCongBo = tatCa.filter((b) => daDuyetBai(b.id) && !b.tuCongBo);
+  const chuaCongBo = tatCa.filter((b) => daDuyetBai(b.id) && !daCongBo(b.id));
 
   const list = locLop ? conLai.filter((b) => String(b.classId) === locLop) : conLai;
   const lopCo = useMemo(
