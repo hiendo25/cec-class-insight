@@ -191,16 +191,21 @@ export function Today() {
       <div className="grid gap-[14px] lg:grid-cols-2">
         {/* ① phiếu buổi */}
         <Khoi
-          so={1}
           tieuDe="Phiếu buổi chờ tôi duyệt"
+          mauKhoi={NAVY}
+          boiCanh={
+            phieuCho.length
+              ? `Giáo viên đã gửi, chờ bạn duyệt — cũ nhất ${phieuCho[0]?.cho ?? 0} ngày`
+              : "Phiếu do giáo viên và trợ giảng điền, QC duyệt"
+          }
           dem={phieuCho.length}
           rong="Không còn phiếu nào chờ duyệt."
           coNguon={lopCuaToi.some((c) => (SESSIONS[c.id] ?? []).length > 0)}
           chan={`${phieuCho.length} phiếu · ${new Set(phieuCho.map((p) => p.classId)).size} lớp`}
-          xemHet={phieuCho.length > 3 ? `Xem tất cả ${phieuCho.length} ›` : null}
+          xemHet={phieuCho.length > 5 ? `Xem tất cả ${phieuCho.length} ›` : null}
           onXemHet={() => navigate({ to: "/queue/phieu" })}
         >
-          {phieuCho.slice(0, 3).map((p) => (
+          {phieuCho.slice(0, 5).map((p) => (
             <Dong
               key={p.key}
               ten={p.by}
@@ -215,8 +220,13 @@ export function Today() {
 
         {/* ② bài AI chấm */}
         <Khoi
-          so={2}
           tieuDe="Bài AI chấm chờ xác nhận"
+          mauKhoi={OK}
+          boiCanh={
+            baiCho.length
+              ? "Bài tự luận và bài nói — điểm chưa chính thức tới khi bạn xác nhận"
+              : "Trắc nghiệm máy chấm xong trả điểm ngay, không cần duyệt"
+          }
           dem={baiCho.length}
           rong="Không còn bài nào chờ xác nhận."
           coNguon={BAI_NOP.some((b) => idCuaToi.has(b.classId))}
@@ -229,10 +239,10 @@ export function Today() {
               `${baiCho.length} bài · ${new Set(baiCho.map((b) => b.classId)).size} lớp`
             )
           }
-          xemHet={baiCho.length > 3 ? `Xem tất cả ${baiCho.length} ›` : null}
+          xemHet={baiCho.length > 5 ? `Xem tất cả ${baiCho.length} ›` : null}
           onXemHet={() => navigate({ to: "/queue/bai" })}
         >
-          {baiCho.slice(0, 3).map((b) => (
+          {baiCho.slice(0, 5).map((b) => (
             <Dong
               key={b.id}
               ten={b.studentName}
@@ -249,16 +259,21 @@ export function Today() {
 
         {/* ③ em nợ bài */}
         <Khoi
-          so={3}
           tieuDe="Em nợ bài quá hạn"
+          mauKhoi={WARN}
+          boiCanh={
+            emNoBai.length
+              ? `Chỉ tính em đang học — nợ nhiều nhất ${emNoBai[0] ? emNoBai[0].assigned - emNoBai[0].submitted : 0} bài`
+              : "Em bảo lưu và đã nghỉ không tính vào đây"
+          }
           dem={emNoBai.length}
           rong="Không có em nào đang nợ bài."
           coNguon={lopCuaToi.some((c) => (STUDENTS[c.id] ?? []).length > 0)}
           chan={`${emNoBai.length} em · ${new Set(emNoBai.map((e) => e.classId)).size} lớp — chỉ tính em đang học`}
-          xemHet={emNoBai.length > 3 ? `Xem tất cả ${emNoBai.length} ›` : null}
+          xemHet={emNoBai.length > 5 ? `Xem tất cả ${emNoBai.length} ›` : null}
           onXemHet={() => navigate({ to: "/assignment/student" })}
         >
-          {emNoBai.slice(0, 3).map((e) => (
+          {emNoBai.slice(0, 5).map((e) => (
             <Dong
               key={e.id}
               ten={e.name}
@@ -276,16 +291,21 @@ export function Today() {
 
         {/* ④ báo cáo tháng */}
         <Khoi
-          so={4}
           tieuDe="Báo cáo tháng chưa xong"
+          mauKhoi={DANGER}
+          boiCanh={
+            baoCaoCho.length
+              ? `Đếm theo lớp × tháng — còn ${baoCaoCho.reduce((a, b) => a + (b.tong - b.xong), 0)} bản chưa duyệt`
+              : "Trợ giảng soạn, QC duyệt rồi mới gửi phụ huynh"
+          }
           dem={baoCaoCho.length}
           rong="Báo cáo tháng đã duyệt hết."
           coNguon={Object.keys(MONTHLY).length > 0}
           chan={`${baoCaoCho.length} lớp còn báo cáo dang dở`}
-          xemHet={baoCaoCho.length > 3 ? `Xem tất cả ${baoCaoCho.length} ›` : null}
+          xemHet={baoCaoCho.length > 5 ? `Xem tất cả ${baoCaoCho.length} ›` : null}
           onXemHet={() => navigate({ to: "/class" })}
         >
-          {baoCaoCho.slice(0, 3).map((b) => (
+          {baoCaoCho.slice(0, 5).map((b) => (
             <Dong
               key={`${b.classId}:${b.month}`}
               ten={`${tenLop.get(b.classId)} · ${b.month}`}
@@ -307,10 +327,13 @@ export function Today() {
 
 /** Một khối việc. Rỗng vẫn hiện — ẩn đi thì QC tưởng app hỏng. */
 function Khoi({
-  so, tieuDe, dem, rong, coNguon, chan, xemHet, onXemHet, children,
+  tieuDe, dem, rong, coNguon, chan, xemHet, onXemHet, mauKhoi, boiCanh, children,
 }: {
-  so: number;
   tieuDe: string;
+  /** màu riêng từng loại việc — mã hoá loại, không phải trang trí */
+  mauKhoi: string;
+  /** một dòng nói rõ con số nghĩa là gì */
+  boiCanh: string;
   dem: number;
   rong: string;
   /** false = CHƯA CÓ dữ liệu nguồn, khác hẳn "hết việc rồi".
@@ -324,23 +347,30 @@ function Khoi({
 }) {
   return (
     <section className="flex flex-col rounded-[10px] bg-white" style={{ border: `1px solid ${LINE}` }}>
-      <div className="flex items-start gap-[10px] px-[16px] pb-[10px] pt-[14px]">
+      {/* Số KHÔNG còn là thứ to nhất — 15 app quốc tế đều mở bằng danh sách việc,
+          không mở bằng ô số. Số chỉ là nhãn phụ cạnh tiêu đề. */}
+      <div className="flex items-baseline gap-[9px] px-[16px] pb-[3px] pt-[13px]">
         <span
-          className="mt-[2px] grid h-[20px] w-[20px] shrink-0 place-items-center rounded-full text-[11px] font-bold text-white"
-          style={{ background: dem > 0 ? NAVY : "#b9c0cc" }}
-        >
-          {so}
-        </span>
-        <span className="flex-1 text-[13.5px] font-semibold" style={{ color: INK }}>
+          className="h-[7px] w-[7px] shrink-0 rounded-full"
+          style={{ background: dem > 0 ? mauKhoi : "#cfd5e0" }}
+        />
+        <span className="text-[14px] font-semibold" style={{ color: INK }}>
           {tieuDe}
         </span>
         <span
-          className="text-[22px] font-bold leading-none tabular-nums"
-          style={{ color: dem > 0 ? NAVY : "#b9c0cc" }}
+          className="rounded-full px-[8px] py-[1px] text-[12px] font-bold tabular-nums"
+          style={{
+            background: dem > 0 ? `${mauKhoi}1a` : "#f0f2f6",
+            color: dem > 0 ? mauKhoi : INK3,
+          }}
         >
           {dem}
         </span>
       </div>
+      {/* Dòng bối cảnh — nói RÕ con số kia nghĩa là gì, tránh số trần vô nghĩa */}
+      <p className="px-[16px] pb-[9px] text-[11.5px]" style={{ color: INK3 }}>
+        {boiCanh}
+      </p>
 
       <div className="flex-1" style={{ borderTop: `1px solid ${LINE}` }}>
         {dem === 0 ? (
