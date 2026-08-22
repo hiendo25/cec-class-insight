@@ -51,6 +51,10 @@ export function ResultMatrix({
   /** QC phải duyệt phiếu giáo viên điền — trước đây phải bấm từng ô mới biết
    *  ô nào đang chờ, nên bật cờ này để tô sáng đúng những ô cần xử lý. */
   const [onlyPending, setOnlyPending] = useState(false);
+  /* Tìm học sinh — Hiền: "có filter theo học sinh/trạng thái để QC không bị mất
+     ngữ cảnh khi xem dữ liệu". Bảng phải cuộn ngang vì số cột = số buổi của lớp
+     (không nén được), nên cách giảm lạc chỗ là bớt SỐ DÒNG phải dò. */
+  const [timHS, setTimHS] = useState("");
   /* Hai màn con nằm trên URL để F5 giữ nguyên chỗ đang xem và Back về đúng bảng */
   const setOpenMonth = (v: { s: Student; m: Monthly } | null) =>
     onOpenMonth(v ? `${v.s.id}:${v.m.month}` : null);
@@ -142,7 +146,7 @@ export function ResultMatrix({
 
   return (
     <Matrix
-      {...{ row, students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W, onlyPending, setOnlyPending }}
+      {...{ row, students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W, onlyPending, setOnlyPending, timHS, setTimHS }}
     />
   );
 }
@@ -161,12 +165,14 @@ type MatrixProps = {
   setOpenNote: (v: { s: Student; no: number }) => void;
   NAME_W: number;
   onlyPending: boolean;
+  timHS: string;
+  setTimHS: (v: string) => void;
   setOnlyPending: (v: boolean) => void;
 };
 
 function Matrix({
   students, cols, reps, bySession, mode, setMode, score, tone, setOpenMonth, setOpenNote, NAME_W,
-  onlyPending, setOnlyPending,
+  onlyPending, setOnlyPending, timHS, setTimHS,
 }: MatrixProps) {
   /* Chỉ đếm phiếu THỰC SỰ có ô trên bảng: ma trận chỉ vẽ buổi có trong lịch
      và học sinh còn trong danh sách, nên đếm cả kho sẽ ra số lớn hơn số ô QC
@@ -222,6 +228,14 @@ function Matrix({
             cho ra cùng một số — bấm mà số không đổi là nút lừa. Audit PROD cũng chấm
             đây là tuỳ chọn của báo cáo, không thuộc màn theo dõi (_EXPECTED_QC:404). */}
         <span style={{ color: INK3 }}>Điểm bài tập online theo từng buổi</span>
+
+        <input
+          value={timHS}
+          onChange={(e) => setTimHS(e.target.value)}
+          placeholder="Tìm học sinh, mã HS…"
+          className="rounded-[8px] px-[10px] py-[5px] text-[12.5px]"
+          style={{ border: `1px solid #d9dde5`, background: "#fff", color: INK, width: 190 }}
+        />
 
         {pendingCount > 0 && (
           <button
@@ -333,8 +347,15 @@ function Matrix({
             </tr>
           </thead>
           <tbody>
-            {students.map((s, i) => {
-              const bg = i % 2 ? "#f5f8fc" : "#fff";
+            {students
+              .filter((s) => {
+                const q = timHS.trim().toLowerCase();
+                return !q || `${s.name} ${s.code}`.toLowerCase().includes(q);
+              })
+              .map((s) => {
+              /* Bỏ sọc ngựa vằn — bảng đang chồng viền cột + sọc cùng lúc,
+                 0/8 sản phẩm đo được dùng sọc. (Bản sao sót lại của đợt trước.) */
+              const bg = "#fff";
               return (
                 <tr key={s.id} style={{ borderBottom: "1px solid #edeff4" }}>
                   <td

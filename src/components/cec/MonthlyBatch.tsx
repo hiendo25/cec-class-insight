@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { MaHS } from "./MaHS";
 import { useNavigate } from "@tanstack/react-router";
 import type { ClassRow } from "@/data/classes";
-import { MONTHLY, REPORTS, type MonthlyReport } from "@/data/reports";
+import { MONTHLY, REPORTS, type MonthlyReport , coCuaBaoCao } from "@/data/reports";
 import { SESSIONS } from "@/data/sessions";
 import { STUDENTS } from "@/data/students";
 import { INK, INK2, INK3, LINE, NAVY, OK, WARN, DANGER } from "@/data/const";
@@ -65,24 +65,11 @@ export function MonthlyBatch({ row, month }: { row: ClassRow; month: string }) {
 
       const status = monthlyStatusOf(`${s.id}:${month}`, bc.status);
 
-      /* 🔴 nghi trùng: kỹ năng tháng này không đổi so với tháng trước
-         (delta = 0 hoặc null ở phần lớn kỹ năng) -> nhận xét nhiều khả năng lặp */
-      const coPrev = bc.skills.some((k) => k.prev !== null);
-      const khongDoi = bc.skills.filter((k) => k.delta === 0 || k.delta === null).length;
-      const nghiTrung = coPrev && khongDoi >= Math.ceil(bc.skills.length * 0.7);
-
-      /* 🟡 thiếu nguồn: số phiếu nhắc tên em ít hơn số buổi trong kỳ */
-      const thieuNguon = bc.reportCount < bc.sessionTotal;
-
-      /* Soạn lại rồi thì hết nghi trùng — nếu vẫn để cờ đỏ thì QC bấm xong
-         không thấy gì đổi, đúng kiểu nút nói dối. */
-      const daLam = daSoanLai.has(s.id);
-      const co: Co = nghiTrung && !daLam ? "do" : thieuNguon ? "vang" : "xanh";
-      const lyDo = nghiTrung && !daLam
-        ? `Nghi trùng: ${khongDoi}/${bc.skills.length} kỹ năng không đổi so với tháng trước.`
-        : thieuNguon
-          ? `Thiếu nguồn: chỉ có ${bc.reportCount}/${bc.sessionTotal} phiếu nhắc tên em.`
-          : "";
+      /* Ba cờ dùng HÀM CHUNG `coCuaBaoCao` ở data/reports.ts — màn danh sách lớp
+         cũng gọi đúng hàm này, không ai tính lại kiểu khác.
+         Soạn lại rồi thì hết nghi trùng: nếu vẫn để cờ đỏ thì QC bấm xong không
+         thấy gì đổi, đúng kiểu nút nói dối. */
+      const { co, lyDo } = coCuaBaoCao(bc, daSoanLai.has(s.id));
 
       ra.push({ sid: s.id, name: s.name, code: s.code, state: s.state, bc, co, lyDo, status });
     }

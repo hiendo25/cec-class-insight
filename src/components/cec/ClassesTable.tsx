@@ -576,6 +576,14 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
 
   const stickyWidth: Record<string, number> = { sel: 36, code: 138 };
 
+  /* Ghim VE MEP PHAI: `Canh bao` noi cho QC phai lam gi, `actions` la cho thao
+     tac. O laptop 1280px ca hai bi day han ra ngoai khung nhin — du lieu khong
+     mat vi bang co overflow-x-auto, nhung QC khong biet ma cuon, tuong lop
+     khong co viec gi can xu ly. */
+  const stickyRight: Record<string, number> = { warn: 52, actions: 0 };
+  const isStickyR = (k: string) => k in stickyRight;
+  const stickyRWidth: Record<string, number> = { warn: 210, actions: 52 };
+
   const cellStyle = (c: Col, bg: string): React.CSSProperties =>
     isSticky(c.key)
       ? {
@@ -588,7 +596,18 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
           background: bg,
           boxShadow: c.key === "code" ? "1px 0 0 0 rgba(20,28,56,0.10)" : undefined,
         }
-      : {};
+      : isStickyR(c.key)
+        ? {
+            position: "sticky",
+            right: stickyRight[c.key],
+            width: stickyRWidth[c.key],
+            minWidth: stickyRWidth[c.key],
+            maxWidth: stickyRWidth[c.key],
+            zIndex: 5,
+            background: bg,
+            boxShadow: c.key === "warn" ? "-1px 0 0 0 rgba(20,28,56,0.10)" : undefined,
+          }
+        : {};
 
   return (
     <div className="flex flex-col gap-[14px]">
@@ -1010,7 +1029,17 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
                                 zIndex: 6,
                                 background: TH_BG,
                               }
-                            : {}),
+                            : isStickyR(c.key)
+                              ? {
+                                  position: "sticky",
+                                  right: stickyRight[c.key],
+                                  width: stickyRWidth[c.key],
+                                  minWidth: stickyRWidth[c.key],
+                                  maxWidth: stickyRWidth[c.key],
+                                  zIndex: 6,
+                                  background: TH_BG,
+                                }
+                              : {}),
                         }}
                       >
                         <span className="inline-flex items-center gap-[5px]">

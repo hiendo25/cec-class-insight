@@ -262,17 +262,47 @@ export function DailyClasses() {
                                 : "trong"
                       }
                       nhanCho="chờ tôi duyệt"
-                      {...(b.report === "pending"
-                        ? { onBam: () => void navigate({ to: "/queue/phieu" }) }
+                      {...(b.past
+                        ? {
+                            /* Mọi trạng thái đã diễn ra đều mở được, không chỉ
+                               `pending`. Đã duyệt cũng cần xem lại được. */
+                            onBam: () =>
+                              void navigate({
+                                to: "/class/$classId/$tab",
+                                params: { classId: String(b.classId), tab: "ket-qua" },
+                              }),
+                          }
                         : {})}
                     />
                   </td>
 
                   <td className="px-[11px] py-[10px]">
-                    <O trangThai={!b.past ? "chua-dien-ra" : b.attendance ? "xong" : "trong"} />
+                    <O
+                      trangThai={!b.past ? "chua-dien-ra" : b.attendance ? "xong" : "trong"}
+                      {...(b.past
+                        ? {
+                            onBam: () =>
+                              void navigate({
+                                to: "/class/$classId/$tab",
+                                params: { classId: String(b.classId), tab: "hoc-sinh" },
+                              }),
+                          }
+                        : {})}
+                    />
                   </td>
                   <td className="px-[11px] py-[10px]">
-                    <O trangThai={!b.past ? "chua-dien-ra" : b.homework ? "xong" : "trong"} />
+                    <O
+                      trangThai={!b.past ? "chua-dien-ra" : b.homework ? "xong" : "trong"}
+                      {...(b.past
+                        ? {
+                            onBam: () =>
+                              void navigate({
+                                to: "/class/$classId/$tab",
+                                params: { classId: String(b.classId), tab: "bai-tap" },
+                              }),
+                          }
+                        : {})}
+                    />
                   </td>
 
                   <td className="px-[11px] py-[10px]">
@@ -354,9 +384,17 @@ function O({
     </span>
   );
 
+  /* Ô bấm được phải NHÌN RA là bấm được — gạch chân khi rê chuột chưa đủ,
+     QC không rê từng ô để dò. Thêm mũi tên nhỏ. */
   return onBam ? (
-    <button type="button" onClick={onBam} className="hover:underline">
+    <button
+      type="button"
+      onClick={onBam}
+      className="inline-flex items-center gap-[3px] hover:underline"
+      title="Mở màn xử lý"
+    >
       {noi}
+      <span style={{ color: INK3, fontSize: 11 }}>›</span>
     </button>
   ) : (
     noi
