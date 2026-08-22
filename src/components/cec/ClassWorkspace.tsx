@@ -8,6 +8,7 @@ import { useAction } from "./ActionDialog";
 import { StudentProfile } from "./StudentProfile";
 import { ResultMatrix } from "./ResultMatrix";
 import { TestResults } from "./TestResults";
+import { useNavigate } from "@tanstack/react-router";
 import { GradingQueue } from "./GradingQueue";
 import { Person } from "./Person";
 import { MonthlyBatch } from "./MonthlyBatch";
@@ -383,6 +384,7 @@ function Dot({ on }: { on: boolean | null }) {
 
 function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void }) {
   useOverrides();
+  const nav = useNavigate();
   const { ask } = useAction();
   const list = SESSIONS[row.id] ?? [];
   if (list.length === 0)
@@ -449,6 +451,18 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                 <td className="px-[12px]"><PhieuBuoi st={s.report} /></td>
                 <td className="px-[12px]"><Dot on={s.homework} /></td>
                 <td className="whitespace-nowrap px-[12px] py-[8px]">
+                  {/* `pending` là việc của CHÍNH QC — đúng chỗ cần bấm nhất mà trước
+                      không có nút, phải vòng qua /queue/phieu mới duyệt được. */}
+                  {s.past && s.report === "pending" && (
+                    <button
+                      type="button"
+                      onClick={() => nav({ to: "/queue/phieu" })}
+                      className="mr-[6px] rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
+                      style={{ border: `1px solid ${LINE}`, color: NAVY }}
+                    >
+                      Duyệt
+                    </button>
+                  )}
                   {s.past && s.report === "draft" && (
                     <button
                       type="button"

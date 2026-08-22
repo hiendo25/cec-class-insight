@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { TODAY, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { SCORES, TESTS } from "@/data/tests";
+import { ParentReply } from "./ParentReply";
 import type { ClassRow } from "@/data/classes";
 import { SESSIONS } from "@/data/sessions";
 import type { Student } from "@/data/students";
@@ -560,6 +561,8 @@ export function StudentProfile({
   /** giao bài riêng cho chính em đang mở hồ sơ */
   onAssign?: (studentId: string) => void;
 }) {
+  const [moTraLoi, setMoTraLoi] = useState(false);
+  const [phanHoi, setPhanHoi] = useState(student.parentFeedback);
   const profile: Profile = PROFILES[student.id] ?? { history: [], errors: [], daily: [], inProgress: [] };
   const { ask } = useAction();
   /* Lớp chưa xếp lịch thì không có buổi nào — đừng in "Buổi 89" bịa ra */
@@ -695,6 +698,15 @@ export function StudentProfile({
             style={{ border: `1px solid ${LINE}`, color: INK, background: "#fff" }}
           >
             <IconBell size={14} /> Nhắc nộp bài
+          </button>
+          {/* Phụ huynh gọi là QC phải trả lời NGAY, không kịp mở 4 màn ghép số */}
+          <button
+            type="button"
+            onClick={() => setMoTraLoi(true)}
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px]"
+            style={{ border: `1px solid ${LINE}`, color: INK, background: "#fff" }}
+          >
+            <IconClipboard size={14} /> Soạn câu trả lời
           </button>
           <button
             type="button"
@@ -878,10 +890,18 @@ export function StudentProfile({
             Phản hồi phụ huynh
           </h2>
           <p className="text-[13px]" style={{ color: student.parentFeedback ? INK : INK3 }}>
-            {student.parentFeedback || "Chưa có phản hồi."}
+            {phanHoi || "Chưa có phản hồi."}
           </p>
         </section>
       </div>
+      {moTraLoi && (
+        <ParentReply
+          student={student}
+          row={row}
+          onClose={() => setMoTraLoi(false)}
+          onLuu={(t) => setPhanHoi(t)}
+        />
+      )}
     </div>
   );
 }
