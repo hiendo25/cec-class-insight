@@ -636,7 +636,9 @@ function KetQua(props: {
 
 /* ---------- tab Bài tập ---------- */
 
-function TabAssignments({ row, onAssign }: { row: ClassRow; onAssign: () => void }) {
+function TabAssignments({
+  row, onAssign, onTab,
+}: { row: ClassRow; onAssign: () => void; onTab: (t: Tab) => void }) {
   const { ask } = useAction();
   const list = ASSIGNMENTS[row.id] ?? [];
   const students = STUDENTS[row.id] ?? [];
@@ -667,10 +669,11 @@ function TabAssignments({ row, onAssign }: { row: ClassRow; onAssign: () => void
         /* Em chưa nộp phải DẪN XUẤT từ chính số bài của em (assigned > submitted),
            KHÔNG được lấy N em đầu danh sách — tên này dùng để gửi tin nhắn nhắc,
            lấy nhầm là nhắc trúng em đã nộp còn em nợ thật thì không ai nhắc. */
-        const late = students
+        /* Giữ cả bản ghi học sinh, không chỉ tên — hộp thoại cần mã HS và SĐT */
+        const lateSt = students
           .filter((s) => s.assigned - s.submitted > 0)
-          .slice(0, missing)
-          .map((s) => s.name);
+          .slice(0, missing);
+        const late = lateSt.map((s) => s.name);
         return (
           <div key={a.id} className="rounded-[8px] bg-white px-[16px] py-[13px]" style={{ border: `1px solid ${LINE}` }}>
             <div className="flex flex-wrap items-center gap-[12px]">
@@ -732,12 +735,27 @@ function TabAssignments({ row, onAssign }: { row: ClassRow; onAssign: () => void
                         title: `Nhắc ${missing} em nộp bài`,
                         body: (
                           <>
-                            Gửi lời nhắc cho <strong>{missing} em</strong> chưa nộp bài{" "}
-                            <strong>{a.title}</strong>: {late.join(" · ")}
+                            <p style={{ marginBottom: 8 }}>
+                              Gửi lời nhắc nộp <strong>{a.title}</strong> tới {lateSt.length} em:
+                            </p>
+                            <ul style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                              {lateSt.map((st) => (
+                                <li key={st.id} style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+                                  <span style={{ fontWeight: 500 }}>{st.name}</span>
+                                  <span className="tabular-nums" style={{ fontSize: 11.5, color: INK3 }}>
+                                    {st.code}
+                                  </span>
+                                  <span className="tabular-nums" style={{ fontSize: 11.5, color: INK3 }}>
+                                    {st.phone}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
                           </>
                         ),
-                        confirmLabel: `Gửi cho ${missing} em`,
-                        doneText: `Đã gửi lời nhắc tới ${missing} em.`,
+                        confirmLabel: `Gửi cho ${lateSt.length} em`,
+                        doneText: `Đã nhắc ${lateSt.length} em nộp ${a.title}.`,
+                        run: () => lateSt.forEach((st) => markReminded(`hs-${st.id}`)),
                       })
                     }
                     className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold"
@@ -762,23 +780,15 @@ function TabAssignments({ row, onAssign }: { row: ClassRow; onAssign: () => void
                   </span>
                   <button
                     type="button"
-                    onClick={() =>
-                      ask({
-                        title: "Mở màn chấm bài",
-                        body: (
-                          <>
-                            Bài <strong>{a.title}</strong> còn <strong>{ungraded} bài</strong> chờ chấm.
-                            Màn chấm bài đang được dựng — sẽ mở thẳng danh sách bài của các em.
-                          </>
-                        ),
-                        confirmLabel: "Đã hiểu",
-                        doneText: "Màn chấm bài sẽ có ở đợt sau.",
-                      })
-                    }
+                    /* Trước đây nút này mời bấm rồi báo "đang được dựng" — nút mời
+                       bấm để báo chưa có vẫn là nút vô ích. Nay tab Duyệt bài đã
+                       có thật nên đưa thẳng sang đó. */
+                    onClick={() => onTab("Duyệt bài")}
+                    title={`Sang tab Duyệt bài — ${ungraded} bài chờ xác nhận`}
                     className="shrink-0 rounded-[6px] px-[10px] py-[5px] text-[12px] font-semibold text-white"
                     style={{ background: NAVY }}
                   >
-                    Chấm bài
+                    Duyệt bài
                   </button>
                 </>
               ) : (
@@ -1068,6 +1078,16 @@ export function ClassWorkspace({
       </>
     );
 
+  /* Em đang nợ bài — CHỈ em Đang học. Dùng cho hộp thoại nhắc bài,
+     phải có danh sách thật chứ không chỉ con số. */
+  const emNoBai = useMemo(
+    () =>
+      (STUDENTS[row.id] ?? []).filter(
+        (s) => s.state === "Đang học" && s.assigned - s.submitted > 0,
+      ),
+    [row.id],
+  );
+
   /* Số việc còn tồn từng tab — dẫn xuất từ dữ liệu thật, không đếm rời */
   const viecTon = useMemo<Partial<Record<Tab, number>>>(() => {
     const hs = STUDENTS[row.id] ?? [];
@@ -1138,18 +1158,43 @@ export function ClassWorkspace({
             onClick={() =>
               ask({
                 title: "Nhắc học sinh nộp bài",
+                /* Phải liệt kê TỪNG EM — QC gửi tin nhắn thật, không được bấm mù.
+                   Đây đúng lỗi Hiền bắt ở màn danh sách lớp, tái diễn ở cấp lớp. */
                 body:
-                  stats.overdue > 0 ? (
+                  emNoBai.length > 0 ? (
                     <>
-                      Lớp <strong>{row.code}</strong> còn <strong>{stats.overdue} bài</strong> chưa nộp.
-                      Gửi lời nhắc cho các em còn nợ?
+                      <p style={{ marginBottom: 8 }}>
+                        Gửi lời nhắc nộp bài tới {emNoBai.length} em ở lớp <strong>{row.code}</strong>:
+                      </p>
+                      <ul style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        {emNoBai.map((st) => (
+                          <li key={st.id} style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+                            <span style={{ fontWeight: 500 }}>{st.name}</span>
+                            <span className="tabular-nums" style={{ fontSize: 11.5, color: INK3 }}>
+                              {st.code}
+                            </span>
+                            <span style={{ fontSize: 12, color: WARN }}>
+                              còn {st.assigned - st.submitted} bài
+                            </span>
+                            <span className="tabular-nums" style={{ fontSize: 11.5, color: INK3 }}>
+                              {st.phone}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                     </>
                   ) : (
                     <>Lớp {row.code} hiện không em nào nợ bài.</>
                   ),
-                confirmLabel: stats.overdue > 0 ? "Gửi lời nhắc" : "Đã hiểu",
+                confirmLabel:
+                  emNoBai.length > 0 ? `Gửi lời nhắc cho ${emNoBai.length} em` : "Đã hiểu",
                 doneText:
-                  stats.overdue > 0 ? "Đã gửi lời nhắc tới các em còn nợ bài." : "Không có ai cần nhắc.",
+                  emNoBai.length > 0
+                    ? `Đã nhắc ${emNoBai.length} em ở lớp ${row.code}.`
+                    : "Không có ai cần nhắc.",
+                ...(emNoBai.length > 0
+                  ? { run: () => emNoBai.forEach((st) => markReminded(`hs-${st.id}`)) }
+                  : {}),
               })
             }
             className="flex items-center gap-[7px] rounded-[6px] bg-white px-[11px] py-[8px] text-[12.5px]"
@@ -1213,7 +1258,7 @@ export function ClassWorkspace({
           onOpenAssign={(st) => setAssignFor(st.id)}
         />}
       {tab === "Lịch học" && <TabSessions row={row} onAssign={() => setAssignOpen(true)} />}
-      {tab === "Bài tập" && <TabAssignments row={row} onAssign={() => setAssignOpen(true)} />}
+      {tab === "Bài tập" && <TabAssignments row={row} onAssign={() => setAssignOpen(true)} onTab={onTab} />}
       {tab === "Kết quả" && (
         <KetQua
           row={row}

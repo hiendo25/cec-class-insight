@@ -113,15 +113,9 @@ export function Today() {
     [lopCuaToi],
   );
 
-  /* Lớp đang diễn ra mà CHƯA GÁN GIÁO VIÊN — buổi vẫn diễn ra bình thường,
-     không ai cảnh báo. PROD có thật: cột GV ghi "Chưa gán" mà lớp vẫn chạy. */
-  const lopChuaGV = useMemo(
-    () =>
-      lopCuaToi.filter(
-        (c) => c.status === "Đang diễn ra" && (!c.teacher || c.teacher === "Chưa gán"),
-      ),
-    [lopCuaToi],
-  );
+  /* KHÔNG cảnh báo "lớp chưa gán giáo viên" ở đây: xếp giáo viên là việc
+     HỌC VỤ, không phải việc QC. Hiền bác 22/08. Đưa việc của role khác vào
+     màn QC làm loãng đúng 4 việc QC phải làm. */
 
   const ngay = `${THU[TODAY.getDay()]} · ${String(TODAY.getDate()).padStart(2, "0")}/${String(TODAY.getMonth() + 1).padStart(2, "0")}/${TODAY.getFullYear()}`;
 
@@ -137,19 +131,6 @@ export function Today() {
       <p className="-mt-[10px] text-[12.5px]" style={{ color: INK3 }}>
         {ME.name} · {ME.role} · {ME.campus} — {lopCuaToi.length} lớp bạn phụ trách
       </p>
-
-      {lopChuaGV.length > 0 && (
-        <div
-          className="flex flex-wrap items-center gap-[10px] rounded-[8px] px-[14px] py-[11px] text-[12.5px]"
-          style={{ background: "#fdecea", border: "1px solid #f2cfcb", color: DANGER }}
-        >
-          <strong>{lopChuaGV.length} lớp đang diễn ra chưa gán giáo viên</strong>
-          <span style={{ color: INK2 }}>
-            — {lopChuaGV.map((c) => c.code).join(", ")}. Buổi vẫn diễn ra bình thường,
-            cần báo phòng học vụ xếp người.
-          </span>
-        </div>
-      )}
 
       {lopChuaGiao.length > 0 && (
         <div

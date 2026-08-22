@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { AssignDialog } from "./AssignDialog";
-import { TH_BG, TH_FG, TH_LINE, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
+import { TH_BG, TH_FG, TH_LINE, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER, TODAY } from "@/data/const";
 import { Person } from "./Person";
 import { MaHS } from "./MaHS";
 import { CLASSES, STATUS_ORDER, type ClassRow, type Status } from "@/data/classes";
 import { ME } from "@/data/me";
 import { STUDENTS } from "@/data/students";
+import { homNayChoTen, xuatCSV } from "@/lib/xuatBang";
 import { markReminded } from "@/data/overrides";
 import { useAction } from "./ActionDialog";
 import { Modal } from "./Modal";
@@ -837,7 +838,26 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
             onClick={() =>
               ask({
                 title: `Giao bài cho ${selected.length} lớp`,
-                body: <>Giao cùng một đề cho {selected.length} lớp đang chọn.</>,
+                body: (
+              <>
+                <p style={{ marginBottom: 6 }}>
+                  Giao cùng một đề cho {selected.length} lớp:
+                </p>
+                <ul style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  {rows.filter((r) => selected.includes(r.id)).map((r) => (
+                    <li key={r.id} style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+                      <span style={{ fontWeight: 500 }}>{r.code}</span>
+                      <span style={{ fontSize: 12, color: INK3 }}>
+                        {r.enrolled ?? 0} học sinh · {r.campus}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p style={{ marginTop: 8, fontSize: 12, color: INK3 }}>
+                  Bấm tiếp để chọn đề và hạn nộp cho từng lớp.
+                </p>
+              </>
+            ),
                 confirmLabel: "Chọn đề",
                 doneText: "Mở màn chọn đề để giao cho nhiều lớp.",
               })
@@ -850,10 +870,39 @@ export function ClassesTable({ onOpenClass }: { onOpenClass?: (r: ClassRow) => v
             type="button"
             onClick={() =>
               ask({
-                title: `Xem báo cáo ${selected.length} lớp`,
-                body: <>Xuất báo cáo tiến độ của {selected.length} lớp đang chọn.</>,
-                confirmLabel: "Xuất báo cáo",
-                doneText: `Đã xuất báo cáo ${selected.length} lớp.`,
+                title: `Xuất báo cáo ${selected.length} lớp`,
+                /* Nói rõ LỚP NÀO và ra FILE GÌ — trước chỉ ghi "N lớp đang chọn",
+                   QC bấm xong không biết mình vừa xuất cái gì. */
+                body: (
+                  <>
+                    <p style={{ marginBottom: 6 }}>
+                      Xuất file .csv (mở bằng Excel) tiến độ của {selected.length} lớp:
+                    </p>
+                    <ul style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      {rows
+                        .filter((r) => selected.includes(r.id))
+                        .map((r) => (
+                          <li key={r.id} style={{ fontSize: 12.5 }}>
+                            {r.code} — {r.enrolled ?? 0} học sinh · {r.campus}
+                          </li>
+                        ))}
+                    </ul>
+                  </>
+                ),
+                confirmLabel: `Xuất ${selected.length} lớp`,
+                doneText: `Đã xuất file báo cáo ${selected.length} lớp.`,
+                /* Làm THẬT — tải file xuống, không báo suông */
+                run: () => {
+                  const ds = rows.filter((r) => selected.includes(r.id));
+                  xuatCSV(
+                    `TienDoLop_${homNayChoTen(TODAY)}`,
+                    ["Mã lớp", "Loại lớp", "Cơ sở", "Giáo viên", "QC", "Sĩ số", "Sức chứa", "Bài quá hạn", "Chờ chấm", "Trạng thái"],
+                    ds.map((r) => [
+                      r.code, r.type, r.campus, r.teacher ?? "Chưa gán", r.qc ?? "",
+                      r.enrolled ?? 0, r.capacity ?? "", r.overdue, r.grading, r.status,
+                    ]),
+                  );
+                },
               })
             }
             className="cec-btn cec-btn-secondary"
