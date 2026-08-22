@@ -94,7 +94,11 @@ function Chon({
  */
 export function ExamList() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"Tất cả" | "Của tôi" | "Đã xuất bản">("Tất cả");
+  /* Tab thứ ba của PROD là `Converter` (đề do AI sinh), không phải `Đã xuất bản`
+     mà tôi tự nghĩ ra — tab đó còn thừa vì bộ lọc Trạng thái đã làm được.
+     Đề AI Converter là loại rủi ro cao nhất: đã phải dựng riêng cổng chặn
+     `_gateAI.mjs` 19 luật để rà. QC cần lọc riêng nhóm này để soi kỹ. */
+  const [tab, setTab] = useState<"Tất cả" | "Của tôi" | "Converter">("Tất cả");
   const [loc, setLoc] = useState<Loc>(TRONG);
   const [q, setQ] = useState("");
   const [sap, setSap] = useState<{ cot: SortCot; giam: boolean }>({ cot: "ngayTao", giam: true });
@@ -113,8 +117,8 @@ export function ExamList() {
       EXAMS.filter((e) =>
         tab === "Của tôi"
           ? e.nguoiTao === ME.name
-          : tab === "Đã xuất bản"
-            ? e.trangThai !== "Nháp"
+          : tab === "Converter"
+            ? e.tuAI
             : true,
       ),
     [tab],
@@ -155,7 +159,7 @@ export function ExamList() {
   const dem = {
     "Tất cả": EXAMS.length,
     "Của tôi": EXAMS.filter((e) => e.nguoiTao === ME.name).length,
-    "Đã xuất bản": EXAMS.filter((e) => e.trangThai !== "Nháp").length,
+    Converter: EXAMS.filter((e) => e.tuAI).length,
   };
 
   return (
@@ -172,7 +176,7 @@ export function ExamList() {
 
       {/* tab */}
       <div className="flex items-end gap-[3px]" style={{ borderBottom: `1px solid ${LINE}` }}>
-        {(["Tất cả", "Của tôi", "Đã xuất bản"] as const).map((t) => {
+        {(["Tất cả", "Của tôi", "Converter"] as const).map((t) => {
           const on = t === tab;
           return (
             <button
@@ -271,7 +275,14 @@ export function ExamList() {
           {/* PROD dinh chieu rong tung cot: ten de ~440px mot dong, cat bang "…".
               Khong co colgroup thi trinh duyet chia deu -> cot ten bi bop con 95px
               trong khi cot "Cap do" chi chua "A1" lai rong gap doi. */}
-          <table className="border-collapse text-[13px]" style={{ minWidth: 1180, width: "100%" }}>
+          {/* minWidth phải bằng TỔNG cột thật (1.476px), không phải con số đặt tay.
+              Đặt 1.180 < tổng thì trình duyệt bỏ qua colgroup và bóp cột — tên đề
+              ra "A2-B1 Gramma…", cơ sở ra "CEC Li…". Đúng lỗi vừa sửa ở
+              ClassesTable, nhưng ở đây tôi quên: sửa một logic phải tìm MỌI BẢN SAO. */}
+          <table
+            className="border-collapse text-[13px]"
+            style={{ minWidth: COL_W.reduce((a, b) => a + b, 0), width: "100%" }}
+          >
             <colgroup>
               {COL_W.map((w, i) => (
                 <col key={i} style={{ width: w }} />

@@ -1,15 +1,32 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { useNavigate } from "@tanstack/react-router";
-import type { Exam } from "@/data/exams";
+import type { Exam, ExamPart } from "@/data/exams";
+import { KHO_CAU } from "@/data/questions";
 import { topicFull } from "@/data/topics";
 import { useAction } from "./ActionDialog";
 import { TT_STYLE } from "./ExamList";
 import { IconCheck, IconChevronLeft, IconClipboard, IconWarn } from "./icons";
 
 
-const TABS = ["Cấu trúc đề", "Cấu hình chấm điểm", "Lịch sử phiên bản"] as const;
+/* KHÔNG có tab "Converter" ở đây. `Converter` là tab LỌC ở màn danh sách đề
+   (`ExamList`), không phải tab trong chi tiết một đề — tôi đặt nhầm chỗ một lượt,
+   tab hiện ra mà bấm vào là màn trắng. Ở chi tiết, đề do AI sinh được đánh dấu
+   bằng nhãn "✦ AI Converter" cạnh tên đề. */
+const TABS = ["Cấu trúc đề", "Cấu hình đề", "Lịch sử phiên bản"] as const;
 type Tab = (typeof TABS)[number];
+
+/** Một nhóm cấu hình — PROD chia 7 nhóm, không đổ 25 ô thành một khối. */
+function Nhom({ ten, children }: { ten: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-[16px] border-t pt-[13px]" style={{ borderColor: LINE }}>
+      <p className="mb-[10px] text-[11.5px] font-semibold uppercase" style={{ color: INK3, letterSpacing: "0.05em" }}>
+        {ten}
+      </p>
+      <div className="grid grid-cols-2 gap-[16px] md:grid-cols-3">{children}</div>
+    </div>
+  );
+}
 
 function O({ nhan, giaTri, canhBao }: { nhan: string; giaTri: string; canhBao?: string }) {
   return (
@@ -65,7 +82,7 @@ export function ExamDetail({ exam }: { exam: Exam }) {
       <div className="flex flex-wrap items-start gap-[12px] rounded-[8px] bg-white px-[16px] py-[13px]" style={{ border: `1px solid ${LINE}` }}>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-[10px]">
-            <h1 className="text-[19px] font-bold" style={{ letterSpacing: "-0.2px" }}>
+            <h1 className="text-[24px] font-medium" style={{ letterSpacing: "-0.02em" }}>
               {exam.ten}
             </h1>
             <span className="rounded-full px-[9px] py-[3px] text-[11.5px] font-medium" style={{ background: tt.bg, color: tt.fg }}>
@@ -74,6 +91,17 @@ export function ExamDetail({ exam }: { exam: Exam }) {
             <span className="rounded-[4px] px-[7px] py-[2px] text-[11.5px] font-semibold" style={{ background: "#eef1f7", color: NAVY }}>
               {exam.phienBan}
             </span>
+            {/* Đề AI Converter sinh phải nhìn ra ngay — đây là loại rủi ro cao
+                nhất, QC cần soi kỹ hơn đề người soạn. */}
+            {exam.tuAI && (
+              <span
+                className="rounded-[4px] px-[7px] py-[2px] text-[11.5px] font-medium"
+                style={{ background: "var(--ai-nen)", color: "var(--ai-chu)", border: "1px solid var(--ai-vien)" }}
+                title="Đề do AI Converter sinh — cần rà kỹ trước khi giao"
+              >
+                ✦ AI Converter
+              </span>
+            )}
           </div>
           <p className="mt-[4px] text-[12.5px]" style={{ color: INK2 }}>
             {exam.ma} · {exam.loai} · {exam.kyNang} · {exam.capDo} · {exam.soCau} câu ·{" "}
@@ -200,12 +228,13 @@ export function ExamDetail({ exam }: { exam: Exam }) {
               <p className="mt-[5px] text-[12.5px]" style={{ color: INK2 }}>
                 {p.huongDan}
               </p>
+              <PhanCau part={p} moSan={exam.parts.length <= 2} />
             </section>
           ))}
         </div>
       )}
 
-      {tab === "Cấu hình chấm điểm" && (
+      {tab === "Cấu hình đề" && (
         <section className="rounded-[8px] bg-white px-[16px] py-[14px]" style={{ border: `1px solid ${LINE}` }}>
           <div className="grid grid-cols-2 gap-[16px] md:grid-cols-3">
             <O nhan="Tổng điểm" giaTri={`${exam.diemTong} điểm`} />
@@ -234,6 +263,64 @@ export function ExamDetail({ exam }: { exam: Exam }) {
               giaTri={exam.tuCongBoKetQua ? "Có — học sinh thấy điểm ngay" : "Không — chờ QC duyệt"}
             />
           </div>
+
+          {/* Trước đây màn này chỉ hiện 7/25 trường của PROD. QC không kiểm được
+              đề thi đã bật chống gian lận chưa, học sinh sau khi nộp có thấy đáp
+              án không, bài viết/nói có rubric để chấm không. Dữ liệu vốn đã có
+              đủ ở `data/exams.ts` — chỉ thiếu lớp hiển thị. */}
+          <Nhom ten="Thông tin">
+            <O nhan="Nhiều phần" giaTri={exam.nhieuPhan ? "Có" : "Chỉ 1 phần"} />
+            <O nhan="Chương" giaTri={exam.chuong ?? "chưa gán"} />
+            <O nhan="Bài học" giaTri={exam.baiHoc ?? "chưa gán"} />
+            <O nhan="Nhân bản từ" giaTri={exam.nhanBanTu ?? "—"} />
+            <O nhan="Mô tả" giaTri={exam.moTa || "—"} />
+          </Nhom>
+
+          <Nhom ten="Phân loại">
+            <O nhan="Kỹ năng bài tập" giaTri={exam.kyNangBai.join(" · ") || "chưa gán"} />
+            <O nhan="Chủ điểm" giaTri={topicFull(exam.topic)} />
+            <O nhan="Cấp độ" giaTri={exam.capDo} />
+          </Nhom>
+
+          <Nhom ten="Cấu hình làm bài">
+            <O nhan="Cho làm lại" giaTri={exam.choLamLai} />
+            <O nhan="Lấy điểm" giaTri={exam.layDiem} />
+            <O nhan="Sau khi nộp" giaTri={exam.sauKhiNop} />
+            <O
+              nhan="Cho thấy điểm"
+              giaTri={exam.choThayDiem ? "Có" : "Không"}
+              {...(exam.choThayDiem && !exam.tuCongBoKetQua
+                ? { canhBao: "Bật cho thấy điểm nhưng tắt tự công bố — HS chỉ thấy sau khi QC duyệt" }
+                : {})}
+            />
+          </Nhom>
+
+          <Nhom ten="Chống gian lận">
+            <O nhan="Toàn màn hình" giaTri={exam.toanManHinh ? "Bật" : "Tắt"} />
+            <O nhan="Chặn chuyển tab" giaTri={exam.chanChuyenTab ? "Bật" : "Tắt"} />
+            <O
+              nhan="Đình chỉ sau vi phạm"
+              giaTri={
+                exam.dinhChiSauViPham === 0 ? "Không đình chỉ" : `${exam.dinhChiSauViPham} lần`
+              }
+            />
+          </Nhom>
+
+          <Nhom ten="Cấu hình chấm">
+            <O
+              nhan="Khung chấm (rubric)"
+              giaTri={exam.rubric ?? "chưa có"}
+              {...(!exam.rubric && exam.parts.some((x) => x.dang === "essay" || x.dang === "speaking")
+                ? { canhBao: "Đề có phần viết/nói mà chưa có khung chấm — QC không có căn cứ xác nhận điểm AI" }
+                : {})}
+            />
+          </Nhom>
+
+          <Nhom ten="Mặc định khi giao bài">
+            <O nhan="Thời gian" giaTri={`${exam.macDinhThoiGian} phút`} />
+            <O nhan="Số lần làm" giaTri={exam.macDinhSoLan} />
+            <O nhan="Hạn nộp" giaTri={`${exam.macDinhHanNopGio} giờ sau khi giao`} />
+          </Nhom>
 
           <p className="mt-[14px] flex items-center gap-[7px] text-[12px]" style={{ color: INK3 }}>
             <IconCheck size={13} />
@@ -347,5 +434,132 @@ function ThuLam({ exam, onDong }: { exam: Exam; onDong: () => void }) {
         </div>
       </div>
     </section>
+  );
+}
+
+
+/** Câu hỏi của một phần — MỞ RA XEM ĐƯỢC, kèm đáp án và lời giải.
+ *
+ *  Trước đây cả bốn phần chỉ hiện đúng một câu "Làm theo yêu cầu của đề":
+ *  QC mở màn ra không đọc được câu nào, không thấy đáp án, tức không kiểm được
+ *  gì — mà kiểm đề chính là việc của QC. Đó là màn Hiền bắt 22/08.
+ *
+ *  Gốc không phải lỗi hiển thị mà là KHÔNG CÓ TẦNG DỮ LIỆU CÂU HỎI: `ExamPart`
+ *  chỉ có `soCau` là con số, nên 180 đề · 432 phần · 4.220 câu đều rỗng ruột.
+ *  Câu ở đây lấy từ kho A1 thật của CEC và kho ôn luyện tak12 (`KHO_CAU`).
+ *
+ *  Đáp án chỉ QC thấy — đây là màn quản trị, không phải màn học sinh làm bài.
+ */
+function PhanCau({ part, moSan }: { part: ExamPart; moSan: boolean }) {
+  const [mo, setMo] = useState(moSan);
+  const [hienDap, setHienDap] = useState(true);
+
+  /* Chọn câu ổn định theo id phần: cùng một phần luôn ra cùng bộ câu, không
+     đổi mỗi lần vẽ lại. Không có Math.random ở đây là cố ý. */
+  const cau = useMemo(() => {
+    const kho = KHO_CAU[part.dang] ?? [];
+    if (!kho.length) return [];
+    let h = 0;
+    for (const c of part.id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return Array.from({ length: Math.min(part.soCau, kho.length) }, (_, i) =>
+      kho[(h + i * 7) % kho.length]!,
+    );
+  }, [part.id, part.dang, part.soCau]);
+
+  if (!cau.length)
+    return (
+      <p className="mt-[8px] text-[12px]" style={{ color: INK3 }}>
+        Chưa có nội dung câu hỏi cho dạng {part.dangTen} — cần nhập từ đề gốc.
+      </p>
+    );
+
+  return (
+    <div className="mt-[9px]">
+      <div className="flex flex-wrap items-center gap-[10px]">
+        <button
+          type="button"
+          onClick={() => setMo(!mo)}
+          className="text-[12.5px] font-medium hover:underline"
+          style={{ color: NAVY }}
+        >
+          {mo ? "▴ Ẩn câu hỏi" : `▾ Xem ${cau.length} câu`}
+        </button>
+        {mo && (
+          <label className="flex items-center gap-[6px] text-[12px]" style={{ color: INK2 }}>
+            <input
+              type="checkbox"
+              checked={hienDap}
+              onChange={(e) => setHienDap(e.target.checked)}
+            />
+            Hiện đáp án và lời giải
+          </label>
+        )}
+      </div>
+
+      {mo && (
+        <ol className="mt-[9px] flex flex-col gap-[9px]">
+          {cau.map((q, i) => (
+            <li
+              key={i}
+              className="rounded-[8px] px-[11px] py-[9px]"
+              style={{ background: "#f9fafc", border: `1px solid ${LINE}` }}
+            >
+              <div className="flex gap-[9px]">
+                <span
+                  className="shrink-0 text-[12px] tabular-nums"
+                  style={{ color: INK3, minWidth: 20 }}
+                >
+                  {i + 1}.
+                </span>
+                <div className="min-w-0 flex-1">
+                  {/* Câu nhiều dòng phải xuống dòng thật — `
+` trong dữ liệu gốc
+                      là ngắt dòng có ý nghĩa (câu phủ định / câu hỏi / trả lời). */}
+                  <p className="whitespace-pre-line text-[13px]" style={{ color: INK }}>
+                    {q.noi}
+                  </p>
+
+                  {q.choices.length > 0 && (
+                    <ul className="mt-[5px] flex flex-wrap gap-[6px]">
+                      {q.choices.map((c, k) => (
+                        <li
+                          key={k}
+                          className="rounded-[4px] px-[7px] py-[2px] text-[12px]"
+                          style={{ background: "#fff", border: `1px solid ${LINE}`, color: INK2 }}
+                        >
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {/* Chỉ in dòng "Đáp án" khi lời giải CHƯA tự nêu đáp án.
+                      Lời giải gốc của giáo viên phần lớn đã mở đầu bằng
+                      "✅ Đáp án đúng: …" — in thêm là hai dòng lặp y nhau. */}
+                  {hienDap && q.dap && !/đáp án/i.test(q.giai) && (
+                    <p className="mt-[5px] text-[12.5px]" style={{ color: OK }}>
+                      Đáp án: <strong>{q.dap}</strong>
+                    </p>
+                  )}
+                  {hienDap && q.giai && (
+                    <p
+                      className="mt-[3px] whitespace-pre-line text-[12px]"
+                      style={{ color: INK2 }}
+                    >
+                      {q.giai}
+                    </p>
+                  )}
+                  {hienDap && !q.dap && !q.giai && (
+                    <p className="mt-[5px] text-[12px]" style={{ color: WARN }}>
+                      Câu này chưa có đáp án — cần người ra đáp án trước khi giao.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
   );
 }
