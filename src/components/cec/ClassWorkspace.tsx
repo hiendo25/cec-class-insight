@@ -419,8 +419,15 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
         </span>
       </div>
 
-      <div className="overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
-        <table className="w-full border-collapse text-[13px]">
+      <div className="cec-scroll overflow-x-auto rounded-[8px] bg-white" style={{ border: `1px solid ${LINE}` }}>
+        {/* Định chiều rộng cột — bảng thứ BA dính cùng lỗi này. Không có colgroup
+            thì ở laptop/tablet cột "Phòng" bị bóp, giá trị "Chưa xếp" vỡ 2 dòng. */}
+        <table className="border-collapse text-[13px]" style={{ minWidth: 1040, width: "100%" }}>
+          <colgroup>
+            {[64, 128, 116, 112, 190, 190, 124, 116, 132].map((w, i) => (
+              <col key={i} style={{ width: w }} />
+            ))}
+          </colgroup>
           <thead>
             <tr style={{ background: TH_BG, color: TH_FG, borderBottom: `1px solid ${TH_LINE}` }}>
               {["Buổi", "Ngày", "Giờ", "Phòng", "Giáo viên", "Trợ giảng", "Phiếu buổi", "Đã giao bài", ""].map((h, i) => (
@@ -448,7 +455,7 @@ function TabSessions({ row, onAssign }: { row: ClassRow; onAssign: () => void })
                 <td className="whitespace-nowrap px-[12px] tabular-nums" style={{ color: INK2 }}>
                   {s.time}
                 </td>
-                <td className="px-[12px]" style={{ color: INK2 }}>{s.room}</td>
+                <td className="truncate px-[12px]" style={{ color: INK2 }} title={s.room}>{s.room}</td>
                 <td className="max-w-[190px] px-[12px]"><Person name={s.teacher} /></td>
                 <td className="max-w-[190px] px-[12px]" style={{ color: s.ta ? INK : INK3 }}>
                   {s.ta ? <Person name={s.ta} /> : "—"}
