@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
 import { TODAY, NAVY, LINE, INK, INK2, INK3, OK, WARN, DANGER } from "@/data/const";
 import { SCORES, TESTS } from "@/data/tests";
+import { MONTHLY, REPORTS } from "@/data/reports";
 import { ParentReply } from "./ParentReply";
+import { dongPhanHoi, ghiPhanHoi, phanHoiCua } from "@/data/overrides";
+import { ME } from "@/data/me";
 import type { ClassRow } from "@/data/classes";
 import { SESSIONS } from "@/data/sessions";
 import type { Student } from "@/data/students";
@@ -222,6 +225,144 @@ function Donut({ errors, size = 168 }: { errors: ErrorGroup[]; size?: number }) 
         câu đã làm
       </text>
     </svg>
+  );
+}
+
+type LoaiSuKien = "Bài tập" | "Phiếu buổi" | "Vắng" | "Báo cáo tháng";
+
+/**
+ * Dòng thời gian một học sinh — hợp nhất 4 loại sự kiện theo thứ tự thời gian.
+ *
+ * Trước đây hồ sơ chỉ có "Lịch sử làm bài" — một loại. QC trả lời phụ huynh
+ * phải mở 4 khối rồi tự ghép trong đầu. Dữ liệu 4 loại đã có sẵn trong repo,
+ * chỉ là chưa gộp.
+ */
+function DongThoiGian({ classId, student }: { classId: number; student: Student }) {
+  const [loc, setLoc] = useState<LoaiSuKien | "">("");
+
+  const moc = useMemo(() => {
+    const ra: { ngay: string; loai: LoaiSuKien; chu: string; phu?: string }[] = [];
+
+    /* phiếu buổi + vắng — cùng nguồn REPORTS nhưng là hai loại việc khác nhau */
+    for (const r of (REPORTS[classId] ?? []).filter((x) => x.studentId === student.id)) {
+      if (r.attendance === "absent" || r.attendance === "excused") {
+        ra.push({
+          ngay: r.date,
+          loai: "Vắng",
+          chu: r.attendance === "excused" ? `Vắng buổi ${r.session} — có phép` : `Vắng buổi ${r.session}`,
+          ...(r.absenceReason ? { phu: r.absenceReason } : {}),
+        });
+        continue;
+      }
+      if (r.comment)
+        ra.push({
+          ngay: r.date,
+          loai: "Phiếu buổi",
+          chu: `Buổi ${r.session}: "${r.comment}"`,
+          phu: r.status === "approved" ? "đã duyệt" : r.status === "pending" ? "chờ duyệt" : "GV chưa gửi",
+        });
+    }
+
+    /* bài tập đã nộp */
+    const pf = PROFILES[student.id];
+    for (const h of pf?.history ?? []) {
+      const lan = h.attempts?.[h.attempts.length - 1];
+      ra.push({
+        ngay: h.assignedAt,
+        loai: "Bài tập",
+        chu: `Nộp ${h.title}`,
+        phu: typeof lan?.score === "number" ? `${lan.score}/${h.max} điểm` : "chưa chấm",
+      });
+    }
+
+    /* báo cáo tháng — lấy ngày cuối tháng làm mốc */
+    for (const m of MONTHLY[student.id] ?? []) {
+      const [mm, yy] = m.month.split("/");
+      ra.push({
+        ngay: `${new Date(Number(yy), Number(mm), 0).getDate()}/${Number(mm)}/${yy}`,
+        loai: "Báo cáo tháng",
+        chu: `Báo cáo tháng ${m.month}`,
+        phu: m.status === "approved" ? "đã duyệt" : m.status === "pending" ? "chờ QC duyệt" : "còn nháp",
+      });
+    }
+
+    const so = (d: string) => {
+      const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(d.trim());
+      return m ? +m[3]! * 10000 + +m[2]! * 100 + +m[1]! : 0;
+    };
+    return ra.sort((a, b) => so(b.ngay) - so(a.ngay));
+  }, [classId, student.id]);
+
+  const dem = (l: LoaiSuKien) => moc.filter((m) => m.loai === l).length;
+  const list = loc ? moc.filter((m) => m.loai === loc) : moc;
+
+  const MAU: Record<LoaiSuKien, string> = {
+    "Bài tập": NAVY,
+    "Phiếu buổi": OK,
+    "Vắng": DANGER,
+    "Báo cáo tháng": WARN,
+  };
+
+  if (moc.length === 0) return null;
+
+  return (
+    <section className="rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
+      <div className="mb-3 flex flex-wrap items-center gap-[8px]">
+        <h2 className="text-[15px] font-semibold" style={{ color: INK }}>
+          Dòng thời gian
+        </h2>
+        <span className="text-[12px]" style={{ color: INK3 }}>
+          Mọi việc của em theo thứ tự — trả lời phụ huynh không phải ghép từ 4 chỗ
+        </span>
+        <span className="flex-1" />
+        {(["", "Bài tập", "Phiếu buổi", "Vắng", "Báo cáo tháng"] as const).map((l) => {
+          const on = l === loc;
+          const n = l === "" ? moc.length : dem(l);
+          if (l !== "" && n === 0) return null;
+          return (
+            <button
+              key={l || "all"}
+              type="button"
+              onClick={() => setLoc(l)}
+              className="rounded-[6px] px-[9px] py-[4px] text-[12px]"
+              style={{
+                border: `1px solid ${on ? NAVY : "#dfe3ea"}`,
+                background: on ? "#eef1f7" : "#fff",
+                color: on ? NAVY : INK2,
+                fontWeight: on ? 600 : 400,
+              }}
+            >
+              {l || "Tất cả"} <span className="tabular-nums">{n}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="flex flex-col">
+        {list.slice(0, 14).map((m, i) => (
+          <div key={`${m.ngay}-${m.loai}-${i}`} className="flex gap-[11px] py-[7px]"
+            style={{ borderTop: i ? "1px solid #f1f3f7" : undefined }}>
+            <span className="w-[74px] shrink-0 tabular-nums text-[12px]" style={{ color: INK3 }}>
+              {m.ngay}
+            </span>
+            <span className="mt-[5px] h-[7px] w-[7px] shrink-0 rounded-full" style={{ background: MAU[m.loai] }} />
+            <span className="min-w-0 flex-1">
+              <span className="block text-[12.5px]" style={{ color: INK }}>{m.chu}</span>
+              {m.phu && <span className="block text-[11.5px]" style={{ color: INK3 }}>{m.phu}</span>}
+            </span>
+            <span className="shrink-0 rounded-[4px] px-[7px] py-[1px] text-[11px]"
+              style={{ background: "#f4f6fa", color: INK2 }}>
+              {m.loai}
+            </span>
+          </div>
+        ))}
+      </div>
+      {list.length > 14 && (
+        <p className="mt-[8px] text-[12px]" style={{ color: INK3 }}>
+          Hiện 14 mốc gần nhất trong {list.length}.
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -563,6 +704,9 @@ export function StudentProfile({
 }) {
   const [moTraLoi, setMoTraLoi] = useState(false);
   const [phanHoi, setPhanHoi] = useState(student.parentFeedback);
+  /* Buộc vẽ lại sau khi đóng ticket — trạng thái nằm ở lớp overrides */
+  const [dauX, setDauX] = useState(0);
+  const ticket = useMemo(() => phanHoiCua(student.id), [student.id, dauX, phanHoi]);
   const profile: Profile = PROFILES[student.id] ?? { history: [], errors: [], daily: [], inProgress: [] };
   const { ask } = useAction();
   /* Lớp chưa xếp lịch thì không có buổi nào — đừng in "Buổi 89" bịa ra */
@@ -853,6 +997,8 @@ export function StudentProfile({
         <DiemKiemTra classId={row.id} studentId={student.id} />
       </div>
 
+      <DongThoiGian classId={row.id} student={student} />
+
       {/* lịch sử */}
       <section className="rounded-xl bg-white pb-1" style={{ border: `1px solid ${LINE}` }}>
         <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
@@ -886,12 +1032,40 @@ export function StudentProfile({
           </p>
         </section>
         <section className="rounded-xl bg-white px-5 py-4" style={{ border: `1px solid ${LINE}` }}>
-          <h2 className="mb-2 text-[15px] font-semibold" style={{ color: INK }}>
-            Phản hồi phụ huynh
-          </h2>
-          <p className="text-[13px]" style={{ color: student.parentFeedback ? INK : INK3 }}>
+          {/* App cũ quản phản hồi PH dạng TICKET (Resolved / Resolved by / Resolved time).
+              Chỉ để chữ tự do thì không biết ca nào đã xử lý, còn tồn bao nhiêu. */}
+          <div className="mb-2 flex flex-wrap items-center gap-[9px]">
+            <h2 className="text-[15px] font-semibold" style={{ color: INK }}>
+              Phản hồi phụ huynh
+            </h2>
+            {phanHoi && (
+              <span className="rounded-[5px] px-[8px] py-[2px] text-[11.5px] font-medium"
+                style={ticket?.xong
+                  ? { background: "#e6f5ec", color: OK }
+                  : { background: "#fdf3e7", color: WARN }}>
+                {ticket?.xong ? "Đã xử lý" : "Chưa xử lý"}
+              </span>
+            )}
+            <span className="flex-1" />
+            {phanHoi && !ticket?.xong && (
+              <button
+                type="button"
+                onClick={() => { dongPhanHoi(student.id, ME.name); setDauX((n) => n + 1); }}
+                className="rounded-[6px] px-[11px] py-[5px] text-[12px] font-semibold"
+                style={{ border: `1px solid ${LINE}`, color: NAVY }}
+              >
+                Đánh dấu đã xử lý
+              </button>
+            )}
+          </div>
+          <p className="text-[13px]" style={{ color: phanHoi ? INK : INK3 }}>
             {phanHoi || "Chưa có phản hồi."}
           </p>
+          {ticket && (
+            <p className="mt-[6px] text-[11.5px]" style={{ color: INK3 }}>
+              {ticket.xong ? `${ticket.nguoi} xử lý lúc ${ticket.luc}` : `Ghi lúc ${ticket.luc}`}
+            </p>
+          )}
         </section>
       </div>
       {moTraLoi && (
@@ -899,7 +1073,7 @@ export function StudentProfile({
           student={student}
           row={row}
           onClose={() => setMoTraLoi(false)}
-          onLuu={(t) => setPhanHoi(t)}
+          onLuu={(t) => { setPhanHoi(t); ghiPhanHoi(student.id, t, ME.name); setDauX((n) => n + 1); }}
         />
       )}
     </div>

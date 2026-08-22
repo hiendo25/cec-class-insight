@@ -113,6 +113,8 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
   const [sessionBy, setSessionBy] = useState<Record<number, number>>({});
   /* Màn xác nhận trung gian: hiện MỌI thứ đáng ngờ trước khi bấm giao thật */
   const [dangXacNhan, setDangXacNhan] = useState(false);
+  /* Ghi chú kèm bài giao — PROD có, QC hay dặn riêng em */
+  const [ghiChu, setGhiChu] = useState("");
 
   /* Đã giao xong -> giữ id để còn hoàn tác. KH yêu cầu có nút Hoàn tác 10 giây. */
   const [daGiaoId, setDaGiaoId] = useState<string | null>(null);
@@ -795,6 +797,23 @@ export function AssignDialog({ from, onClose, studentId, examId: examBanDau }: P
                       Tự công bố kết quả: {exam.autoPublish ? "Bật" : "Tắt"} · Cho làm lại sau khi
                       có kết quả: {exam.retryAfter ? "Bật" : "Tắt"}
                     </p>
+                  </div>
+
+                  {/* PROD có ô này ở cuối modal giao bài — QC hay dặn riêng em
+                      khi giao ("làm phần 2 trước", "nộp trước thứ 5"). Thiếu thì
+                      QC phải nhắn ngoài app, lời dặn không đi kèm bài. */}
+                  <div className="mt-[10px]">
+                    <p className="mb-[5px] text-[12.5px]" style={{ color: INK2 }}>
+                      Ghi chú cho học sinh <span style={{ color: INK3 }}>(không bắt buộc)</span>
+                    </p>
+                    <textarea
+                      value={ghiChu}
+                      onChange={(e) => setGhiChu(e.target.value)}
+                      rows={2}
+                      placeholder="Ví dụ: con làm phần 2 trước, phần 1 cô đã chữa trên lớp."
+                      className="w-full rounded-[6px] px-[10px] py-[7px] text-[12.5px] outline-none"
+                      style={{ border: `1px solid #d9dde5`, color: INK }}
+                    />
                   </div>
 
                   <button
